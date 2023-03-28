@@ -1,0 +1,14 @@
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+ 
+@layer Navbar{
+  .flex-cs{
+   @apply flex items-center justify-start gap-4
+  }
+ 
+}
