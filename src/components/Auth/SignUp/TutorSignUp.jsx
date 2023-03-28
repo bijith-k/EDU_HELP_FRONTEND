@@ -59,14 +59,19 @@ const TutorSignUp = () => {
           })
           .then((response) => {
             setIsLoading(false);
+            if(response.data.otpSend){
             toast.success(response.data.message);
-            navigate("/tutor-signin");
+            navigate('/tutor-otp')
+            }else{
+            setIsLoading(false);
+            toast.error(response.data.message);
+            }
           })
           .catch((error) => {
             setIsLoading(false);
             toast.error(error.response.data.errors);
           });
-        action.resetForm();
+        // action.resetForm();
       },
     });
 

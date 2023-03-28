@@ -47,14 +47,20 @@ const StudentSignUp = () => {
           })
           .then((response) => {
             setIsLoading(false);
-            toast.success(response.data.message);
-            navigate("/signin");
+            if(response.data.otpSend){
+              toast.success(response.data.message);
+              navigate("/otp");
+            }else{
+              setIsLoading(false);
+              toast.error(response.data.message);
+            }
           })
           .catch((error) => {
             setIsLoading(false);
+            console.log(error);
             toast.error(error.response.data.errors);
           });
-        action.resetForm();
+        // action.resetForm();
       },
     });
 

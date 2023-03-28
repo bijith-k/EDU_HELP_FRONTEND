@@ -7,7 +7,9 @@ import NotesPage from './pages/student/NotesPage'
 import TutorLoginPage from './pages/Tutor/TutorLoginPage'
 import TutorSignUpPage from './pages/Tutor/TutorSignUpPage'
 import UploadNotesPage from './pages/student/UploadNotesPage'
-import OtpPage from './pages/student/OtpPage'
+import OtpPageStudent from './pages/student/OtpPageStudent'
+import OtpPageTutor from './pages/Tutor/OtpPageTutor'
+ 
 
 function App() {
    
@@ -34,7 +36,7 @@ function App() {
        <Route
        path='/otp' 
       //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
-       element={<OtpPage /> } 
+       element={<OtpPageStudent /> } 
        />
        <Route
        path='/upload-notes' 
@@ -44,6 +46,10 @@ function App() {
        <Route
        path='/tutor-signin' 
        element={<TutorLoginPage />} 
+       />
+       <Route
+       path='/tutor-otp' 
+       element={<OtpPageTutor />} 
        />
         <Route
        path='/tutor-signup' 

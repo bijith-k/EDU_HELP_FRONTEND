@@ -14,7 +14,7 @@ const initialValues = {
   otpEmail: "",
 };
 
-const Otp = () => {
+const OtpStudent = () => {
   const [isLoading, setIsLoading] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -31,37 +31,26 @@ const Otp = () => {
       onSubmit: (values, action) => {
         setIsLoading(true);
         axios
-          .post("http://localhost:4000/auth/signin", {
+          .post("http://localhost:4000/auth/verify-otp", {
             ...values,
           })
           .then((response) => {
+            console.log(response,"slkfsklfkl");
             setIsLoading(false);
             if (response.data.created) {
               console.log(response.data);
               toast.success(response.data.message);
-              dispatch(
-                setStudent({
-                  name: response.data.student.name,
-                  email: response.data.student.email,
-                  phone: response.data.student.phone,
-                  branch: response.data.student.branch,
-                  board: response.data.student.board,
-                  school: response.data.student.school,
-                  status: response.data.student.status,
-                  token: response.data.token,
-                })
-              );
-              localStorage.setItem("Stoken", response.data.token);
-              navigate("/");
+              navigate("/signin");
             } else {
               toast.error(response.data.message);
             }
           })
           .catch((error) => {
             setIsLoading(false);
-            toast.error(error.response.data.message);
+            console.log(error,"catchhh");
+            toast.error(error.response.data.errors);
           });
-        action.resetForm();
+        // action.resetForm();
       },
     });
 
@@ -133,24 +122,7 @@ const Otp = () => {
           </form>
         </div>
 
-        <div className="text-grey-dark mt-6">
-          Don't have an account?
-          <a
-            className="no-underline border-b border-white text-yellow"
-            href="/signup"
-          >
-            Signup
-          </a>
-        </div>
-        <div className="text-grey-dark mb-5">
-          Login as a tutor?
-          <a
-            className="no-underline border-b border-white text-yellow"
-            href="/tutor-signin"
-          >
-            Login
-          </a>
-        </div>
+        
       </div>
     </div>
     <ToastContainer />
@@ -158,4 +130,4 @@ const Otp = () => {
   )
 }
 
-export default Otp
+export default OtpStudent
