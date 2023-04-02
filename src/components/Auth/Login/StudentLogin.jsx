@@ -31,7 +31,7 @@ const StudentLogin = () => {
       onSubmit: (values, action) => {
         setIsLoading(true);
         axios
-          .post("http://localhost:4000/auth/signin", {
+          .post(`${import.meta.env.VITE_BASE_PATH}auth/signin`, {
             ...values,
           })
           .then((response) => {
@@ -61,7 +61,7 @@ const StudentLogin = () => {
             setIsLoading(false);
             toast.error(error.response.data.message);
           });
-        action.resetForm();
+        // action.resetForm();
       },
     });
 

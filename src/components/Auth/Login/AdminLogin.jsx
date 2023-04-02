@@ -10,104 +10,101 @@ import { setStudent } from "../../../features/studentSlice";
 import ragam from "../../../assets/ragam.jpeg";
 
 const initialValues = {
-  otpPhone: "",
-  otpEmail: "",
+  email: "",
+  password: "",
 };
 
-const OtpTutor = () => {
+const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const otpSchema = Yup.object({
-    otpPhone: Yup.number().required("Please enter otp received in the given mobile number"),
-    otpEmail: Yup.number().required("Please enter otp received in the given email"),
+  const signUpSchema = Yup.object({
+    email: Yup.string().email().required("Please enter your email"),
+    password: Yup.string().required("Please enter your password"),
   });
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: initialValues,
-      validationSchema: otpSchema,
+      validationSchema: signUpSchema,
       onSubmit: (values, action) => {
         setIsLoading(true);
         axios
-          .post(`${import.meta.env.VITE_BASE_PATH}auth/verify-tutor-otp`, {
+          .post(`${import.meta.env.VITE_BASE_PATH}auth/admin-signin`, {
             ...values,
           })
           .then((response) => {
-            console.log(response,"slkfsklfkl");
             setIsLoading(false);
             if (response.data.created) {
               console.log(response.data);
               toast.success(response.data.message);
-              navigate("/tutor-signin");
+              localStorage.setItem("Adtoken", response.data.token);
+              navigate("/admin-dashboard");
             } else {
               toast.error(response.data.message);
             }
           })
           .catch((error) => {
             setIsLoading(false);
-            console.log(error,"catchhh");
-            toast.error(error.response.data.errors);
+            toast.error(error.response.data.message);
           });
         // action.resetForm();
       },
     });
 
-    useEffect(() => {
-      const token = localStorage.getItem("Ttoken");
-      if (token) {
-        navigate("/tutor-profile");
-      }
-    }, [navigate]);
+  useEffect(() => {
+    const token = localStorage.getItem("Adtoken");
+    if (token) {
+      navigate("/admin-dashboard");
+    }
+  }, [navigate]);
 
   return (
     <div className="grid sm:grid-cols-6">
-   <div className="sm:col-span-2 bg-gray-700 md:min-h-screen flex flex-col justify-evenly   items-center text-white font-sans uppercase">
-        <div>
-          <img src={ragam} className="w-32 object-cover md:-mt-14" alt="logo" />
-        </div>
-        <div className="text-center md:text-5xl text-3xl mt-3 md:-mt-14">
-          <p className="font-bold leading-snug">
-            WELCOME <br /> TO <br /> EDU-HELP
-          </p>
-        </div>
-        <div>
-          <p className="font-bold md:text-3xl text-xl my-5 md:-mt-20 text-center">
-            REGISTER TO START THE JOURNEY
-          </p>
-        </div>
+    <div className="sm:col-span-2 bg-gray-700 md:min-h-screen flex flex-col justify-evenly   items-center text-white font-sans uppercase">
+      <div>
+        <img src={ragam} className="w-32 object-cover" alt="logo" />
       </div>
+      <div className="text-center md:text-5xl text-3xl mt-3 md:mt-0">
+        <p className="font-bold leading-snug">
+          WELCOME <br /> TO <br /> EDU-HELP
+        </p>
+      </div>
+      <div>
+        <p className="font-bold md:text-3xl text-xl my-5 md:my-0">
+          LOGIN TO EXPLORE
+        </p>
+      </div>
+    </div>
     <div className="sm:col-span-4   bg-blue-300  flex justify-center items-center flex-col">
       <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center mt-10 md:mt-36 px-2">
         <div className="bg-white px-6 py-8 mt-0 rounded-2xl shadow-md text-black w-full">
-          <h1 className="text-center font-semibold text-xl">ENTER OTP</h1>
-          <p className="text-center font-sans font-thin text-xs mb-3">CHECK THE INBOX OF GIVEN EMAIL <br /> AND MOBILE NUMBER FOR OTP</p>
           <form action="" onSubmit={handleSubmit}>
             <input
-              type="text"
+              type="email"
               className="block border border-grey-light w-full p-3 rounded mb-4"
-              name="otpEmail"
-              placeholder="OTP VIA EMAIL"
-              value={values.otpEmail}
+              name="email"
+              placeholder="Email"
+              value={values.email}
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.otpEmail && touched.otpEmail ? (
-              <p className="form-error text-red-600 mb-2">{errors.otpEmail}</p>
+            {errors.email && touched.email ? (
+              <p className="form-error text-red-600">{errors.email}</p>
             ) : null}
 
             <input
-              type="text"
+              type="password"
               className="block border border-grey-light w-full p-3 rounded mb-4"
-              name="otpPhone"
-              placeholder="OTP VIA PHONE NUMBER"
-              value={values.otpPhone}
+              name="password"
+              placeholder="Password"
+              value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.otpPhone && touched.otpPhone ? (
-              <p className="form-error text-red-600 ">{errors.otpPhone}</p>
+            {errors.password && touched.password ? (
+              <p className="form-error text-red-600">{errors.password}</p>
             ) : null}
             {isLoading ? (
               <p>Loading...</p>
@@ -116,13 +113,30 @@ const OtpTutor = () => {
                 type="submit"
                 className="w-full text-center py-3 rounded bg-green-500 text-white hover:bg-green-300 focus:outline-none my-1"
               >
-                VERIFY AND SIGNUP
+                Login
               </button>
             )}
           </form>
         </div>
 
-        
+        <div className="text-grey-dark mt-6">
+          Don't have an account?
+          <a
+            className="no-underline border-b border-white text-yellow"
+            href="/signup"
+          >
+            Signup
+          </a>
+        </div>
+        <div className="text-grey-dark mb-5">
+          Login as a tutor?
+          <a
+            className="no-underline border-b border-white text-yellow"
+            href="/tutor-signin"
+          >
+            Login
+          </a>
+        </div>
       </div>
     </div>
     <ToastContainer />
@@ -130,4 +144,4 @@ const OtpTutor = () => {
   )
 }
 
-export default OtpTutor
+export default AdminLogin

@@ -99,6 +99,15 @@ const Navbar = (props) => {
               </ListItemButton>
             </ListItem>
             <ListItem>
+              <ListItemButton sx={{ textAlign: "center" }}  onClick={() => navigate("/upload-videos")}>
+                <ListItemText primary="UPLOAD VIDEOS" />
+              </ListItemButton>
+            </ListItem><ListItem>
+              <ListItemButton sx={{ textAlign: "center" }}  onClick={() => navigate("/upload-question-paper")}>
+                <ListItemText primary="UPLOAD QUESTION PAPERS" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
               <ListItemButton sx={{ textAlign: "center" }}>
                 <ListItemText primary="ADD EVENTS" />
               </ListItemButton>
@@ -217,6 +226,12 @@ const Navbar = (props) => {
             >
               <MenuItem onClick={handleClose}>
                 <Link to="/upload-notes"> UPLOAD NOTES</Link>
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <Link to="/upload-videos"> UPLOAD VIDEOS</Link>
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <Link to="/upload-question-paper"> UPLOAD QUESTION PAPERS</Link>
               </MenuItem>
               <MenuItem onClick={handleClose}>
                 <Link to="/books">ADD EVENTS</Link>

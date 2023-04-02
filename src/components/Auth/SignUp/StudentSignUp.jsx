@@ -11,8 +11,6 @@ const initialValues = {
   name: "",
   email: "",
   phone: "",
-  branch: "",
-  board: "",
   school: "",
   place: "",
   password: "",
@@ -20,7 +18,36 @@ const initialValues = {
 
 const StudentSignUp = () => {
   const [isLoading, setIsLoading] = useState(null);
+  const [boards, setBoards] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [selectedBoard, setSelectedBoard] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState('');
   const navigate = useNavigate();
+  
+  const [boardError, setBoardError] = useState(null);
+const [branchError, setBranchError] = useState(null);
+
+
+  useEffect(() => {
+    // Fetch boards from server on component mount
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
+      .then(res => setBoards(res.data.boards))
+      .catch(err => console.error(err));
+  }, []);
+
+  useEffect(() => {
+    if(selectedBoard){
+      axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches?board=${selectedBoard}`).then(res=>{
+        setBranches(res.data.branches)
+      }).catch(error =>{
+        console.log(error);
+      })
+    }else{
+      setBranches([])
+    }
+  }, [selectedBoard])
+
+
 
   const signUpSchema = Yup.object({
     name: Yup.string().min(2).max(25).required("Please enter your name"),
@@ -29,8 +56,6 @@ const StudentSignUp = () => {
     phone: Yup.string()
       .matches(/^[0-9]{10}$/, "Phone number is not valid")
       .required("Please enter your mobile number"),
-    branch: Yup.string().required("Please select your class/branch"),
-    board: Yup.string().required("Please select your board/university"),
     school: Yup.string().required("Please enter your institutions name"),
     place: Yup.string().required("Please enter your place"),
   });
@@ -40,10 +65,19 @@ const StudentSignUp = () => {
       initialValues: initialValues,
       validationSchema: signUpSchema,
       onSubmit: (values, action) => {
-        setIsLoading(true);
+      
+        if(!selectedBoard){
+          setBoardError("Please select a board");
+          return;
+        }
+        if(!selectedBranch){
+          setBranchError("Please select a branch");
+          return;
+        }
+          setIsLoading(true);
         axios
-          .post("http://localhost:4000/auth/signup", {
-            ...values,
+          .post(`${import.meta.env.VITE_BASE_PATH}auth/signup`, {
+            ...values,board:selectedBoard,branch:selectedBranch
           })
           .then((response) => {
             setIsLoading(false);
@@ -135,9 +169,10 @@ const StudentSignUp = () => {
 
               <select
                 name="board"
-                value={values.board}
-                onChange={handleChange}
-                onBlur={handleBlur}
+                value={selectedBoard}
+                onChange={(e)=>{setSelectedBoard(e.target.value)
+                setBoardError(null)}}
+                // onBlur={handleBlur}
                 className="block border border-grey-light w-full p-3 rounded mb-4"
               >
                 <option
@@ -147,35 +182,26 @@ const StudentSignUp = () => {
                 >
                   Select Board/University
                 </option>
+                {boards.map(board => (
                 <option
-                  value="state"
+                key={board._id}
                   className="block border border-grey-light w-full p-3 rounded mb-4"
-                >
-                  State Board
+                  value={board._id}>{board.name}
                 </option>
-                <option
-                  value="cu/mgu/ku"
-                  className="block border border-grey-light w-full p-3 rounded mb-4"
-                >
-                  CU/MGU/KU
-                </option>
-                <option
-                  value="ktu"
-                  className="block border border-grey-light w-full p-3 rounded mb-4"
-                >
-                  KTU
-                </option>
+                  ))}
               </select>
-              {errors.board && touched.board ? (
-                <p className="form-error text-red-600">{errors.board}</p>
+
+              {boardError ? (
+                <p className="form-error text-red-600">{boardError}</p>
               ) : null}
 
               <select
                 name="branch"
                 className="block border border-grey-light w-full p-3 rounded mb-4"
-                value={values.branch}
-                onChange={handleChange}
-                onBlur={handleBlur}
+                value={selectedBranch}
+                onChange={(e)=>{setSelectedBranch(e.target.value)
+                  setBranchError(null)}}
+                // onBlur={handleBlur}
               >
                 <option
                   value=""
@@ -184,39 +210,18 @@ const StudentSignUp = () => {
                 >
                   Select Class/Branch
                 </option>
+                {branches.map(branch => (
                 <option
-                  value="1-10"
+                  value={branch._id}
+                  key={branch._id}
                   className="block border border-grey-light w-full p-3 rounded mb-4"
                 >
-                  1-10
+                 {branch.name}
                 </option>
-                <option
-                  value="11-12"
-                  className="block border border-grey-light w-full p-3 rounded mb-4"
-                >
-                  11-12
-                </option>
-                <option
-                  value="ece"
-                  className="block border border-grey-light w-full p-3 rounded mb-4"
-                >
-                  ECE
-                </option>
-                <option
-                  value="physics"
-                  className="block border border-grey-light w-full p-3 rounded mb-4"
-                >
-                  Physics
-                </option>
-                <option
-                  value="chemistry"
-                  className="block border border-grey-light w-full p-3 rounded mb-4"
-                >
-                  Chemistry
-                </option>
+                 ))}
               </select>
-              {errors.branch && touched.branch ? (
-                <p className="form-error text-red-600">{errors.branch}</p>
+              {branchError ? (
+                <p className="form-error text-red-600">{branchError}</p>
               ) : null}
 
               <input

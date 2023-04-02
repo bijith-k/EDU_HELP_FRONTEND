@@ -54,7 +54,7 @@ const TutorSignUp = () => {
       onSubmit: (values, action) => {
         setIsLoading(true);
         axios
-          .post("http://localhost:4000/auth/tutor-signup", {
+          .post(`${import.meta.env.VITE_BASE_PATH}auth/tutor-signup`, {
             ...values,
           })
           .then((response) => {

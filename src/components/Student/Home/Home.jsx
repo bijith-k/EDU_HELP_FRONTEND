@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import school from "../../../assets/school.png";
@@ -11,16 +11,29 @@ import axios from "axios";
 
 const Home = () => {
   const student = useSelector((state) => state.student);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   console.log(student, "ddd");
+  // useEffect(() => {
+  //   // Fetch boards from server on component mount
+  //   axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
+  //     .then(res => setBoards(res.data.boards))
+  //     .catch(err => console.error(err));
+  // }, []);
+
+  // const board = boards.filter(board => board._id === student.board);
+  // console.log(board[0].name,'bb');
+
   useEffect(() => {
     const token = localStorage.getItem("Stoken");
     console.log(token, "tok");
+    
     if (token) {
       const fetchStudentData = async () => {
         try {
-          const { data } = await axios.post("http://localhost:4000", { token });
+          const { data } = await axios.post(`${import.meta.env.VITE_BASE_PATH}`, { token });
+          console.log(data,"data");
           if (data.status) {
             dispatch(
               setStudent({
@@ -56,7 +69,7 @@ const Home = () => {
           "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
         </h1>
       </div>
-      {student.branch === "1-10" ? (
+      {student.branch.name === "1-10" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
           <div className="md:h-60 h-48 bg-slate-400 w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
             <div className="text-black font-bold text-center flex flex-col items-center justify-center">
@@ -78,7 +91,7 @@ const Home = () => {
         </div>
       ) : null}
 
-      {student.branch === "11-12" ? (
+      {student.branch.name === "11-12" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
           <div className="md:h-60 h-48 bg-slate-400 w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
             <div className="text-black font-bold text-center flex flex-col items-center justify-center">
@@ -100,7 +113,7 @@ const Home = () => {
         </div>
       ) : null}
 
-      {student.board === "cu/mgu/ku" ? (
+      {student.board.name === "cu/mgu/ku" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
           <div className="md:h-60 h-48 bg-slate-400 w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
             <div className="text-black font-bold text-center flex flex-col items-center justify-center">
@@ -125,7 +138,7 @@ const Home = () => {
         </div>
       ) : null}
 
-      {student.board === "ktu" ? (
+      {student.board.name === "ktu" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
           <div className="md:h-60 h-48 bg-slate-400 w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
             <div className="text-black font-bold text-center flex flex-col items-center justify-center">

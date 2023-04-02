@@ -3,6 +3,7 @@ import Home from '../../components/Student/Home/Home'
 
 
 const HomePage = () => {
+   
   return (
     <Home />
   )

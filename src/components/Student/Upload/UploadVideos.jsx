@@ -1,14 +1,11 @@
-import { Button, TextField } from "@mui/material";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "../Home/Navbar";
- 
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
- 
-const UploadNotes = () => {
-   
+const UploadVideos = () => {
   const navigate = useNavigate()
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -16,14 +13,14 @@ const UploadNotes = () => {
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [subjects, setSubjects] = useState([]);
-  const [isLoading, setIsLoading] = useState(null);
-  const [errors, setErrors] = useState(null);
-
-  const [notesData, setNotesData] = useState({
-    note: null,
-    noteName: "",
+  const [videoData, setVideoData] = useState({
+    videoName: "",
+    videoLink: '',
   });
-   
+
+  const [errors, setErrors] = useState(null);
+  
+ 
   useEffect(() => {
     // Fetch boards from server on component mount
     axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
@@ -44,6 +41,7 @@ const UploadNotes = () => {
     
   }, [selectedBoard])
 
+
   useEffect(() => {
     if(selectedBranch){
       axios.get(`${import.meta.env.VITE_BASE_PATH}admin/subjects?branch=${selectedBranch}`).then(res=>{
@@ -56,9 +54,12 @@ const UploadNotes = () => {
     }
     
   }, [selectedBranch,selectedBoard])
+  // toast.error(errors, {
+  //   position: "top-center",
+  // },{toastId: 'success1'},);
+  
 
 
-   
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -75,25 +76,22 @@ const UploadNotes = () => {
       return;
     }
 
-    const noteNameRegex = /^[a-zA-Z0-9_-\s]+$/
-    if(!notesData.noteName || !noteNameRegex.test(notesData.noteName)){
-      setErrors("Enter the name of the note");
+    const videoNameRegex = /^[a-zA-Z0-9_-\s]+$/
+    if(!videoData.videoName || !videoNameRegex.test(videoData.videoName)){
+      setErrors("Enter the name of the video");
       return;
     }
-    if (!notesData.note || notesData.note.type !== "application/pdf") {
-      setErrors("Select a note to upload or You have selected a file otherthan pdf");
-      return;
-    }
+     
 
     const token = localStorage.getItem("Stoken");
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Bearer ${token}`,
       },
     };
 
-    await axios.post(`${import.meta.env.VITE_BASE_PATH}upload-notes`, {...notesData,board:selectedBoard,branch:selectedBranch,subject:selectedSubject},config).then((res)=>{
+    await axios.post(`${import.meta.env.VITE_BASE_PATH}upload-videos`, {...videoData,board:selectedBoard,branch:selectedBranch,subject:selectedSubject},config).then((res)=>{
       if(res.data.uploaded){
         navigate('/notes')
       }else{
@@ -108,9 +106,6 @@ const UploadNotes = () => {
 
      
   };
-
-  
-
   return (
     <div className="bg-gray-300 h-full w-full overflow-x-hidden">
     <Navbar />
@@ -121,7 +116,7 @@ const UploadNotes = () => {
     </div>
     <div className="bg-blue-500">
       <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
-        upload notes
+        upload video
       </h1>
     </div>
     <form action="" onSubmit={handleSubmit} className="m-3 w-3/4 mx-auto">
@@ -216,36 +211,37 @@ className="block border border-grey-light w-full p-3 rounded mb-4"
        
          
       </select>
-      <label htmlFor="noteName" className=" font-medium">Enter the name of note</label>
+      <label htmlFor="videoName" className=" font-medium">Enter the name of video</label>
       <input
         type="text"
-        name="noteName"
+        name="videoName"
         className="w-full p-3 mb-2"
-        placeholder="Enter name of note"
-        value={notesData.noteName}
+        placeholder="Enter video name"
+        value={videoData.videoName}
         onChange={(e) =>
-         { setNotesData({ ...notesData, noteName: e.target.value })
+         { setVideoData({ ...videoData, videoName: e.target.value })
          setErrors(null)}
         }
       /> <br />
-      <label htmlFor="notes" className=" font-medium">Select the file</label>
+      <label htmlFor="videoLink" className=" font-medium">Paste video link(Embed link, eg:https://www.youtube.com/embed/g523Bj0y36Q)</label>
       <input
-        type="file"
-        name="note"
-        className="w-full bg-white p-2"
-        
-        onChange={(e) =>
-         { setNotesData({ ...notesData, note: e.target.files[0] })
-         setErrors(null)}
-        }
+       type="text"
+       name="videoLink"
+       className="w-full p-3 mb-2"
+       placeholder="Paste video link"
+       value={videoData.videoLink}
+       onChange={(e) =>
+        { setVideoData({ ...videoData, videoLink: e.target.value })
+        setErrors(null)}
+       }
       />
      
 
-<p> *These notes will be published only <br /> after admin verification</p>
-      <button type="submit" className="bg-blue-900 p-3 font-semibold text-white rounded-lg mt-2">UPLOAD NOTE</button>
+<p> *These videos will be published only <br /> after admin verification</p>
+      <button type="submit" className="bg-blue-900 p-3 font-semibold text-white rounded-lg mt-2">UPLOAD VIDEO</button>
     </form>
   </div>
-  );
-};
+  )
+}
 
-export default UploadNotes;
+export default UploadVideos

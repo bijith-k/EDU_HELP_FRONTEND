@@ -31,7 +31,7 @@ const OtpStudent = () => {
       onSubmit: (values, action) => {
         setIsLoading(true);
         axios
-          .post("http://localhost:4000/auth/verify-otp", {
+          .post(`${import.meta.env.VITE_BASE_PATH}auth/verify-otp`, {
             ...values,
           })
           .then((response) => {
