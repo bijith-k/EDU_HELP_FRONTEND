@@ -29,7 +29,12 @@ const SubjectList = () => {
 
      
 
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/subjects`).then((res)=>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/subjects`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
       console.log(res,'5');
       setSubjects(res.data.subjects)
       

@@ -7,6 +7,7 @@ import { styled } from '@mui/material/styles';
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const StyledTableCell = styled(TableCell)({
   borderBottom: 'none',
@@ -24,13 +25,18 @@ const ManageNotes = () => {
   const [branches, setBranches] = useState([])
 
   const navigate = useNavigate()
-  const [data, setData] = useState('data hereeeeee')
+  const [toastMessage, setToastMessage] = useState('')
   const [order, setOrder] = useState('ASC')
 
   console.log(notes,"nooo");
   useEffect(() => {
 
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/notes`).then((res)=>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/notes`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
       console.log(res);
       setNotes(res.data)
     })
@@ -45,7 +51,7 @@ const ManageNotes = () => {
     //   setBranches(res.data.branches)
     // })
    
-  }, [])
+  }, [toastMessage])
   
 
   const sorting =(col) =>{
@@ -80,6 +86,48 @@ const ManageNotes = () => {
       setBranches(sorted)
       setOrder('ASC')
     }
+  }
+
+  const handleApprove = (id) =>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/approve-notes?note=${id}`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
+      console.log(res);
+      setToastMessage(res.data.message)
+      toast.success(res.data.message, {
+        position: "top-center",
+      })
+    }).catch(err=>{
+      console.log(err);
+      setToastMessage(res.data.message)
+      toast.error(res.data.message, {
+        position: "top-center",
+      })
+    })
+  }
+
+  const handleListUnlist = (id) =>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/note-list-unlist?note=${id}`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
+      console.log(res);
+      setToastMessage(res.data.message)
+      toast.success(res.data.message, {
+        position: "top-center",
+      })
+    }).catch(err=>{
+      console.log(err);
+      setToastMessage(res.data.message)
+      toast.error(res.data.message, {
+        position: "top-center",
+      })
+    })
   }
   return (
     <div className='bg-sky-900 flex overflow-x-hidden'>
@@ -129,9 +177,19 @@ const ManageNotes = () => {
      <TableCell>{note.branch.name}</TableCell>
      <TableCell>{note.board.name}</TableCell>
      <TableCell className='flex justify-center'>
-<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl'>APPROVE</button>
+      
+
+      {note.approved ? (
+        <>
+{note.listed ? (<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl' onClick={()=>handleListUnlist(note._id)}>UNLIST</button>) :
+ (<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl' onClick={()=>handleListUnlist(note._id)}>LIST</button>) }
+        </>
+      ):
+      (
+<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl' onClick={()=>handleApprove(note._id)}>APPROVE</button>
+      )}
 <button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl'>EDIT</button>
-<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl'>UNLIST</button>
+
 </TableCell>
 </TableRow>
           ))}

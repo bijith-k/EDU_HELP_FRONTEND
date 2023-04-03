@@ -10,10 +10,16 @@ const AddBranch = () => {
   const [boards, setBoards] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState('');
   const [branch, setBranch] = useState('');
+  const token = localStorage.getItem("Adtoken");
 console.log(boards,"boards");
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`,
+    {
+      headers: {
+         authorization: `Bearer ${token}`
+             }
+    })
       .then(res => setBoards(res.data.boards))
       .catch(err => console.error(err));
   }, []);
@@ -22,7 +28,7 @@ console.log(boards,"boards");
     setSelectedBoard(e.target.value);
   };
 
-  const token = localStorage.getItem("Adtoken");
+  
 
   const config = {
     headers: {

@@ -28,12 +28,22 @@ const BranchList = () => {
 
   useEffect(() => {
 
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`).then((res)=>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
       console.log(res);
       setBoards(res.data.boards)
     })
 
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches`).then((res)=>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
       console.log(res,'3');
       setBranches(res.data.branches)
     })

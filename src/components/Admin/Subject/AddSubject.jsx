@@ -14,14 +14,24 @@ const AddSubject = () => {
 
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    })
       .then(res => setBoards(res.data.boards))
       .catch(err => console.error(err));
   }, []);
 
   useEffect(() => {
     if(selectedBoard){
-      axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches?board=${selectedBoard}`).then(res=>{
+      axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches?board=${selectedBoard}`,
+      {
+        headers: {
+           authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+               }
+      }).then(res=>{
         setBranches(res.data.branches)
       }).catch(error =>{
         console.log(error);

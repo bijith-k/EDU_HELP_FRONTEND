@@ -23,6 +23,9 @@ import AddSubjectPage from './pages/admin/AddSubjectPage'
 import MangageNotesPage from './pages/admin/MangageNotesPage'
 import ManageQuestionPapersPage from './pages/admin/ManageQuestionPapersPage'
 import ManageVideosPage from './pages/admin/ManageVideosPage'
+import EditVideosPage from './pages/admin/EditVideosPage'
+import EditNotesPage from './pages/admin/EditNotesPage'
+import EditQuestionPaperPage from './pages/admin/EditQuestionPaperPage'
  
  
 function App() {
@@ -111,6 +114,18 @@ function App() {
        <Route
        path='/admin-question-papers' 
        element={<ManageQuestionPapersPage />} 
+       />
+       <Route
+       path='/admin-edit-videos' 
+       element={<EditVideosPage />} 
+       />
+       <Route
+       path='/admin-edit-notes' 
+       element={<EditNotesPage />} 
+       />
+       <Route
+       path='/admin-edit-question-papers' 
+       element={<EditQuestionPaperPage />} 
        />
        <Route
        path='/admin-videos' 

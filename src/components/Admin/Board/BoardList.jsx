@@ -25,7 +25,12 @@ const BoardList = () => {
 
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    })
       .then(res => setBoards(res.data.boards))
       .catch(err => console.error(err));
   }, []);

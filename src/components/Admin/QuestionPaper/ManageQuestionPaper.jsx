@@ -26,11 +26,18 @@ const ManageQuestionPaper = () => {
   const navigate = useNavigate()
   const [data, setData] = useState('data hereeeeee')
   const [order, setOrder] = useState('ASC')
+  const [toastMessage, setToastMessage] = useState('')
+
 
   console.log(questions,"nooo");
   useEffect(() => {
 
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/question-papers`).then((res)=>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/question-papers`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
       console.log(res);
       setQuestions(res.data)
     })
@@ -45,7 +52,7 @@ const ManageQuestionPaper = () => {
     //   setBranches(res.data.branches)
     // })
    
-  }, [])
+  }, [toastMessage])
   
 
   const sorting =(col) =>{
@@ -81,6 +88,50 @@ const ManageQuestionPaper = () => {
       setOrder('ASC')
     }
   }
+
+  const handleApprove = (id) =>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/approve-question-paper?question=${id}`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
+      console.log(res);
+      setToastMessage(res.data.message)
+      toast.success(res.data.message, {
+        position: "top-center",
+      })
+    }).catch(err=>{
+      console.log(err);
+      setToastMessage(err.data.message)
+      toast.error(err.data.message, {
+        position: "top-center",
+      })
+    })
+
+  }
+
+  const handleListUnlist = (id) =>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/question-paper-list-unlist?question=${id}`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
+      console.log(res);
+      setToastMessage(res.data.message)
+      toast.success(res.data.message, {
+        position: "top-center",
+      })
+    }).catch(err=>{
+      console.log(err);
+      setToastMessage(res.data.message)
+      toast.error(res.data.message, {
+        position: "top-center",
+      })
+    })
+  }
+
   return (
      <div className='bg-sky-900 flex overflow-x-hidden'>
       <div>
@@ -129,9 +180,16 @@ const ManageQuestionPaper = () => {
      <TableCell>{question.branch.name}</TableCell>
      <TableCell>{question.board.name}</TableCell>
      <TableCell className='flex justify-center'>
-<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl'>APPROVE</button>
+      {question.approved ? (
+        <>
+        {question.listed ? (<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl' onClick={()=>handleListUnlist(question._id)}>UNLIST</button>) :
+        <button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl' onClick={()=>handleListUnlist(question._id)}>LIST</button>}
+        </>
+      ) : 
+      (
+<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl' onClick={()=>handleApprove(question._id)}>APPROVE</button>
+      )}
 <button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl'>EDIT</button>
-<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl'>UNLIST</button>
 </TableCell>
 </TableRow>
           ))}

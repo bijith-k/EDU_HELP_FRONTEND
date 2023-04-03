@@ -7,6 +7,7 @@ import { styled } from '@mui/material/styles';
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const StyledTableCell = styled(TableCell)({
   borderBottom: 'none',
@@ -26,11 +27,18 @@ const MangageVideos = () => {
   const navigate = useNavigate()
   const [data, setData] = useState('data hereeeeee')
   const [order, setOrder] = useState('ASC')
+  const [toastMessage, setToastMessage] = useState('')
+
 
   console.log(videos,"nooo");
   useEffect(() => {
 
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/videos`).then((res)=>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/videos`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
       console.log(res);
       setVideos(res.data)
     })
@@ -45,7 +53,7 @@ const MangageVideos = () => {
     //   setBranches(res.data.branches)
     // })
    
-  }, [])
+  }, [toastMessage])
   
 
   const sorting =(col) =>{
@@ -80,6 +88,49 @@ const MangageVideos = () => {
       setBranches(sorted)
       setOrder('ASC')
     }
+  }
+
+  const handleApprove = (id) =>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/approve-videos?video=${id}`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
+      console.log(res);
+      setToastMessage(res.data.message)
+      toast.success(res.data.message, {
+        position: "top-center",
+      })
+    }).catch(err=>{
+      console.log(err);
+      setToastMessage(err.data.message)
+      toast.error(err.data.message, {
+        position: "top-center",
+      })
+    })
+
+  }
+
+  const handleListUnlist = (id) =>{
+    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/video-list-unlist?video=${id}`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Adtoken')}`
+             }
+    }).then((res)=>{
+      console.log(res);
+      setToastMessage(res.data.message)
+      toast.success(res.data.message, {
+        position: "top-center",
+      })
+    }).catch(err=>{
+      console.log(err);
+      setToastMessage(res.data.message)
+      toast.error(res.data.message, {
+        position: "top-center",
+      })
+    })
   }
   return (
     <div className='bg-sky-900 flex overflow-x-hidden'>
@@ -129,9 +180,19 @@ const MangageVideos = () => {
    <TableCell>{video.branch.name}</TableCell>
    <TableCell>{video.board.name}</TableCell>
    <TableCell className='flex justify-center'>
-<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl'>APPROVE</button>
+     
+
+{video.approved ? (
+<>
+{video.listed ? (<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl' onClick={()=>handleListUnlist(video._id)} >UNLIST</button>) :
+(<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl' onClick={()=>handleListUnlist(video._id)} >LIST</button>) }
+</>) :
+(
+<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl' onClick={()=>handleApprove(video._id)}>APPROVE</button>
+)}
 <button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl'>EDIT</button>
-<button className='bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl'>UNLIST</button>
+
+
 </TableCell>
 </TableRow>
         ))}

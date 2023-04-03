@@ -38,7 +38,12 @@ const QuestionContent = () => {
   }) : QuestionPapers;
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_BASE_PATH}get-question-papers`).then((response) => {
+    axios.get(`${import.meta.env.VITE_BASE_PATH}get-question-papers`,
+      {
+        headers: {
+           authorization: `Bearer ${localStorage.getItem('Stoken')}`
+               }
+      }).then((response) => {
       console.log("afasdfsdds");
       console.log(response.data,"sfasdfsdf");
       setQuestions(response.data);
@@ -47,7 +52,12 @@ const QuestionContent = () => {
 
   useEffect(() => {
     
-      axios.get(`${import.meta.env.VITE_BASE_PATH}subjects?branch=${student.branch._id}`).then(res=>{
+      axios.get(`${import.meta.env.VITE_BASE_PATH}subjects?branch=${student.branch._id}`,
+      {
+        headers: {
+           authorization: `Bearer ${localStorage.getItem('Stoken')}`
+               }
+      }).then(res=>{
         setSubjects(res.data.subjects)
       }).catch(error =>{
         console.log(error);

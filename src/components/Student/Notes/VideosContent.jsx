@@ -38,7 +38,12 @@ console.log(video,"vidooooo");
   }) : video;
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_BASE_PATH}get-videos`).then((response) => {
+    axios.get(`${import.meta.env.VITE_BASE_PATH}get-videos`,
+    {
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('Stoken')}`
+             }
+    }).then((response) => {
       console.log("afasdfsdds");
       console.log(response.data,"sfasdfsdf");
       setVideos(response.data);
@@ -47,7 +52,12 @@ console.log(video,"vidooooo");
 
   useEffect(() => {
     
-      axios.get(`${import.meta.env.VITE_BASE_PATH}subjects?branch=${student.branch._id}`).then(res=>{
+      axios.get(`${import.meta.env.VITE_BASE_PATH}subjects?branch=${student.branch._id}`,
+      {
+        headers: {
+           authorization: `Bearer ${localStorage.getItem('Stoken')}`
+               }
+      }).then(res=>{
         setSubjects(res.data.subjects)
       }).catch(error =>{
         console.log(error);
