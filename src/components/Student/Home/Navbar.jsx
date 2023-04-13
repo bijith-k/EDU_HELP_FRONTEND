@@ -29,15 +29,17 @@ const navItems = [
   { name: "HOME", path: "/" },
   { name: "NOTES", path: "/notes" },
   { name: "EVENTS", path: "/events" },
+  {name:'PLANS',path:'/plans'},
   { name: "TUTORS", path: "/tutors" },
   { name: "NEWS", path: "/news" },
-  { name: "ACCOUNT", path: "/account" },
+  // { name: "ACCOUNT", path: "/account" },
 ];
 
 const Navbar = (props) => {
   const navigate = useNavigate();
   // const [toggleNav, setToggleNav] = useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpens, setIsOpens] = React.useState(false);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -45,6 +47,7 @@ const Navbar = (props) => {
     setMobileOpen((prevState) => !prevState);
   };
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorE2, setAnchorE2] = React.useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -52,6 +55,14 @@ const Navbar = (props) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleClicks = (event) => {
+    setAnchorE2(event.currentTarget);
+  };
+
+  const handleCloses = () => {
+    setAnchorE2(null);
   };
   const handleLogout = () => {
     localStorage.removeItem("Stoken");
@@ -65,13 +76,12 @@ const Navbar = (props) => {
       <Divider />
       <List>
         {navItems.map((item, index) => (
-          <ListItem key={index} disablePadding >
+          <ListItem key={index} disablePadding>
             <ListItemButton
               sx={{ textAlign: "center" }}
               onClick={() => navigate(item.path)}
-             
             >
-              <ListItemText primary={item.name}  />
+              <ListItemText primary={item.name} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -99,21 +109,86 @@ const Navbar = (props) => {
               </ListItemButton>
             </ListItem>
             <ListItem>
-              <ListItemButton sx={{ textAlign: "center" }}  onClick={() => navigate("/upload-videos")}>
+              <ListItemButton
+                sx={{ textAlign: "center" }}
+                onClick={() => navigate("/upload-videos")}
+              >
                 <ListItemText primary="UPLOAD VIDEOS" />
               </ListItemButton>
-            </ListItem><ListItem>
-              <ListItemButton sx={{ textAlign: "center" }}  onClick={() => navigate("/upload-question-paper")}>
+            </ListItem>
+            <ListItem>
+              <ListItemButton
+                sx={{ textAlign: "center" }}
+                onClick={() => navigate("/upload-question-paper")}
+              >
                 <ListItemText primary="UPLOAD QUESTION PAPERS" />
               </ListItemButton>
             </ListItem>
             <ListItem>
-              <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemButton
+                sx={{ textAlign: "center" }}
+                onClick={() => navigate("/add-events")}
+              >
                 <ListItemText primary="ADD EVENTS" />
               </ListItemButton>
             </ListItem>
           </>
         )}
+
+
+<ListSubheader disableSticky>
+          <ListItemButton sx={{ textAlign: "center" }}>
+            <ListItemText primary="ACCOUNT" />
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpens(!isOpens);
+              }}
+            >
+              {isOpens ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          </ListItemButton>
+        </ListSubheader>
+        {isOpens && (
+          <>
+            <ListItem disablePadding>
+              <ListItemButton
+                sx={{ textAlign: "center" }}
+                onClick={() => navigate("/upload-notes")}
+              >
+                <ListItemText primary="YOUR PROFILE" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton
+                sx={{ textAlign: "center" }}
+                onClick={() => navigate("/my-uploads")}
+              >
+                <ListItemText primary="YOUR UPLOADS" />
+              </ListItemButton>
+            </ListItem>
+            {/* <ListItem>
+              <ListItemButton
+                sx={{ textAlign: "center" }}
+                onClick={() => navigate("/upload-question-paper")}
+              >
+                <ListItemText primary="UPLOAD QUESTION PAPERS" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton
+                sx={{ textAlign: "center" }}
+                onClick={() => navigate("/add-events")}
+              >
+                <ListItemText primary="ADD EVENTS" />
+              </ListItemButton>
+            </ListItem> */}
+          </>
+        )}
+
+        
+
+        
 
         <ListItem disablePadding>
           <ListItemButton sx={{ textAlign: "center" }} onClick={handleLogout}>
@@ -234,8 +309,41 @@ const Navbar = (props) => {
                 <Link to="/upload-question-paper"> UPLOAD QUESTION PAPERS</Link>
               </MenuItem>
               <MenuItem onClick={handleClose}>
-                <Link to="/books">ADD EVENTS</Link>
+                <Link to="/add-events">ADD EVENTS</Link>
               </MenuItem>
+            </Menu>
+            <Button
+              id="upload-button"
+              onClick={handleClicks}
+              sx={{ color: "#fff" }}
+            >
+              account
+            </Button>
+            <Menu
+              anchorEl={anchorE2}
+              open={Boolean(anchorE2)}
+              onClose={handleCloses}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+            >
+              <MenuItem onClick={handleCloses}>
+                <Link to="/upload-notes"> YOUR PROFILE</Link>
+              </MenuItem>
+              <MenuItem onClick={handleCloses}>
+                <Link to="/my-uploads"> YOUR UPLOADS</Link>
+              </MenuItem>
+              {/* <MenuItem onClick={handleClose}>
+                <Link to="/upload-question-paper"> UPLOAD QUESTION PAPERS</Link>
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <Link to="/add-events">ADD EVENTS</Link>
+              </MenuItem> */}
             </Menu>
             <Button
               id="upload-button"

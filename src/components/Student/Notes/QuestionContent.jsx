@@ -17,59 +17,69 @@ import { useSelector } from "react-redux";
 const QuestionContent = () => {
   const student = useSelector((state) => state.student);
 
-  
   const [questions, setQuestions] = useState([]);
   const [subjects, setSubjects] = useState([]);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
 
-  const QuestionPapers = questions.filter(question => question.branch._id === student.branch._id);
+  const QuestionPapers = questions.filter(
+    (question) => question.branch._id === student.branch._id
+  );
 
-  const filteredData = searchQuery.trim() !== '' || selectedSubject !== '' ? QuestionPapers.filter((item) => {
-    return(
-      (searchQuery.trim() === '' ||
-      item.exam_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.branch.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.subject.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )&& 
-      (selectedSubject === '' || selectedSubject.toLowerCase() === item.subject.name.toLowerCase())
-    ) 
-  }) : QuestionPapers;
+  const filteredData =
+    searchQuery.trim() !== "" || selectedSubject !== ""
+      ? QuestionPapers.filter((item) => {
+          return (
+            (searchQuery.trim() === "" ||
+              item.exam_name
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              item.branch.name
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              item.subject.name
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase())) &&
+            (selectedSubject === "" ||
+              selectedSubject.toLowerCase() === item.subject.name.toLowerCase())
+          );
+        })
+      : QuestionPapers;
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_BASE_PATH}get-question-papers`,
-      {
+    axios
+      .get(`${import.meta.env.VITE_BASE_PATH}get-question-papers`, {
         headers: {
-           authorization: `Bearer ${localStorage.getItem('Stoken')}`
-               }
-      }).then((response) => {
-      console.log("afasdfsdds");
-      console.log(response.data,"sfasdfsdf");
-      setQuestions(response.data);
-    });
+          authorization: `Bearer ${localStorage.getItem("Stoken")}`,
+        },
+      })
+      .then((response) => {
+        console.log("afasdfsdds");
+        console.log(response.data, "sfasdfsdf");
+        setQuestions(response.data);
+      });
   }, []);
 
   useEffect(() => {
-    
-      axios.get(`${import.meta.env.VITE_BASE_PATH}subjects?branch=${student.branch._id}`,
-      {
-        headers: {
-           authorization: `Bearer ${localStorage.getItem('Stoken')}`
-               }
-      }).then(res=>{
-        setSubjects(res.data.subjects)
-      }).catch(error =>{
-        console.log(error);
+    axios
+      .get(
+        `${import.meta.env.VITE_BASE_PATH}subjects?branch=${
+          student.branch._id
+        }`,
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("Stoken")}`,
+          },
+        }
+      )
+      .then((res) => {
+        setSubjects(res.data.subjects);
       })
-    
-  }, [])
-
-   
-
-   
-
-
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <div>
@@ -81,7 +91,7 @@ const QuestionContent = () => {
             id=""
             placeholder="Search Question Papers"
             className="bg-transparent placeholder-white font-semibold focus:outline-none"
-            onChange={(e) => setSearchQuery(e.target.value)} 
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Button
             variant="contained"
@@ -99,14 +109,20 @@ const QuestionContent = () => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="subject"
-              value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)}
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e.target.value)}
               className="uppercase"
             >
-              <MenuItem value={''}>All Subjects</MenuItem>
-              {subjects.map(subject=>(
-                 <MenuItem key={subject._id} value={subject.name} className="uppercase">{subject.name}</MenuItem>
+              <MenuItem value={""}>All Subjects</MenuItem>
+              {subjects.map((subject) => (
+                <MenuItem
+                  key={subject._id}
+                  value={subject.name}
+                  className="uppercase"
+                >
+                  {subject.name}
+                </MenuItem>
               ))}
-               
             </Select>
           </FormControl>
         </div>
@@ -114,52 +130,68 @@ const QuestionContent = () => {
 
       <div className="flex justify-center">
         <div className="grid md:grid-cols-4">
-        {filteredData.length > 0 ? 
-        (filteredData.map((question,index) => (
-          <Card key={index}
-            sx={{ maxWidth: 345 }}
-            className="m-4 rounded-2xl shadow-xl bg-slate-200"
-          >
-            {/* <CardMedia
+          {filteredData.length > 0 ? (
+            filteredData.map((question, index) => (
+              <Card
+                key={index}
+                sx={{ maxWidth: 345 }}
+                className="m-4 rounded-2xl shadow-xl bg-slate-200"
+              >
+                {/* <CardMedia
               sx={{ height: 240 }}
               image={school}
               title="green iguana"
               className="m-3 rounded-2xl border"
             /> */}
-             <CardMedia sx={{ height: 240 }} className="m-3 rounded-2xl border">
-        <iframe
-          title="PDF Viewer"
-          src={`${import.meta.env.VITE_BASE_PATH}${question.file_path}`}
-          height='240'
-          scrolling="no"
-        />
-      </CardMedia>
-            <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
-                {question.exam_name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" className="uppercase">
-                Class/Branch : {question.branch.name} <br />
-                Subject : {question.subject.name}
-              </Typography>
-            </CardContent>
-            <CardActions className="flex justify-center">
-              <Button size="medium" className="bg-red-100 rounded-lg"><a href={`${import.meta.env.VITE_BASE_PATH}${question.file_path}`} target='_blank'>
-                DOWNLOAD</a>
-              </Button>
-              <Button size="medium" className="bg-rose-100 rounded-lg">
-                ADD TO FAVOURITE
-              </Button>
-            </CardActions>
-            {/* <iframe src={`http://localhost:4000/${question.file_path}`} width="100%" height="500px"></iframe> */}
-             
-          </Card>
-         
-         
-             )))    : (
-              <p>No results found for "{searchQuery}" and "{selectedSubject}"</p>
-            )}
-
+                <CardMedia
+                  sx={{ height: 240 }}
+                  className="m-3 rounded-2xl border"
+                >
+                  <iframe
+                    title="PDF Viewer"
+                    src={`${import.meta.env.VITE_BASE_PATH}${
+                      question.file_path
+                    }`}
+                    height="240"
+                    scrolling="no"
+                  />
+                </CardMedia>
+                <CardContent>
+                  <Typography gutterBottom variant="h6" component="div">
+                    {question.exam_name}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    className="uppercase"
+                  >
+                    Class/Branch : {question.branch.name} <br />
+                    Subject : {question.subject.name}
+                  </Typography>
+                </CardContent>
+                <CardActions className="flex justify-center">
+                  <Button size="medium" className="bg-red-100 rounded-lg">
+                    <a
+                      href={`${import.meta.env.VITE_BASE_PATH}${
+                        question.file_path
+                      }`}
+                      target="_blank"
+                    >
+                      DOWNLOAD
+                    </a>
+                  </Button>
+                  <Button size="medium" className="bg-rose-100 rounded-lg">
+                    ADD TO FAVOURITE
+                  </Button>
+                </CardActions>
+                {/* <iframe src={`http://localhost:4000/${question.file_path}`} width="100%" height="500px"></iframe> */}
+              </Card>
+            ))
+          ) : (
+            <p>
+              No results found for "{searchQuery}" and "{selectedSubject}"
+            </p>
+          )}
 
           {/* <Card
             sx={{ maxWidth: 345 }}

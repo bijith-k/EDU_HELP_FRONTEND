@@ -11,7 +11,7 @@ import axios from "axios";
 
 const Home = () => {
   const student = useSelector((state) => state.student);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   console.log(student, "ddd");
@@ -28,15 +28,19 @@ const Home = () => {
   useEffect(() => {
     const token = localStorage.getItem("Stoken");
     console.log(token, "tok");
-    
+
     if (token) {
       const fetchStudentData = async () => {
         try {
-          const { data } = await axios.post(`${import.meta.env.VITE_BASE_PATH}`, { token });
-          console.log(data,"data");
+          const { data } = await axios.post(
+            `${import.meta.env.VITE_BASE_PATH}`,
+            { token }
+          );
+          console.log(data, "data");
           if (data.status) {
             dispatch(
               setStudent({
+                _id:data.student._id,
                 name: data.student.name,
                 email: data.student.email,
                 phone: data.student.phone,
@@ -63,7 +67,7 @@ const Home = () => {
 
   return (
     <div className="h-screen w-full bg-slate-300 overflow-x-hidden">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="bg-gray-400 h-72">
         <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
           "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"

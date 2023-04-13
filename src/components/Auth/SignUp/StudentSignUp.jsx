@@ -20,34 +20,39 @@ const StudentSignUp = () => {
   const [isLoading, setIsLoading] = useState(null);
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
-  const [selectedBoard, setSelectedBoard] = useState('');
-  const [selectedBranch, setSelectedBranch] = useState('');
+  const [selectedBoard, setSelectedBoard] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState("");
   const navigate = useNavigate();
-  
-  const [boardError, setBoardError] = useState(null);
-const [branchError, setBranchError] = useState(null);
 
+  const [boardError, setBoardError] = useState(null);
+  const [branchError, setBranchError] = useState(null);
 
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
-      .then(res => setBoards(res.data.boards))
-      .catch(err => console.error(err));
+    axios
+      .get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
+      .then((res) => setBoards(res.data.boards))
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
-    if(selectedBoard){
-      axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches?board=${selectedBoard}`).then(res=>{
-        setBranches(res.data.branches)
-      }).catch(error =>{
-        console.log(error);
-      })
-    }else{
-      setBranches([])
+    if (selectedBoard) {
+      axios
+        .get(
+          `${
+            import.meta.env.VITE_BASE_PATH
+          }admin/branches?board=${selectedBoard}`
+        )
+        .then((res) => {
+          setBranches(res.data.branches);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      setBranches([]);
     }
-  }, [selectedBoard])
-
-
+  }, [selectedBoard]);
 
   const signUpSchema = Yup.object({
     name: Yup.string().min(2).max(25).required("Please enter your name"),
@@ -65,26 +70,27 @@ const [branchError, setBranchError] = useState(null);
       initialValues: initialValues,
       validationSchema: signUpSchema,
       onSubmit: (values, action) => {
-      
-        if(!selectedBoard){
+        if (!selectedBoard) {
           setBoardError("Please select a board");
           return;
         }
-        if(!selectedBranch){
+        if (!selectedBranch) {
           setBranchError("Please select a branch");
           return;
         }
-          setIsLoading(true);
+        setIsLoading(true);
         axios
           .post(`${import.meta.env.VITE_BASE_PATH}auth/signup`, {
-            ...values,board:selectedBoard,branch:selectedBranch
+            ...values,
+            board: selectedBoard,
+            branch: selectedBranch,
           })
           .then((response) => {
             setIsLoading(false);
-            if(response.data.otpSend){
+            if (response.data.otpSend) {
               toast.success(response.data.message);
               navigate("/otp");
-            }else{
+            } else {
               setIsLoading(false);
               toast.error(response.data.message);
             }
@@ -101,9 +107,9 @@ const [branchError, setBranchError] = useState(null);
   useEffect(() => {
     const token = localStorage.getItem("Stoken");
     if (token) {
-      navigate("/");
+      navigate("/"); 
     }
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="grid sm:grid-cols-6">
@@ -170,8 +176,10 @@ const [branchError, setBranchError] = useState(null);
               <select
                 name="board"
                 value={selectedBoard}
-                onChange={(e)=>{setSelectedBoard(e.target.value)
-                setBoardError(null)}}
+                onChange={(e) => {
+                  setSelectedBoard(e.target.value);
+                  setBoardError(null);
+                }}
                 // onBlur={handleBlur}
                 className="block border border-grey-light w-full p-3 rounded mb-4"
               >
@@ -182,13 +190,15 @@ const [branchError, setBranchError] = useState(null);
                 >
                   Select Board/University
                 </option>
-                {boards.map(board => (
-                <option
-                key={board._id}
-                  className="block border border-grey-light w-full p-3 rounded mb-4"
-                  value={board._id}>{board.name}
-                </option>
-                  ))}
+                {boards.map((board) => (
+                  <option
+                    key={board._id}
+                    className="block border border-grey-light w-full p-3 rounded mb-4"
+                    value={board._id}
+                  >
+                    {board.name}
+                  </option>
+                ))}
               </select>
 
               {boardError ? (
@@ -199,8 +209,10 @@ const [branchError, setBranchError] = useState(null);
                 name="branch"
                 className="block border border-grey-light w-full p-3 rounded mb-4"
                 value={selectedBranch}
-                onChange={(e)=>{setSelectedBranch(e.target.value)
-                  setBranchError(null)}}
+                onChange={(e) => {
+                  setSelectedBranch(e.target.value);
+                  setBranchError(null);
+                }}
                 // onBlur={handleBlur}
               >
                 <option
@@ -210,15 +222,15 @@ const [branchError, setBranchError] = useState(null);
                 >
                   Select Class/Branch
                 </option>
-                {branches.map(branch => (
-                <option
-                  value={branch._id}
-                  key={branch._id}
-                  className="block border border-grey-light w-full p-3 rounded mb-4"
-                >
-                 {branch.name}
-                </option>
-                 ))}
+                {branches.map((branch) => (
+                  <option
+                    value={branch._id}
+                    key={branch._id}
+                    className="block border border-grey-light w-full p-3 rounded mb-4"
+                  >
+                    {branch.name}
+                  </option>
+                ))}
               </select>
               {branchError ? (
                 <p className="form-error text-red-600">{branchError}</p>

@@ -32,15 +32,19 @@ const Notes = () => {
   useEffect(() => {
     const token = localStorage.getItem("Stoken");
     console.log(token, "tok");
-    
+
     if (token) {
       const fetchStudentData = async () => {
         try {
-          const { data } = await axios.post(`${import.meta.env.VITE_BASE_PATH}`, { token });
-          console.log(data,"data");
+          const { data } = await axios.post(
+            `${import.meta.env.VITE_BASE_PATH}`,
+            { token }
+          );
+          console.log(data, "data");
           if (data.status) {
             dispatch(
               setStudent({
+                _id:data.student._id,
                 name: data.student.name,
                 email: data.student.email,
                 phone: data.student.phone,
@@ -64,6 +68,8 @@ const Notes = () => {
       navigate("/signin");
     }
   }, [dispatch]);
+
+  
 
   return (
     <div className="h-screen w-full bg-slate-300 overflow-x-hidden">

@@ -1,21 +1,23 @@
-import {createSlice} from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  name:'',
-  email:'',
-  phone:'',
-  board:'',
-  branch:'',
-  school:'',
-  status:'',
-  token:''
-}
+  _id:"",
+  name: "",
+  email: "",
+  phone: "",
+  board: "",
+  branch: "",
+  school: "",
+  status: "",
+  token: "",
+};
 
 const studentSlice = createSlice({
-  name:'student',
+  name: "student",
   initialState,
-  reducers:{
-    setStudent:(state,action)=>{
+  reducers: {
+    setStudent: (state, action) => {
+      state._id = action.payload._id
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.phone = action.payload.phone;
@@ -24,9 +26,9 @@ const studentSlice = createSlice({
       state.school = action.payload.school;
       state.status = action.payload.status;
       state.token = action.payload.token;
-    }
-  }
-})
+    },
+  },
+});
 
-export default studentSlice.reducer
-export const {setStudent} = studentSlice.actions
+export default studentSlice.reducer;
+export const { setStudent } = studentSlice.actions;

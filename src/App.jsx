@@ -26,6 +26,25 @@ import ManageVideosPage from './pages/admin/ManageVideosPage'
 import EditVideosPage from './pages/admin/EditVideosPage'
 import EditNotesPage from './pages/admin/EditNotesPage'
 import EditQuestionPaperPage from './pages/admin/EditQuestionPaperPage'
+import TutorDashboardPage from './pages/Tutor/TutorDashboardPage'
+import TutorEditProfilePage from './pages/Tutor/TutorEditProfilePage'
+import UploadsPage from './pages/Tutor/UploadsPage'
+import TutorUploadVideosPage from './pages/Tutor/TutorUploadVideosPage'
+import TutorUploadQuestionsPage from './pages/Tutor/TutorUploadQuestionsPage'
+import TutorUploadNotesPage from './pages/Tutor/TutorUploadNotesPage'
+import TutorAddEventsPage from './pages/Tutor/TutorAddEventsPage'
+import AddEvents from './components/Student/Events/AddEvents'
+import ManageEventsPage from './pages/admin/ManageEventsPage'
+import EditEventsPage from './pages/admin/EditEventsPage'
+import MyUploadsPage from './pages/student/MyUploadsPage'
+import EventsPage from './pages/student/EventsPage'
+import TutorsList from './pages/student/TutorsList'
+import PlansPage from './pages/student/PlansPage'
+import ManagePlansPage from './pages/admin/ManagePlansPage'
+import AddPlanPage from './pages/admin/AddPlanPage'
+import EditPlansPage from './pages/admin/EditPlansPage'
+import StudentsListPage from './pages/admin/StudentsListPage'
+import TutorsListPage from './pages/admin/TutorsListPage'
  
  
 function App() {
@@ -84,6 +103,29 @@ function App() {
        element={<UploadQuestionPapersPage /> } 
        />
        <Route
+       path='/events' 
+      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
+       element={<EventsPage /> } 
+       />
+       <Route
+       path='/add-events' 
+      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
+       element={<AddEvents /> } 
+       />
+       <Route
+       path='/plans' 
+      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
+       element={<PlansPage /> } 
+       />
+       <Route
+       path='/my-uploads'
+       element={<MyUploadsPage />}
+       />
+        <Route
+       path='/tutors'
+       element={<TutorsList />}
+       />
+       <Route
        path='/tutor-signin' 
        element={<TutorLoginPage />} 
        />
@@ -94,6 +136,34 @@ function App() {
         <Route
        path='/tutor-signup' 
        element={<TutorSignUpPage />} 
+       />
+       <Route
+       path='/tutor-dashboard'
+       element={<TutorDashboardPage/>}
+       />
+       <Route
+       path='/tutor-uploads'
+       element={<UploadsPage/>}
+       />
+       <Route
+       path='/tutor-edit-profile'
+       element={<TutorEditProfilePage/>}
+       />
+       <Route
+       path='/tutor-upload-notes'
+       element={<TutorUploadNotesPage/>}
+       />
+       <Route
+       path='/tutor-upload-questions'
+       element={<TutorUploadQuestionsPage/>}
+       />
+       <Route
+       path='/tutor-upload-videos'
+       element={<TutorUploadVideosPage/>}
+       />
+       <Route
+       path='/tutor-add-events'
+       element={<TutorAddEventsPage/>}
        />
       <Route
        path='/notes' 
@@ -115,6 +185,10 @@ function App() {
        path='/admin-question-papers' 
        element={<ManageQuestionPapersPage />} 
        />
+        <Route
+       path='/admin-events' 
+       element={<ManageEventsPage />} 
+       />
        <Route
        path='/admin-edit-videos' 
        element={<EditVideosPage />} 
@@ -128,12 +202,24 @@ function App() {
        element={<EditQuestionPaperPage />} 
        />
        <Route
+       path='/admin-edit-events' 
+       element={<EditEventsPage />} 
+       />
+       <Route
        path='/admin-videos' 
        element={<ManageVideosPage />} 
        />
        <Route
        path='/admin-board' 
        element={<BoardListPage />} 
+       />
+       <Route
+       path='/admin-students' 
+       element={<StudentsListPage />} 
+       />
+       <Route
+       path='/admin-tutors' 
+       element={<TutorsListPage />} 
        />
        <Route
        path='/admin-add-board' 
@@ -154,6 +240,18 @@ function App() {
        <Route
        path='/admin-add-subject' 
        element={<AddSubjectPage />} 
+       />
+       <Route
+       path='/admin-plans' 
+       element={<ManagePlansPage />} 
+       />
+       <Route
+       path='/admin-add-plans' 
+       element={<AddPlanPage />} 
+       />
+       <Route
+       path='/admin-edit-plans' 
+       element={<EditPlansPage />} 
        />
   
     </Routes>

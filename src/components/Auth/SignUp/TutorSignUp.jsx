@@ -59,12 +59,12 @@ const TutorSignUp = () => {
           })
           .then((response) => {
             setIsLoading(false);
-            if(response.data.otpSend){
-            toast.success(response.data.message);
-            navigate('/tutor-otp')
-            }else{
-            setIsLoading(false);
-            toast.error(response.data.message);
+            if (response.data.otpSend) {
+              toast.success(response.data.message);
+              navigate("/tutor-otp");
+            } else {
+              setIsLoading(false);
+              toast.error(response.data.message);
             }
           })
           .catch((error) => {
@@ -176,8 +176,11 @@ const TutorSignUp = () => {
         </DemoItem>
       </DemoContainer>
     </LocalizationProvider> */}
+              <label htmlFor="timeFrom">
+                Select the time, when you become free
+              </label>
               <input
-                type="text"
+                type="time"
                 className="block border border-grey-light w-full p-3 rounded mb-4"
                 name="timeFrom"
                 placeholder="Enter the time, when you become free"
@@ -207,11 +210,13 @@ const TutorSignUp = () => {
         </DemoItem>
       </DemoContainer>
     </LocalizationProvider> */}
+              <label htmlFor="timeTo">
+                Select the time, when you are free upto
+              </label>
               <input
-                type="text"
+                type="time"
                 className="block border border-grey-light w-full p-3 rounded mb-4"
                 name="timeTo"
-                placeholder="You are free upto which time ?"
                 // onChange={handleChange}
                 value={values.timeTo}
                 onChange={handleChange}

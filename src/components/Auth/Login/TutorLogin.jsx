@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setStudent } from "../../../features/studentSlice";
 import ragam from "../../../assets/ragam.jpeg";
+import { setTutor } from "../../../features/tutorSlice";
 
 const initialValues = {
   email: "",
@@ -39,7 +40,8 @@ const TutorLogin = () => {
               console.log(response.data);
               toast.success(response.data.message);
               dispatch(
-                setStudent({
+                setTutor({
+                  _id:response.data.tutor._id,
                   name: response.data.tutor.name,
                   email: response.data.tutor.email,
                   phone: response.data.tutor.phone,
@@ -47,18 +49,20 @@ const TutorLogin = () => {
                   timeFrom: response.data.tutor.timeFrom,
                   timeTo: response.data.tutor.timeTo,
                   profession: response.data.tutor.profession,
+                  status:response.data.tutor.status,
                   token: response.data.token,
                 })
               );
               localStorage.setItem("Ttoken", response.data.token);
-              navigate("/tutor-profile");
+              localStorage.setItem("Tid", response.data.tutor._id);
+              navigate("/tutor-dashboard");
             } else {
               toast.error(response.data.message);
             }
           })
           .catch((error) => {
             setIsLoading(false);
-            toast.error(error.response.data.message);
+            toast.error(error.message);
           });
         // action.resetForm();
       },
