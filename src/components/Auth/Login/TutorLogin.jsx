@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -31,7 +31,7 @@ const TutorLogin = () => {
       onSubmit: (values, action) => {
         setIsLoading(true);
         axios
-          .post(`${import.meta.env.VITE_BASE_PATH}auth/tutor-signin`, {
+          .post(`auth/tutor-signin`, {
             ...values,
           })
           .then((response) => {
@@ -41,7 +41,7 @@ const TutorLogin = () => {
               toast.success(response.data.message);
               dispatch(
                 setTutor({
-                  _id:response.data.tutor._id,
+                  _id: response.data.tutor._id,
                   name: response.data.tutor.name,
                   email: response.data.tutor.email,
                   phone: response.data.tutor.phone,
@@ -49,7 +49,7 @@ const TutorLogin = () => {
                   timeFrom: response.data.tutor.timeFrom,
                   timeTo: response.data.tutor.timeTo,
                   profession: response.data.tutor.profession,
-                  status:response.data.tutor.status,
+                  status: response.data.tutor.status,
                   token: response.data.token,
                 })
               );

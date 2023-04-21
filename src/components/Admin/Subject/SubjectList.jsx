@@ -14,7 +14,8 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
+
 
 const StyledTableCell = styled(TableCell)({
   borderBottom: "none",
@@ -33,7 +34,7 @@ const SubjectList = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/subjects`, {
+      .get(`admin/subjects`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
         },

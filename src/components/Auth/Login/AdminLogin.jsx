@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -31,7 +31,7 @@ const AdminLogin = () => {
       onSubmit: (values, action) => {
         setIsLoading(true);
         axios
-          .post(`${import.meta.env.VITE_BASE_PATH}auth/admin-signin`, {
+          .post(`auth/admin-signin`, {
             ...values,
           })
           .then((response) => {

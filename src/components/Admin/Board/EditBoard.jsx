@@ -1,7 +1,8 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "axios";
+import axios from "../../../axios";
+
 
 const EditBoard = () => {
   const [board, setBoard] = useState({
@@ -10,7 +11,7 @@ const EditBoard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${import.meta.env.VITE_BASE_PATH}board`, board);
+    axios.post(`board`, board);
   };
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">

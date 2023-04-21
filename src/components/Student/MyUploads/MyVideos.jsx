@@ -12,7 +12,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import axios from "axios";
+import axios from "../../../axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -53,7 +53,7 @@ const MyVideos = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}get-videos?id=${student._id}`, {
+      .get(`get-videos?id=${student._id}`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Stoken")}`,
         },
@@ -68,7 +68,7 @@ const MyVideos = () => {
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}subjects?branch=${
+        `subjects?branch=${
           student.branch._id
         }`,
         {
@@ -88,7 +88,7 @@ const MyVideos = () => {
 
   const handlePrivate = (id) =>{
     axios.put(
-     `${import.meta.env.VITE_BASE_PATH}videos-private-public?id=${
+     `videos-private-public?id=${
        id
      }`,null,
      {
@@ -198,7 +198,7 @@ const MyVideos = () => {
                </Typography>) ) }
                 </CardContent>
                 <CardActions className="flex justify-center">
-                  {/* <Button size="medium" className="bg-red-100 rounded-lg"><a href={`${import.meta.env.VITE_BASE_PATH}${question.file_path}`} target='_blank'>
+                  {/* <Button size="medium" className="bg-red-100 rounded-lg"><a href={`${question.file_path}`} target='_blank'>
                 DOWNLOAD</a>
               </Button> */}
                   {video.private ? 

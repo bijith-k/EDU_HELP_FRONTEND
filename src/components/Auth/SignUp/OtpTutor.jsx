@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -35,7 +35,7 @@ const OtpTutor = () => {
       onSubmit: (values, action) => {
         setIsLoading(true);
         axios
-          .post(`${import.meta.env.VITE_BASE_PATH}auth/verify-tutor-otp`, {
+          .post(`auth/verify-tutor-otp`, {
             ...values,
           })
           .then((response) => {

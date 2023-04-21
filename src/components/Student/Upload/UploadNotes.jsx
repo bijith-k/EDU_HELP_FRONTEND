@@ -2,7 +2,7 @@ import { Button, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Navbar from "../Home/Navbar";
 
-import axios from "axios";
+import axios from "../../../axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -25,7 +25,7 @@ const UploadNotes = () => {
   useEffect(() => {
     // Fetch boards from server on component mount
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}boards`, {
+      .get(`boards`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Stoken")}`,
         },
@@ -38,7 +38,7 @@ const UploadNotes = () => {
     if (selectedBoard) {
       axios
         .get(
-          `${import.meta.env.VITE_BASE_PATH}branches?board=${selectedBoard}`,
+          `branches?board=${selectedBoard}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("Stoken")}`,
@@ -60,7 +60,7 @@ const UploadNotes = () => {
     if (selectedBranch) {
       axios
         .get(
-          `${import.meta.env.VITE_BASE_PATH}subjects?branch=${selectedBranch}`,
+          `subjects?branch=${selectedBranch}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("Stoken")}`,
@@ -116,7 +116,7 @@ const UploadNotes = () => {
 
     await axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}upload-notes`,
+        `upload-notes`,
         {
           ...notesData,
           board: selectedBoard,

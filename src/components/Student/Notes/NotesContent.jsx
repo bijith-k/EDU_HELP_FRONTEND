@@ -12,7 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import school from "../../../assets/pdf.png";
 import { useSelector } from "react-redux";
-import axios from "axios";
+import axios from "../../../axios";
 
 const NotesContent = () => {
   const student = useSelector((state) => state.student);
@@ -44,7 +44,7 @@ const NotesContent = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}get-notes`, {
+      .get(`get-notes`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Stoken")}`,
         },
@@ -59,7 +59,7 @@ const NotesContent = () => {
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}subjects?branch=${
+        `subjects?branch=${
           student.branch._id
         }`,
         {

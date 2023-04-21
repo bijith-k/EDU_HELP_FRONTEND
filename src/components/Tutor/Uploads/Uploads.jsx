@@ -6,7 +6,7 @@ import { UploadedVideos } from "./UploadedVideos";
 import { setTutor } from "../../../features/tutorSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
 
 const Uploads = () => {
   const dispatch = useDispatch()
@@ -26,7 +26,7 @@ const Uploads = () => {
       const fetchTutorData = async () => {
         try {
           const { data } = await axios.post(
-            `${import.meta.env.VITE_BASE_PATH}tutor`,
+            `tutor`,
             { token }
           );
           console.log(data, "data");

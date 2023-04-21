@@ -3,7 +3,7 @@ import Sidebar from "../Dashboard/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { setNoteData } from "../../../features/contentSlice";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
 import { toast } from "react-toastify";
 
 const EditNotes = () => {
@@ -32,7 +32,7 @@ const EditNotes = () => {
   useEffect(() => {
     const noteId = localStorage.getItem("noteId");
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/notes?id=${noteId}`, {
+      .get(`admin/notes?id=${noteId}`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -55,7 +55,7 @@ const EditNotes = () => {
       });
 
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/boards`, {
+      .get(`admin/boards`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -151,7 +151,7 @@ const EditNotes = () => {
 
     await axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}admin/edit-notes?note=${note._id}`,
+        `admin/edit-notes?note=${note._id}`,
         {
           ...updateData,
           board: selectedBoard,
@@ -302,7 +302,7 @@ const EditNotes = () => {
             </label>
             <div className="mb-2">
               <iframe
-                src={`${import.meta.env.VITE_BASE_PATH}${note.file_path}`}
+                src={`${note.file_path}`}
                 width="50%"
                 height="50%"
                 frameBorder="0"

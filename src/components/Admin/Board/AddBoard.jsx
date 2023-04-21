@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "axios";
+import axios from "../../../axios";
 import { toast } from "react-toastify";
 
 const AddBoard = () => {
@@ -22,7 +22,7 @@ const AddBoard = () => {
     e.preventDefault();
     console.log(board);
     axios
-      .post(`${import.meta.env.VITE_BASE_PATH}admin/add-board`, board, config)
+      .post(`admin/add-board`, board, config)
       .then((res) => {
         console.log(res);
         toast.success(res.data.message, {

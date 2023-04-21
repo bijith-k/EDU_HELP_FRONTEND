@@ -11,7 +11,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import axios from "axios";
+import axios from "../../../axios";
 import { useSelector } from "react-redux";
 
 const QuestionContent = () => {
@@ -49,7 +49,7 @@ const QuestionContent = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}get-question-papers`, {
+      .get(`get-question-papers`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Stoken")}`,
         },
@@ -64,7 +64,7 @@ const QuestionContent = () => {
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}subjects?branch=${
+        `subjects?branch=${
           student.branch._id
         }`,
         {

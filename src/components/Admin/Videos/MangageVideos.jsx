@@ -14,7 +14,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setVideoData } from "../../../features/contentSlice";
@@ -43,7 +43,7 @@ const MangageVideos = () => {
   console.log(videos, "nooo");
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/videos`, {
+      .get(`admin/videos`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
         },
@@ -53,12 +53,12 @@ const MangageVideos = () => {
         setVideos(res.data);
       });
 
-    // axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`).then((res)=>{
+    // axios.get(`admin/boards`).then((res)=>{
     //   console.log(res);
     //   setBoards(res.data.boards)
     // })
 
-    // axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches`).then((res)=>{
+    // axios.get(`admin/branches`).then((res)=>{
     //   console.log(res,'3');
     //   setBranches(res.data.branches)
     // })
@@ -101,7 +101,7 @@ const MangageVideos = () => {
   const handleApprove = (id) => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}admin/approve-videos?video=${id}`,
+        `admin/approve-videos?video=${id}`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
@@ -127,7 +127,7 @@ const MangageVideos = () => {
   const handleListUnlist = (id) => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}admin/video-list-unlist?video=${id}`,
+        `admin/video-list-unlist?video=${id}`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("Adtoken")}`,

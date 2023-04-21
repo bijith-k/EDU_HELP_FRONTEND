@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
 import { setEventsData } from "../../../features/contentSlice";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -37,7 +37,7 @@ const EditEvents = () => {
   useEffect(() => {
     const eventId = localStorage.getItem("eventId");
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/events?id=${eventId}`, {
+      .get(`admin/events?id=${eventId}`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -103,7 +103,7 @@ const EditEvents = () => {
         console.log(values);
         axios
           .post(
-            `${import.meta.env.VITE_BASE_PATH}admin/edit-event?event=${
+            `admin/edit-event?event=${
               event._id
             }`,
             {
@@ -302,7 +302,7 @@ const EditEvents = () => {
             </label>
             <div className="mb-2">
               <img
-                src={`${import.meta.env.VITE_BASE_PATH}${event.poster}`}
+                src={`${event.poster}`}
                 className="w-1/5"
               />
             </div>

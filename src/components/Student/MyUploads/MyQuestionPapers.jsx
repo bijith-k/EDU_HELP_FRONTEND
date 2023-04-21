@@ -11,7 +11,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import axios from "axios";
+import axios from "../../../axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -52,7 +52,7 @@ const MyQuestionPapers = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}get-question-papers?id=${student._id}`, {
+      .get(`get-question-papers?id=${student._id}`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Stoken")}`,
         },
@@ -67,7 +67,7 @@ const MyQuestionPapers = () => {
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}subjects?branch=${
+        `subjects?branch=${
           student.branch._id
         }`,
         {
@@ -87,7 +87,7 @@ const MyQuestionPapers = () => {
 
   const handlePrivate = (id) =>{
     axios.put(
-     `${import.meta.env.VITE_BASE_PATH}questions-private-public?id=${
+     `questions-private-public?id=${
        id
      }`,null,
      {
@@ -210,13 +210,23 @@ const MyQuestionPapers = () => {
                       VIEW
                     </a>
                   </Button>
-                  {question.private ? 
-                  (<Button size="medium" className="bg-rose-100 rounded-lg" onClick={()=>handlePrivate(question._id)}>
-                  MAKE PUBLIC
-                </Button>) :
-                (<Button size="medium" className="bg-rose-100 rounded-lg" onClick={()=>handlePrivate(question._id)}>
-                MAKE PRIVATE
-              </Button>)}
+                  {question.private ? (
+                    <Button
+                      size="medium"
+                      className="bg-rose-100 rounded-lg"
+                      onClick={() => handlePrivate(question._id)}
+                    >
+                      MAKE PUBLIC
+                    </Button>
+                  ) : (
+                    <Button
+                      size="medium"
+                      className="bg-rose-100 rounded-lg"
+                      onClick={() => handlePrivate(question._id)}
+                    >
+                      MAKE PRIVATE
+                    </Button>
+                  )}
                 </CardActions>
                 {/* <iframe src={`http://localhost:4000/${question.file_path}`} width="100%" height="500px"></iframe> */}
               </Card>
@@ -226,12 +236,10 @@ const MyQuestionPapers = () => {
               No results found for "{searchQuery}" and "{selectedSubject}"
             </p>
           )}
-
-          
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default MyQuestionPapers

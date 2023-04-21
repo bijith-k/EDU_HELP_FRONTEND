@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -30,8 +30,8 @@ const StudentSignUp = () => {
   useEffect(() => {
     // Fetch boards from server on component mount
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
-      .then((res) => setBoards(res.data.boards))
+      .get(`auth/boards`)
+      .then((res) => setBoards(res.data.board))
       .catch((err) => console.error(err));
   }, []);
 
@@ -41,7 +41,7 @@ const StudentSignUp = () => {
         .get(
           `${
             import.meta.env.VITE_BASE_PATH
-          }admin/branches?board=${selectedBoard}`
+          }auth/branches?board=${selectedBoard}`
         )
         .then((res) => {
           setBranches(res.data.branches);
@@ -80,7 +80,7 @@ const StudentSignUp = () => {
         }
         setIsLoading(true);
         axios
-          .post(`${import.meta.env.VITE_BASE_PATH}auth/signup`, {
+          .post(`auth/signup`, {
             ...values,
             board: selectedBoard,
             branch: selectedBranch,
@@ -107,7 +107,7 @@ const StudentSignUp = () => {
   useEffect(() => {
     const token = localStorage.getItem("Stoken");
     if (token) {
-      navigate("/"); 
+      navigate("/");
     }
   }, []);
 

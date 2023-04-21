@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../../axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navbar from "../Dashboard/Navbar";
@@ -23,7 +23,7 @@ const TutorUploadNotes = () => {
   useEffect(() => {
     // Fetch boards from server on component mount
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}tutor/boards`, {
+      .get(`tutor/boards`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Ttoken")}`,
         },
@@ -118,7 +118,7 @@ const TutorUploadNotes = () => {
 
     await axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}tutor/upload-notes`,
+        `tutor/upload-notes`,
         {
           ...notesData,
           board: selectedBoard,

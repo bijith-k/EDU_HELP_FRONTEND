@@ -7,7 +7,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
  
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axios from "../../../axios";
 import { useNavigate } from "react-router-dom";
 import { setStudent } from "../../../features/studentSlice";
 import MyNotes from "./MyNotes";
@@ -33,7 +33,7 @@ const MyUploads = () => {
       const fetchStudentData = async () => {
         try {
           const { data } = await axios.post(
-            `${import.meta.env.VITE_BASE_PATH}`,
+            ``,
             { token }
           );
           console.log(data, "data");

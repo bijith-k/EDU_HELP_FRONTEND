@@ -4,7 +4,7 @@ import Sidebar from "../Dashboard/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { setNoteData } from "../../../features/contentSlice";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
 import { toast } from "react-toastify";
 
 const EditPlans = () => {
@@ -28,7 +28,7 @@ const EditPlans = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/plans?id=${planId}`, {
+      .get(`admin/plans?id=${planId}`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -78,7 +78,7 @@ const EditPlans = () => {
 
     await axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}admin/edit-plans?plan=${planId}`,
+        `admin/edit-plans?plan=${planId}`,
         {
           ...updateData,
          

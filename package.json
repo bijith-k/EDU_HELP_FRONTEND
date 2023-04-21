@@ -30,6 +30,7 @@
     "react-time-picker": "^5.2.0",
     "react-toastify": "^9.1.2",
     "sort-by": "^1.2.0",
+    "timeago.js": "^4.0.0-beta.3",
     "yup": "^1.0.2"
   },
   "devDependencies": {

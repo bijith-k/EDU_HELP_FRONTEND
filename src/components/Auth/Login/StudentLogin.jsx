@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -31,13 +31,14 @@ const StudentLogin = () => {
       onSubmit: (values, action) => {
         setIsLoading(true);
         axios
-          .post(`${import.meta.env.VITE_BASE_PATH}auth/signin`, {
+          .post(`auth/signin`, {
             ...values,
           })
           .then((response) => {
             setIsLoading(false);
             if (response.data.created) {
-              console.log(response.data);
+              console.log(response.data, "dddaaattttaaaaa");
+
               toast.success(response.data.message);
               dispatch(
                 setStudent({
@@ -59,7 +60,8 @@ const StudentLogin = () => {
           })
           .catch((error) => {
             setIsLoading(false);
-            toast.error(error.response.data.message);
+            console.log(error);
+            toast.error("Something gone wrong");
           });
         // action.resetForm();
       },

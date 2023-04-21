@@ -135,8 +135,7 @@ const Navbar = (props) => {
           </>
         )}
 
-
-<ListSubheader disableSticky>
+        <ListSubheader disableSticky>
           <ListItemButton sx={{ textAlign: "center" }}>
             <ListItemText primary="ACCOUNT" />
             <IconButton
@@ -154,9 +153,17 @@ const Navbar = (props) => {
             <ListItem disablePadding>
               <ListItemButton
                 sx={{ textAlign: "center" }}
-                onClick={() => navigate("/upload-notes")}
+                onClick={() => navigate("/profile")}
               >
                 <ListItemText primary="YOUR PROFILE" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton
+                sx={{ textAlign: "center" }}
+                onClick={() => navigate("/chats")}
+              >
+                <ListItemText primary="Chats" />
               </ListItemButton>
             </ListItem>
             <ListItem>
@@ -185,10 +192,6 @@ const Navbar = (props) => {
             </ListItem> */}
           </>
         )}
-
-        
-
-        
 
         <ListItem disablePadding>
           <ListItemButton sx={{ textAlign: "center" }} onClick={handleLogout}>
@@ -333,7 +336,10 @@ const Navbar = (props) => {
               }}
             >
               <MenuItem onClick={handleCloses}>
-                <Link to="/upload-notes"> YOUR PROFILE</Link>
+                <Link to="/profile"> YOUR PROFILE</Link>
+              </MenuItem>
+              <MenuItem onClick={handleCloses}>
+                <Link to="/chats"> CHATS</Link>
               </MenuItem>
               <MenuItem onClick={handleCloses}>
                 <Link to="/my-uploads"> YOUR UPLOADS</Link>

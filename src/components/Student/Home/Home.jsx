@@ -7,17 +7,17 @@ import news from "../../../assets/news.jpg";
 import Footer from "./Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { setStudent } from "../../../features/studentSlice";
-import axios from "axios";
+import axios from "../../../axios";
 
 const Home = () => {
   const student = useSelector((state) => state.student);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(student, "ddd");
+  console.log(student, "dddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
   // useEffect(() => {
   //   // Fetch boards from server on component mount
-  //   axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`)
+  //   axios.get(`admin/boards`)
   //     .then(res => setBoards(res.data.boards))
   //     .catch(err => console.error(err));
   // }, []);
@@ -33,7 +33,7 @@ const Home = () => {
       const fetchStudentData = async () => {
         try {
           const { data } = await axios.post(
-            `${import.meta.env.VITE_BASE_PATH}`,
+            ``,
             { token }
           );
           console.log(data, "data");

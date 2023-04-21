@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../../axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "../Home/Navbar";
 import { toast } from "react-toastify";
@@ -23,7 +23,7 @@ const UploadQuestionPapers = () => {
   useEffect(() => {
     // Fetch boards from server on component mount
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}boards`, {
+      .get(`boards`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Stoken")}`,
         },
@@ -35,14 +35,11 @@ const UploadQuestionPapers = () => {
   useEffect(() => {
     if (selectedBoard) {
       axios
-        .get(
-          `${import.meta.env.VITE_BASE_PATH}branches?board=${selectedBoard}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("Stoken")}`,
-            },
-          }
-        )
+        .get(`branches?board=${selectedBoard}`, {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("Stoken")}`,
+          },
+        })
         .then((res) => {
           setBranches(res.data.branches);
         })
@@ -57,14 +54,11 @@ const UploadQuestionPapers = () => {
   useEffect(() => {
     if (selectedBranch) {
       axios
-        .get(
-          `${import.meta.env.VITE_BASE_PATH}subjects?branch=${selectedBranch}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("Stoken")}`,
-            },
-          }
-        )
+        .get(`subjects?branch=${selectedBranch}`, {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("Stoken")}`,
+          },
+        })
         .then((res) => {
           setSubjects(res.data.subjects);
         })
@@ -128,7 +122,7 @@ const UploadQuestionPapers = () => {
 
     await axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}upload-question-papers`,
+        `upload-question-papers`,
         {
           ...questionData,
           board: selectedBoard,

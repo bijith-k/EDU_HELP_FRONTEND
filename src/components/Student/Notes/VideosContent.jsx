@@ -11,7 +11,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import axios from "axios";
+import axios from "../../../axios";
 import { useSelector } from "react-redux";
 
 const VideosContent = () => {
@@ -49,7 +49,7 @@ const VideosContent = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}get-videos`, {
+      .get(`get-videos`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Stoken")}`,
         },
@@ -64,7 +64,7 @@ const VideosContent = () => {
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}subjects?branch=${
+        `subjects?branch=${
           student.branch._id
         }`,
         {
@@ -159,7 +159,7 @@ const VideosContent = () => {
                   </Typography>
                 </CardContent>
                 <CardActions className="flex justify-center">
-                  {/* <Button size="medium" className="bg-red-100 rounded-lg"><a href={`${import.meta.env.VITE_BASE_PATH}${question.file_path}`} target='_blank'>
+                  {/* <Button size="medium" className="bg-red-100 rounded-lg"><a href={`${question.file_path}`} target='_blank'>
                 DOWNLOAD</a>
               </Button> */}
                   <Button size="medium" className="bg-rose-100 rounded-lg">

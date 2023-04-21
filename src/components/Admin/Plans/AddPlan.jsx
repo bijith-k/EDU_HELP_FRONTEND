@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "axios";
+import axios from "../../../axios";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -28,7 +28,7 @@ const AddPlan = () => {
     e.preventDefault();
     axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}admin/add-plan`,
+        `admin/add-plan`,
         { ...values },
         config
       )

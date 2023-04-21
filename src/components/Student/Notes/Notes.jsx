@@ -15,7 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axios from "../../../axios";
 import { useNavigate } from "react-router-dom";
 import { setStudent } from "../../../features/studentSlice";
 
@@ -37,7 +37,7 @@ const Notes = () => {
       const fetchStudentData = async () => {
         try {
           const { data } = await axios.post(
-            `${import.meta.env.VITE_BASE_PATH}`,
+            ``,
             { token }
           );
           console.log(data, "data");

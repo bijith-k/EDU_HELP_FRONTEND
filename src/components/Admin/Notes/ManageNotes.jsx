@@ -14,7 +14,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setNoteData } from "../../../features/contentSlice";
@@ -43,7 +43,7 @@ const ManageNotes = () => {
   console.log(notes, "nooo");
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/notes`, {
+      .get(`admin/notes`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
         },
@@ -53,12 +53,12 @@ const ManageNotes = () => {
         setNotes(res.data);
       });
 
-    // axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`).then((res)=>{
+    // axios.get(`admin/boards`).then((res)=>{
     //   console.log(res);
     //   setBoards(res.data.boards)
     // })
 
-    // axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches`).then((res)=>{
+    // axios.get(`admin/branches`).then((res)=>{
     //   console.log(res,'3');
     //   setBranches(res.data.branches)
     // })
@@ -100,7 +100,7 @@ const ManageNotes = () => {
 
   const handleApprove = (id) => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/approve-notes?note=${id}`, {
+      .get(`admin/approve-notes?note=${id}`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
         },
@@ -124,7 +124,7 @@ const ManageNotes = () => {
   const handleListUnlist = (id) => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}admin/note-list-unlist?note=${id}`,
+        `admin/note-list-unlist?note=${id}`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
@@ -229,7 +229,7 @@ const ManageNotes = () => {
                     <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
                       {" "}
                       <a
-                        href={`${import.meta.env.VITE_BASE_PATH}${
+                        href={`${
                           note.file_path
                         }`}
                         target="_blank"
@@ -300,7 +300,7 @@ const ManageNotes = () => {
             <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
                       {" "}
                       <a
-                        href={`${import.meta.env.VITE_BASE_PATH}${
+                        href={`${
                           note.file_path
                         }`}
                         target="_blank"

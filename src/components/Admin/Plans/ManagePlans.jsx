@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
 import Sidebar from '../Dashboard/Sidebar'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axios from "../../../axios";
 import { toast } from 'react-toastify'
 
 const ManagePlans = () => {
@@ -13,7 +13,7 @@ const ManagePlans = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/plans`, {
+      .get(`admin/plans`, {
         headers: {
           authorization: `Bearer ${Token}`,
         },
@@ -28,7 +28,7 @@ const ManagePlans = () => {
   const handleListUnlist = (id) => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}admin/plan-list-unlist?plan=${id}`,
+        `admin/plan-list-unlist?plan=${id}`,
         {
           headers: {
             authorization: `Bearer ${Token}`,

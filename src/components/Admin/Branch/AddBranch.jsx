@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "axios";
+import axios from "../../../axios";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -14,7 +14,7 @@ const AddBranch = () => {
   useEffect(() => {
     // Fetch boards from server on component mount
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/boards`, {
+      .get(`admin/boards`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -38,7 +38,7 @@ const AddBranch = () => {
     e.preventDefault();
     axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}admin/add-branch`,
+        `admin/add-branch`,
         { board: selectedBoard, branch: branch },
         config
       )

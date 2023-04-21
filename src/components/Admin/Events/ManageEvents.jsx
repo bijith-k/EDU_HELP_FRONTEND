@@ -13,7 +13,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setEventsData, setNoteData } from "../../../features/contentSlice";
@@ -42,7 +42,7 @@ const ManageEvents = () => {
   console.log(events, "nooo");
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/events`, {
+      .get(`admin/events`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
         },
@@ -52,12 +52,12 @@ const ManageEvents = () => {
         setEvents(res.data);
       });
 
-    // axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`).then((res)=>{
+    // axios.get(`admin/boards`).then((res)=>{
     //   console.log(res);
     //   setBoards(res.data.boards)
     // })
 
-    // axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches`).then((res)=>{
+    // axios.get(`admin/branches`).then((res)=>{
     //   console.log(res,'3');
     //   setBranches(res.data.branches)
     // })
@@ -100,7 +100,7 @@ const ManageEvents = () => {
   const handleApprove = (id) => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}admin/approve-events?event=${id}`,
+        `admin/approve-events?event=${id}`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
@@ -126,7 +126,7 @@ const ManageEvents = () => {
   const handleListUnlist = (id) => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}admin/event-list-unlist?event=${id}`,
+        `admin/event-list-unlist?event=${id}`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
@@ -252,7 +252,7 @@ const ManageEvents = () => {
                   <TableCell className="flex justify-center">
                     <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
                       <a
-                        href={`${import.meta.env.VITE_BASE_PATH}${
+                        href={`${
                           event.poster
                         }`}
                         target="_blank"

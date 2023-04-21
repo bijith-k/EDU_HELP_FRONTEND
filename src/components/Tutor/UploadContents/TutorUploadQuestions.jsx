@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,7 +23,7 @@ const TutorUploadQuestions = () => {
   useEffect(() => {
     // Fetch boards from server on component mount
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}tutor/boards`, {
+      .get(`tutor/boards`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Ttoken")}`,
         },
@@ -133,7 +133,7 @@ const TutorUploadQuestions = () => {
 
     await axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}tutor/upload-question-papers`,
+        `tutor/upload-question-papers`,
         {
           ...questionData,
           board: selectedBoard,

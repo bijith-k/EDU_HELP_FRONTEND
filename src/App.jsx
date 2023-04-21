@@ -45,6 +45,8 @@ import AddPlanPage from './pages/admin/AddPlanPage'
 import EditPlansPage from './pages/admin/EditPlansPage'
 import StudentsListPage from './pages/admin/StudentsListPage'
 import TutorsListPage from './pages/admin/TutorsListPage'
+import ProfilePage from './pages/student/ProfilePage'
+import StudentChatPage from './pages/student/StudentChatPage'
  
  
 function App() {
@@ -52,212 +54,132 @@ function App() {
 
   return (
     <>
-    <ToastContainer 
-            position='top-right' 
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-        />  
-    
-    <BrowserRouter>
-    <Routes>
-      <Route 
-      path='/' 
-      // element={ student.token != '' ? <HomePage /> : <Navigate to='/login' />} 
-      element={ <HomePage /> } 
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
-      />
-      <Route 
-      path='/signin' 
-      // element={ student.token === '' ? <StudentLoginPage /> : <Navigate to='/' /> } 
-      element={ <StudentLoginPage /> } 
-      />
-      <Route
-       path='/signup' 
-      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
-       element={<StudentSignUpPage /> } 
-       />
-       <Route
-       path='/otp' 
-      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
-       element={<OtpPageStudent /> } 
-       />
-       <Route
-       path='/upload-notes' 
-      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
-       element={<UploadNotesPage /> } 
-       />
-        <Route
-       path='/upload-videos' 
-      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
-       element={<UploadVideosPage /> } 
-       />
-        <Route
-       path='/upload-question-paper' 
-      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
-       element={<UploadQuestionPapersPage /> } 
-       />
-       <Route
-       path='/events' 
-      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
-       element={<EventsPage /> } 
-       />
-       <Route
-       path='/add-events' 
-      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
-       element={<AddEvents /> } 
-       />
-       <Route
-       path='/plans' 
-      //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />} 
-       element={<PlansPage /> } 
-       />
-       <Route
-       path='/my-uploads'
-       element={<MyUploadsPage />}
-       />
-        <Route
-       path='/tutors'
-       element={<TutorsList />}
-       />
-       <Route
-       path='/tutor-signin' 
-       element={<TutorLoginPage />} 
-       />
-       <Route
-       path='/tutor-otp' 
-       element={<OtpPageTutor />} 
-       />
-        <Route
-       path='/tutor-signup' 
-       element={<TutorSignUpPage />} 
-       />
-       <Route
-       path='/tutor-dashboard'
-       element={<TutorDashboardPage/>}
-       />
-       <Route
-       path='/tutor-uploads'
-       element={<UploadsPage/>}
-       />
-       <Route
-       path='/tutor-edit-profile'
-       element={<TutorEditProfilePage/>}
-       />
-       <Route
-       path='/tutor-upload-notes'
-       element={<TutorUploadNotesPage/>}
-       />
-       <Route
-       path='/tutor-upload-questions'
-       element={<TutorUploadQuestionsPage/>}
-       />
-       <Route
-       path='/tutor-upload-videos'
-       element={<TutorUploadVideosPage/>}
-       />
-       <Route
-       path='/tutor-add-events'
-       element={<TutorAddEventsPage/>}
-       />
-      <Route
-       path='/notes' 
-       element={<NotesPage />} 
-       />
-       <Route
-       path='/admin' 
-       element={<AdminLoginPage />} 
-       />
-       <Route
-       path='/admin-dashboard' 
-       element={<AdminDashboard />} 
-       />
-       <Route
-       path='/admin-notes' 
-       element={<MangageNotesPage />} 
-       />
-       <Route
-       path='/admin-question-papers' 
-       element={<ManageQuestionPapersPage />} 
-       />
-        <Route
-       path='/admin-events' 
-       element={<ManageEventsPage />} 
-       />
-       <Route
-       path='/admin-edit-videos' 
-       element={<EditVideosPage />} 
-       />
-       <Route
-       path='/admin-edit-notes' 
-       element={<EditNotesPage />} 
-       />
-       <Route
-       path='/admin-edit-question-papers' 
-       element={<EditQuestionPaperPage />} 
-       />
-       <Route
-       path='/admin-edit-events' 
-       element={<EditEventsPage />} 
-       />
-       <Route
-       path='/admin-videos' 
-       element={<ManageVideosPage />} 
-       />
-       <Route
-       path='/admin-board' 
-       element={<BoardListPage />} 
-       />
-       <Route
-       path='/admin-students' 
-       element={<StudentsListPage />} 
-       />
-       <Route
-       path='/admin-tutors' 
-       element={<TutorsListPage />} 
-       />
-       <Route
-       path='/admin-add-board' 
-       element={<AddBoardPage />} 
-       />
-        <Route
-       path='/admin-branch' 
-       element={<BranchListPage />} 
-       />
-       <Route
-       path='/admin-add-branch' 
-       element={<AddBranchPage />} 
-       />
-       <Route
-       path='/admin-subject' 
-       element={<SubjectListPage />} 
-       />
-       <Route
-       path='/admin-add-subject' 
-       element={<AddSubjectPage />} 
-       />
-       <Route
-       path='/admin-plans' 
-       element={<ManagePlansPage />} 
-       />
-       <Route
-       path='/admin-add-plans' 
-       element={<AddPlanPage />} 
-       />
-       <Route
-       path='/admin-edit-plans' 
-       element={<EditPlansPage />} 
-       />
-  
-    </Routes>
-  </BrowserRouter>
-  </>
-  )
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            // element={ student.token != '' ? <HomePage /> : <Navigate to='/login' />}
+            element={<HomePage />}
+          />
+          <Route
+            path="/signin"
+            // element={ student.token === '' ? <StudentLoginPage /> : <Navigate to='/' /> }
+            element={<StudentLoginPage />}
+          />
+          <Route
+            path="/signup"
+            //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />}
+            element={<StudentSignUpPage />}
+          />
+          <Route
+            path="/otp"
+            //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />}
+            element={<OtpPageStudent />}
+          />
+          <Route
+            path="/upload-notes"
+            //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />}
+            element={<UploadNotesPage />}
+          />
+          <Route
+            path="/upload-videos"
+            //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />}
+            element={<UploadVideosPage />}
+          />
+          <Route
+            path="/upload-question-paper"
+            //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />}
+            element={<UploadQuestionPapersPage />}
+          />
+          <Route
+            path="/events"
+            //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />}
+            element={<EventsPage />}
+          />
+          <Route
+            path="/add-events"
+            //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />}
+            element={<AddEvents />}
+          />
+          <Route
+            path="/plans"
+            //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />}
+            element={<PlansPage />}
+          />
+          <Route
+            path="/chats"
+            //  element={ student.token === '' ? <StudentSignUpPage /> : <Navigate to='/' />}
+            element={<StudentChatPage />}
+          />
+          <Route path="/my-uploads" element={<MyUploadsPage />} />
+          <Route path="/tutors" element={<TutorsList />} />
+          <Route path="/tutor-signin" element={<TutorLoginPage />} />
+          <Route path="/tutor-otp" element={<OtpPageTutor />} />
+          <Route path="/tutor-signup" element={<TutorSignUpPage />} />
+          <Route path="/tutor-dashboard" element={<TutorDashboardPage />} />
+          <Route path="/tutor-uploads" element={<UploadsPage />} />
+          <Route
+            path="/tutor-edit-profile"
+            element={<TutorEditProfilePage />}
+          />
+          <Route
+            path="/tutor-upload-notes"
+            element={<TutorUploadNotesPage />}
+          />
+          <Route
+            path="/tutor-upload-questions"
+            element={<TutorUploadQuestionsPage />}
+          />
+          <Route
+            path="/tutor-upload-videos"
+            element={<TutorUploadVideosPage />}
+          />
+          <Route path="/tutor-add-events" element={<TutorAddEventsPage />} />
+          <Route path="/notes" element={<NotesPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/admin" element={<AdminLoginPage />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-notes" element={<MangageNotesPage />} />
+          <Route
+            path="/admin-question-papers"
+            element={<ManageQuestionPapersPage />}
+          />
+          <Route path="/admin-events" element={<ManageEventsPage />} />
+          <Route path="/admin-edit-videos" element={<EditVideosPage />} />
+          <Route path="/admin-edit-notes" element={<EditNotesPage />} />
+          <Route
+            path="/admin-edit-question-papers"
+            element={<EditQuestionPaperPage />}
+          />
+          <Route path="/admin-edit-events" element={<EditEventsPage />} />
+          <Route path="/admin-videos" element={<ManageVideosPage />} />
+          <Route path="/admin-board" element={<BoardListPage />} />
+          <Route path="/admin-students" element={<StudentsListPage />} />
+          <Route path="/admin-tutors" element={<TutorsListPage />} />
+          <Route path="/admin-add-board" element={<AddBoardPage />} />
+          <Route path="/admin-branch" element={<BranchListPage />} />
+          <Route path="/admin-add-branch" element={<AddBranchPage />} />
+          <Route path="/admin-subject" element={<SubjectListPage />} />
+          <Route path="/admin-add-subject" element={<AddSubjectPage />} />
+          <Route path="/admin-plans" element={<ManagePlansPage />} />
+          <Route path="/admin-add-plans" element={<AddPlanPage />} />
+          <Route path="/admin-edit-plans" element={<EditPlansPage />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
 
 export default App

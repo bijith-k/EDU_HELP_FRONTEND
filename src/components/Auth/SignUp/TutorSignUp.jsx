@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../../axios";
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -30,6 +30,40 @@ const initialValues = {
 const TutorSignUp = () => {
   const [isLoading, setIsLoading] = useState(null);
   const navigate = useNavigate();
+  const [boards, setBoards] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [selectedBoard, setSelectedBoard] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState("");
+
+  const [boardError, setBoardError] = useState(null);
+  const [branchError, setBranchError] = useState(null);
+
+  useEffect(() => {
+    // Fetch boards from server on component mount
+    axios
+      .get(`auth/boards`)
+      .then((res) => setBoards(res.data.board))
+      .catch((err) => console.error(err));
+  }, []);
+
+  useEffect(() => {
+    if (selectedBoard) {
+      axios
+        .get(
+          `${
+            import.meta.env.VITE_BASE_PATH
+          }auth/branches?board=${selectedBoard}`
+        )
+        .then((res) => {
+          setBranches(res.data.branches);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      setBranches([]);
+    }
+  }, [selectedBoard]);
 
   const signUpSchema = Yup.object({
     name: Yup.string().min(2).max(25).required("Please enter your name"),
@@ -52,10 +86,20 @@ const TutorSignUp = () => {
       initialValues: initialValues,
       validationSchema: signUpSchema,
       onSubmit: (values, action) => {
+        if (!selectedBoard) {
+          setBoardError("Please select a board");
+          return;
+        }
+        if (!selectedBranch) {
+          setBranchError("Please select a branch");
+          return;
+        }
         setIsLoading(true);
         axios
-          .post(`${import.meta.env.VITE_BASE_PATH}auth/tutor-signup`, {
+          .post(`auth/tutor-signup`, {
             ...values,
+            board: selectedBoard,
+            branch: selectedBranch,
           })
           .then((response) => {
             setIsLoading(false);
@@ -69,7 +113,7 @@ const TutorSignUp = () => {
           })
           .catch((error) => {
             setIsLoading(false);
-            toast.error(error.response.data.errors);
+            toast.error(error.message);
           });
         // action.resetForm();
       },
@@ -142,6 +186,69 @@ const TutorSignUp = () => {
               />
               {errors.phone && touched.phone ? (
                 <p className="form-error text-red-600">{errors.phone}</p>
+              ) : null}
+
+              <select
+                name="board"
+                value={selectedBoard}
+                onChange={(e) => {
+                  setSelectedBoard(e.target.value);
+                  setBoardError(null);
+                }}
+                // onBlur={handleBlur}
+                className="block border border-grey-light w-full p-3 rounded mb-4"
+              >
+                <option
+                  value=""
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
+                  disabled
+                >
+                  Select Board/University
+                </option>
+                {boards.map((board) => (
+                  <option
+                    key={board._id}
+                    className="block border border-grey-light w-full p-3 rounded mb-4"
+                    value={board._id}
+                  >
+                    {board.name}
+                  </option>
+                ))}
+              </select>
+
+              {boardError ? (
+                <p className="form-error text-red-600">{boardError}</p>
+              ) : null}
+
+              <select
+                name="branch"
+                className="block border border-grey-light w-full p-3 rounded mb-4"
+                value={selectedBranch}
+                onChange={(e) => {
+                  setSelectedBranch(e.target.value);
+                  setBranchError(null);
+                }}
+                // onBlur={handleBlur}
+              >
+                <option
+                  value=""
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
+                  disabled
+                >
+                  Select Class/Branch
+                </option>
+                {branches.map((branch) => (
+                  <option
+                    value={branch._id}
+                    key={branch._id}
+                    className="block border border-grey-light w-full p-3 rounded mb-4"
+                  >
+                    {branch.name}
+                  </option>
+                ))}
+              </select>
+              {branchError ? (
+                <p className="form-error text-red-600">{branchError}</p>
               ) : null}
 
               <input

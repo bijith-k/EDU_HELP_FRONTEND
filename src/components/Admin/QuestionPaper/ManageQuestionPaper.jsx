@@ -14,7 +14,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
 import { useDispatch } from "react-redux";
 import { setQuestionData } from "../../../features/contentSlice";
 
@@ -42,7 +42,7 @@ const ManageQuestionPaper = () => {
   console.log(questions, "nooo");
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/question-papers`, {
+      .get(`admin/question-papers`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
         },
@@ -52,12 +52,12 @@ const ManageQuestionPaper = () => {
         setQuestions(res.data);
       });
 
-    // axios.get(`${import.meta.env.VITE_BASE_PATH}admin/boards`).then((res)=>{
+    // axios.get(`admin/boards`).then((res)=>{
     //   console.log(res);
     //   setBoards(res.data.boards)
     // })
 
-    // axios.get(`${import.meta.env.VITE_BASE_PATH}admin/branches`).then((res)=>{
+    // axios.get(`admin/branches`).then((res)=>{
     //   console.log(res,'3');
     //   setBranches(res.data.branches)
     // })
@@ -235,7 +235,7 @@ const ManageQuestionPaper = () => {
                     <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
                       {" "}
                       <a
-                        href={`${import.meta.env.VITE_BASE_PATH}${
+                        href={`${
                           question.file_path
                         }`}
                         target="_blank"

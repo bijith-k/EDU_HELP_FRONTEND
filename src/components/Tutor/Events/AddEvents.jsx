@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../Dashboard/Navbar";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import axios from "../../../axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -63,7 +63,7 @@ const AddEvents = () => {
         console.log(values);
         axios
           .post(
-            `${import.meta.env.VITE_BASE_PATH}tutor/add-event`,
+            `tutor/add-event`,
             {
               ...values,
             },

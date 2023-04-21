@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axios from "../../../axios";
 import { setVideoData } from "../../../features/contentSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -31,7 +31,7 @@ const EditVideos = () => {
   useEffect(() => {
     const videoId = localStorage.getItem("videoId");
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/videos?id=${videoId}`, {
+      .get(`admin/videos?id=${videoId}`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -57,7 +57,7 @@ const EditVideos = () => {
       });
 
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/boards`, {
+      .get(`admin/boards`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -149,7 +149,7 @@ const EditVideos = () => {
 
     await axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}admin/edit-videos?video=${
+        `admin/edit-videos?video=${
           videos._id
         }`,
         {

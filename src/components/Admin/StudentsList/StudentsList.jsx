@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
 import Sidebar from '../Dashboard/Sidebar'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axios from "../../../axios";
 import { toast } from 'react-toastify'
 
 const StudentsList = () => {
@@ -14,7 +14,7 @@ const StudentsList = () => {
 console.log(students);
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/students`, {
+      .get(`admin/students`, {
         headers: {
           authorization: `Bearer ${Token}`,
         },
@@ -29,7 +29,7 @@ console.log(students);
   const handleBlockUnblock = (id) => {
     axios
       .put(
-        `${import.meta.env.VITE_BASE_PATH}admin/block-unblock-student?student=${id}`,null,
+        `admin/block-unblock-student?student=${id}`,null,
         {
           headers: {
             authorization: `Bearer ${Token}`,

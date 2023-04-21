@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axios from "../../../axios";
 import { setQuestionData } from "../../../features/contentSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -57,7 +57,7 @@ const EditQuestionPapers = () => {
       });
 
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}admin/boards`, {
+      .get(`admin/boards`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -161,7 +161,7 @@ const EditQuestionPapers = () => {
 
     await axios
       .post(
-        `${import.meta.env.VITE_BASE_PATH}admin/edit-question-papers?question=${
+        `admin/edit-question-papers?question=${
           questions._id
         }`,
         {
@@ -316,7 +316,7 @@ const EditQuestionPapers = () => {
             </label>
             <div className="mb-2">
               <iframe
-                src={`${import.meta.env.VITE_BASE_PATH}${questions.file_path}`}
+                src={`${questions.file_path}`}
                 width="50%"
                 height="50%"
                 frameBorder="0"

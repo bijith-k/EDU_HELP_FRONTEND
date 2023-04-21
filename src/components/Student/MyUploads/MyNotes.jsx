@@ -12,7 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import school from "../../../assets/pdf.png";
 import { useSelector } from "react-redux";
-import axios from "axios";
+import axios from "../../../axios";
 import { toast } from "react-toastify";
 
 const MyNotes = () => {
@@ -48,7 +48,7 @@ const MyNotes = () => {
 console.log(filteredData,'data');
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BASE_PATH}get-notes?id=${student._id}`, {
+      .get(`get-notes?id=${student._id}`, {
         headers: {
           authorization: `Bearer ${localStorage.getItem("Stoken")}`,
         },
@@ -63,7 +63,7 @@ console.log(filteredData,'data');
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_BASE_PATH}subjects?branch=${
+        `subjects?branch=${
           student.branch._id
         }`,
         {
@@ -82,7 +82,7 @@ console.log(filteredData,'data');
 
   const handlePrivate = (id) =>{
    axios.put(
-    `${import.meta.env.VITE_BASE_PATH}notes-private-public?id=${
+    `notes-private-public?id=${
       id
     }`,null,
     {
@@ -180,13 +180,15 @@ console.log(filteredData,'data');
                     Class : {note.branch.name} <br />
                     Subject : {note.subject.name}
                   </Typography>
-                  {note.approved ? 
-                  (<Typography variant="body2" color="text.secondary">
-                 Status : Approved
-                </Typography>) :
-                ((<Typography variant="body2" color="text.secondary">
-                Status : Pending Admin approval
-               </Typography>) ) }
+                  {note.approved ? (
+                    <Typography variant="body2" color="text.secondary">
+                      Status : Approved
+                    </Typography>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      Status : Pending Admin approval
+                    </Typography>
+                  )}
                 </CardContent>
                 <CardActions className="flex justify-center">
                   <Button size="medium" className="bg-red-100 rounded-lg">
@@ -199,14 +201,23 @@ console.log(filteredData,'data');
                       VIEW
                     </a>
                   </Button>
-                  {note.private ? 
-                  (<Button size="medium" className="bg-rose-100 rounded-lg" onClick={()=>handlePrivate(note._id)}>
-                  MAKE PUBLIC
-                </Button>) :
-                (<Button size="medium" className="bg-rose-100 rounded-lg" onClick={()=>handlePrivate(note._id)}>
-                MAKE PRIVATE
-              </Button>)}
-                  
+                  {note.private ? (
+                    <Button
+                      size="medium"
+                      className="bg-rose-100 rounded-lg"
+                      onClick={() => handlePrivate(note._id)}
+                    >
+                      MAKE PUBLIC
+                    </Button>
+                  ) : (
+                    <Button
+                      size="medium"
+                      className="bg-rose-100 rounded-lg"
+                      onClick={() => handlePrivate(note._id)}
+                    >
+                      MAKE PRIVATE
+                    </Button>
+                  )}
                 </CardActions>
               </Card>
             ))
@@ -215,11 +226,10 @@ console.log(filteredData,'data');
               No results found for "{searchQuery}" and "{selectedSubject}"
             </p>
           )}
-          
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default MyNotes
