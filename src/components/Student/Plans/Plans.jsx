@@ -12,9 +12,6 @@ const Plans = () => {
   console.log(selectedPlan,'sel');
   const navigate = useNavigate()
   useEffect(() => {
-
-    
-
     axios
     .get(`get-plans`, {
       headers: {

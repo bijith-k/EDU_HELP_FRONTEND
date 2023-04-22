@@ -39,7 +39,7 @@ const UpdateProfile = () => {
     profilePic: ''
   })
 
-  
+  const [loading, setLoading] = useState(false)
    
   const [errors, setErrors] = useState(null);
 
@@ -122,7 +122,7 @@ const UpdateProfile = () => {
          Authorization: `Bearer ${token}`,
        },
      };
-
+setLoading(true)
 
      await axios
        .post(
@@ -161,7 +161,7 @@ const UpdateProfile = () => {
            );
 
             
-          
+          setLoading(false)
          } else {
            toast({
              title: res.data.message,
@@ -170,6 +170,7 @@ const UpdateProfile = () => {
              isClosable: true,
              position: "bottom-right",
            });
+           setLoading(false);
          }
        })
        .catch((error) => {
@@ -182,11 +183,8 @@ const UpdateProfile = () => {
            isClosable: true,
            position: "bottom-right",
          });
+         setLoading(false);
        });
-
-
-
-
   }
    
   return (
@@ -315,7 +313,7 @@ const UpdateProfile = () => {
          className="pt-1" />
       </InputGroup>
       <Button
-        // isLoading
+         isloading={loading}
         loadingText="Updating"
         colorScheme="teal"
         variant="solid"

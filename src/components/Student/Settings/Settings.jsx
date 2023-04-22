@@ -1,10 +1,111 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from '../Home/Navbar';
-import { Button, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
+import { Button, Input, InputGroup, InputRightElement, useToast } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+import axios from "../../../axios";
+import { useNavigate } from 'react-router-dom';
+
 
 const Settings = () => {
-  const [show, setShow] = React.useState(false);
-  const handleClick = () => setShow(!show);
+  const student = useSelector((state) => state.student);
+  const token = localStorage.getItem("Stoken");
+   
+
+  const [showp, setShowp] = useState(false);
+  const [showcp, setShowcp] = useState(false);
+
+  const handleClickP = () => setShowp(!showp)
+  const handleClickCP = () => setShowcp(!showcp);
+   const toast = useToast();
+  
+  const [loading, setLoading] = useState(false)
+  const [passwords, setPasswords] = useState({
+    currentPassword:'',
+    newPassword:''
+  })
+
+  const handlePassword = async() =>{
+     
+      if(!passwords.currentPassword || !passwords.newPassword){
+        return toast({
+          title: "Enter passwords",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-right",
+        });
+      }
+      if(passwords.newPassword.length <6){
+        return toast({
+          title: "Password should be atlest 6 character length",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-right",
+        });
+      }
+      
+setLoading(true)
+
+const config = {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+};
+
+      await axios
+       .post(
+         `change-password?id=${student._id}`,
+         {
+           ...passwords,
+         },
+         config
+       )
+       .then((res) => {
+         if (res.data.updated) {
+              
+           toast({
+             title: res.data.message,
+             status: "success",
+             duration: 5000,
+             isClosable: true,
+             position: "bottom-right",
+           });
+            
+          setLoading(false)
+          setPasswords({
+            currentPassword:'',
+            newPassword:''
+          })
+           
+         } else {
+           toast({
+             title: res.data.message,
+             status: "error",
+             duration: 5000,
+             isClosable: true,
+             position: "bottom-right",
+           });
+           setLoading(false);
+           setPasswords({
+             currentPassword: "",
+             newPassword: "",
+           });
+         }
+       })
+       .catch((error) => {
+         console.log(error);
+          
+         toast({
+           title: error.message,
+           status: "error",
+           duration: 5000,
+           isClosable: true,
+           position: "bottom-right",
+         });
+         setLoading(false);
+       });
+  }
 
   return (
     <div className="h-screen w-full pt-16  overflow-x-hidden">
@@ -23,33 +124,42 @@ const Settings = () => {
         <InputGroup size="md">
           <Input
             pr="4.5rem"
-            type={show ? "text" : "password"}
+            type={showp ? "text" : "password"}
             placeholder="Enter current password"
+            value={passwords.currentPassword}
+            onChange={(e) => {
+              setPasswords({ ...passwords, currentPassword: e.target.value });
+            }}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
+            <Button h="1.75rem" size="sm" onClick={handleClickP}>
+              {showp ? "Hide" : "Show"}
             </Button>
           </InputRightElement>
         </InputGroup>
         <InputGroup size="md" className="mt-5">
           <Input
             pr="4.5rem"
-            type={show ? "text" : "password"}
+            type={showcp ? "text" : "password"}
             placeholder="Enter new password"
+            value={passwords.newPassword}
+            onChange={(e) => {
+              setPasswords({ ...passwords, newPassword: e.target.value });
+            }}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
+            <Button h="1.75rem" size="sm" onClick={handleClickCP}>
+              {showcp ? "Hide" : "Show"}
             </Button>
           </InputRightElement>
         </InputGroup>
         <Button
-          // isLoading
+          isLoading={loading}
           loadingText="Updating"
           colorScheme="teal"
           variant="solid"
           className="mt-5"
+          onClick={handlePassword}
         >
           UPDATE PASSWORD
         </Button>
