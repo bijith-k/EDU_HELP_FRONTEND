@@ -9,9 +9,9 @@ const HomePage = () => {
    
   return (
     <>
-    <Navbar />
-    <ErrorBoundary FallbackComponent={ErrorFallback} onReset={()=>{ }}>
-    <Suspense fallback={ <div className='bg-black h-screen'>loading</div>}>
+     <Navbar />
+     <ErrorBoundary FallbackComponent={ErrorFallback} onReset={()=>{ }}>
+    <Suspense fallback={ <div className='bg-black h-screen'>loading</div>}> 
     <Home />
     </Suspense>
     </ErrorBoundary>

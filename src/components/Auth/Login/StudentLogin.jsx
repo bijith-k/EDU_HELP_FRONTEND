@@ -49,6 +49,7 @@ const StudentLogin = () => {
                   board: response.data.student.board,
                   school: response.data.student.school,
                   status: response.data.student.status,
+                  profilePicture:response.data.student.profilePicture,
                   token: response.data.token,
                 })
               );

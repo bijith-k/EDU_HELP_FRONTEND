@@ -1,20 +1,21 @@
 
 import React, { useEffect, useState } from "react";
-import TabPanel from "@mui/lab/TabPanel";
-import school from "../../../assets/pdf.png";
 
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { Button, CardActionArea, CardActions } from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import axios from "../../../axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Stack,
+  Heading,
+  Text,
+  Divider,
+  ButtonGroup,
+  Button,
+} from "@chakra-ui/react";
 
 const MyVideos = () => {
   const student = useSelector((state) => state.student);
@@ -114,7 +115,7 @@ const MyVideos = () => {
    }
   return (
     <div>
-      <div className="m-4 md:m-8 flex md:justify-evenly md:flex-row flex-col items-center ">
+      {/* <div className="m-4 md:m-8 flex md:justify-evenly md:flex-row flex-col items-center ">
         <div className="bg-gray-400 w-max p-3 rounded-full md:mb-0 mb-4">
           <input
             type="text"
@@ -133,7 +134,7 @@ const MyVideos = () => {
           </Button>
         </div>
         <div>
-          {/* filter */}
+         
           <FormControl className="w-56">
             <InputLabel id="demo-simple-select-label">Subject</InputLabel>
             <Select
@@ -157,59 +158,126 @@ const MyVideos = () => {
             </Select>
           </FormControl>
         </div>
-      </div>
+      </div> */}
 
       <div className="flex justify-center">
-        <div className="grid md:grid-cols-4">
+        <div className="grid md:grid-cols-4 gap-1">
           {filteredData.length > 0 ? (
             filteredData.map((video, index) => (
-              <Card
-                key={index}
-                sx={{ maxWidth: 345 }}
-                className="m-4 rounded-2xl shadow-xl bg-slate-200"
-              >
-                <CardMedia
-                  sx={{ height: 240 }}
-                  className=" rounded-2xl border-4"
-                  component="iframe"
-                  title="test"
-                  src={video.video_link}
-                  allowFullScreen
-                />
+              // <Card
+              //   key={index}
+              //   sx={{ maxWidth: 345 }}
+              //   className="m-4 rounded-2xl shadow-xl bg-slate-200"
+              // >
+              //   <CardMedia
+              //     sx={{ height: 240 }}
+              //     className=" rounded-2xl border-4"
+              //     component="iframe"
+              //     title="test"
+              //     src={video.video_link}
+              //     allowFullScreen
+              //   />
 
-                <CardContent >
-                  <Typography gutterBottom variant="h6" component="div">
-                    {video.video_name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    className="uppercase"
-                  >
-                    Class/Branch : {video.branch.name} <br />
-                    Subject : {video.subject.name}
-                  </Typography>
-                  {video.approved ? 
-                  (<Typography variant="body2" color="text.secondary">
-                 Status : Approved
-                </Typography>) :
-                ((<Typography variant="body2" color="text.secondary">
-                Status : Pending Admin approval
-               </Typography>) ) }
-                </CardContent>
-                <CardActions className="flex justify-center">
-                  {/* <Button size="medium" className="bg-red-100 rounded-lg"><a href={`${question.file_path}`} target='_blank'>
-                DOWNLOAD</a>
-              </Button> */}
-                  {video.private ? 
-                  (<Button size="medium" className="bg-rose-100 rounded-lg" onClick={()=>handlePrivate(video._id)}>
-                  MAKE PUBLIC
-                </Button>) :
-                (<Button size="medium" className="bg-rose-100 rounded-lg" onClick={()=>handlePrivate(video._id)}>
-                MAKE PRIVATE
-              </Button>)}
-                </CardActions>
-                {/* <iframe src={`http://localhost:4000/${question.file_path}`} width="100%" height="500px"></iframe> */}
+              //   <CardContent >
+              //     <Typography gutterBottom variant="h6" component="div">
+              //       {video.video_name}
+              //     </Typography>
+              //     <Typography
+              //       variant="body2"
+              //       color="text.secondary"
+              //       className="uppercase"
+              //     >
+              //       Class/Branch : {video.branch.name} <br />
+              //       Subject : {video.subject.name}
+              //     </Typography>
+              //     {video.approved ?
+              //     (<Typography variant="body2" color="text.secondary">
+              //    Status : Approved
+              //   </Typography>) :
+              //   ((<Typography variant="body2" color="text.secondary">
+              //   Status : Pending Admin approval
+              //  </Typography>) ) }
+              //   </CardContent>
+              //   <CardActions className="flex justify-center">
+              //     {/* <Button size="medium" className="bg-red-100 rounded-lg"><a href={`${question.file_path}`} target='_blank'>
+              //   DOWNLOAD</a>
+              // </Button> */}
+              //     {video.private ?
+              //     (<Button size="medium" className="bg-rose-100 rounded-lg" onClick={()=>handlePrivate(video._id)}>
+              //     MAKE PUBLIC
+              //   </Button>) :
+              //   (<Button size="medium" className="bg-rose-100 rounded-lg" onClick={()=>handlePrivate(video._id)}>
+              //   MAKE PRIVATE
+              // </Button>)}
+              //   </CardActions>
+              //   {/* <iframe src={`http://localhost:4000/${question.file_path}`} width="100%" height="500px"></iframe> */}
+              // </Card>
+              <Card maxW="sm" key={index}>
+                <CardBody>
+                  {/* <Image
+                    src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+                    alt="Green double couch with wooden legs"
+                    borderRadius="lg"
+                  /> */}
+                  <iframe
+                    title="PDF Viewer"
+                    src={video.video_link}
+                    height="240"
+                    scrolling="no"
+                    borderRadius="lg"
+                  />
+                  <Stack mt="6" spacing="3">
+                    <Heading size="md"> {video.video_name}</Heading>
+                    <Text>
+                      Class : {video.branch.name} <br />
+                      Subject : {video.subject.name}
+                    </Text>
+
+                    {video.approved ? (
+                      <Text>Status : Approved</Text>
+                    ) : (
+                      <Text>Status : Pending Admin approval</Text>
+                    )}
+                  </Stack>
+                </CardBody>
+                <Divider />
+                <CardFooter>
+                  <ButtonGroup spacing="2" className="mx-auto">
+                    {/* <Button variant="solid" colorScheme="blue">
+                      Buy now
+                    </Button> */}
+                    {/* <Button className="bg-red-100 p-3 rounded-lg">
+                      <a
+                        href={`${import.meta.env.VITE_BASE_PATH}${
+                          note.file_path
+                        }`}
+                        target="_blank"
+                      >
+                        VIEW
+                      </a>
+                    </Button> */}
+                    {/* <Button variant="ghost" colorScheme="blue">
+                      Add to cart
+                    </Button> */}
+                    {video.private ? (
+                      <Button
+                        // size="medium"
+                        className="bg-red-100 p-3 rounded-lg"
+                        onClick={() => handlePrivate(video._id)}
+                      >
+                        MAKE PUBLIC
+                      </Button>
+                    ) : (
+                      <Button
+                        // size="medium"
+                        className="bg-red-100 p-3 rounded-lg"
+                        onClick={() => handlePrivate(video._id)}
+                      >
+                        MAKE PRIVATE
+                      </Button>
+                    )}
+                  </ButtonGroup>
+                </CardFooter>
               </Card>
             ))
           ) : (
@@ -217,11 +285,10 @@ const MyVideos = () => {
               No results found for "{searchQuery}" and "{selectedSubject}"
             </p>
           )}
-
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default MyVideos

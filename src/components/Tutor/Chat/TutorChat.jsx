@@ -1,43 +1,46 @@
 import React, { useEffect, useRef, useState } from "react";
-import Navbar from "../Home/Navbar";
-import Conversation from "./Conversation";
-import Message from "./Message";
-import ChatOnline from "./ChatOnline";
 import { useSelector } from "react-redux";
 import axios from "../../../axios";
 import { io } from "socket.io-client";
+import Navbar from "../Dashboard/Navbar";
+import Message from "./Message";
+import Conversation from "./Conversation";
 
 // const ENDPOINT = "http://localhost:4000";
 // var socket,selectedChatCompare;
 
-const StudentChat = () => {
-  const student = useSelector((state) => state.student);
-
+const TutorChat = () => {
+  const tutor = useSelector((state) => state.tutor);
+  
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
-
+  console.log(conversations,"convo")
+ console.log(messages,"messi");
+ console.log(currentChat,"chat")
   const socket = useRef();
   const scrollRef = useRef();
 
-  const token = localStorage.getItem("Stoken");
-
+  const token = localStorage.getItem("Ttoken");
+ console.log(tutor);
   // const [socketConnected, setSocketConnected] = useState(false)
 
   // useEffect(()=>{
   //   socket = io(ENDPOINT)
-  //   socket.emit("setup",student)
+  //   socket.emit("setup",tutor)
   //   socket.on("connection",()=>{
   //       setSocketConnected(true)
   //   })
   // },[])
-   
+
+  
+
   useEffect(() => {
     socket.current = io("ws://localhost:4000");
 
-    socket.current.on("getMessage", data => {
+    socket.current.on("getMessage", (data) => {
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
@@ -53,16 +56,16 @@ const StudentChat = () => {
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    socket.current.emit("addUser", student._id);
+    socket.current.emit("addUser", tutor._id);
     socket.current.on("getUsers", (users) => {
       console.log(users);
     });
-  }, [student]);
+  }, [tutor]);
 
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await axios.get(`get-conversation/${student._id}`, {
+        const res = await axios.get(`tutor/get-conversation/${tutor._id}`, {
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -73,12 +76,12 @@ const StudentChat = () => {
       }
     };
     getConversations();
-  }, [student._id]);
+  }, [tutor._id]);
 
   useEffect(() => {
     const getMessages = async () => {
       try {
-        const res = await axios.get(`get-message/${currentChat?._id}`, {
+        const res = await axios.get(`tutor/get-message/${currentChat?._id}`, {
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -110,22 +113,22 @@ const StudentChat = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const message = {
-      sender: student._id,
+      sender: tutor._id,
       text: newMessage,
       conversationId: currentChat._id,
     };
 
     const receiverId = currentChat.members.find(
-      (member) => member !== student._id
+      (member) => member !== tutor._id
     );
-    socket.current.emit("sendMessage", {
-      senderId: student._id,
+    socket.current.emit("sendTutorMessage", {
+      senderId: tutor._id,
       receiverId,
       text: newMessage,
     });
 
     try {
-      const res = await axios.post(`new-message`, message, {
+      const res = await axios.post(`tutor/new-message`, message, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -143,19 +146,12 @@ const StudentChat = () => {
   }, [messages]);
 
   return (
-    <div className="h-screen w-full bg-slate-300 overflow-x-hidden">
+    <div className="bg-gray-600 min-h-screen w-full overflow-x-hidden">
       <Navbar />
-      <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
-          "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
-        </h1>
+      <div className="bg-gray-500 uppercase h-14 text-center text-white font-bold text-xl pt-3">
+        CHATS
       </div>
-      <div className="bg-blue-500">
-        <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
-          chats
-        </h1>
-      </div>
-      <div className=" pb-16 flex w-full">
+      <div className="bg-white h-screen pb-16 flex w-full">
         <div className="w-3/12 ">
           <div className="chatMenuWrapper p-3  min-h-full">
             <input
@@ -164,7 +160,7 @@ const StudentChat = () => {
             />
             {conversations.map((c) => (
               <div onClick={() => setCurrentChat(c)}>
-                <Conversation conversation={c} currentUser={student} />
+                <Conversation conversation={c} currentUser={tutor} />
               </div>
             ))}
           </div>
@@ -178,7 +174,7 @@ const StudentChat = () => {
                     <div key={index} ref={scrollRef}>
                       <Message
                         message={message}
-                        own={message.sender === student._id}
+                        own={message.sender === tutor._id}
                       />
                     </div>
                   ))}
@@ -207,13 +203,13 @@ const StudentChat = () => {
           </div>
         </div>
         <div className="w-3/12">
-          <div className=" p-3  min-h-full">
-            <ChatOnline />
-          </div>
+          {/* <div className=" p-3  min-h-full">
+            <ChatOnlin />
+          </div> */}
         </div>
       </div>
     </div>
   );
 };
 
-export default StudentChat;
+export default TutorChat;

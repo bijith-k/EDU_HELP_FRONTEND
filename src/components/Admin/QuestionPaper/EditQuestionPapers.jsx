@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const EditQuestionPapers = () => {
   const questions = useSelector((state) => state.contents.questionPapers);
-  console.log(questions, "ques");
+   
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

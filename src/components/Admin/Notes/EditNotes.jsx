@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 const EditNotes = () => {
   const note = useSelector((state) => state.contents.note);
-  console.log(note, "noteeeeeee");
+   
 
   const token = localStorage.getItem("Adtoken");
 

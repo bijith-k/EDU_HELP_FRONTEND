@@ -1,10 +1,11 @@
-import { Button, TextField } from "@mui/material";
+
 import React, { useEffect, useState } from "react";
 import Navbar from "../Home/Navbar";
 
 import axios from "../../../axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Button } from "@chakra-ui/react";
 
 const UploadNotes = () => {
   const navigate = useNavigate();
@@ -141,7 +142,7 @@ const UploadNotes = () => {
   };
 
   return (
-    <div className="bg-gray-300 h-full w-full overflow-x-hidden">
+    <div className="bg-gray-300 h-full pt-16 w-full overflow-x-hidden">
       <Navbar />
       <div className="bg-gray-400 h-72">
         <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
@@ -270,12 +271,12 @@ const UploadNotes = () => {
           {" "}
           *These notes will be published only <br /> after admin verification
         </p>
-        <button
+        <Button
           type="submit"
           className="bg-blue-900 p-3 font-semibold text-white rounded-lg mt-2"
         >
           UPLOAD NOTE
-        </button>
+        </Button>
       </form>
     </div>
   );

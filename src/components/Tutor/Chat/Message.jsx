@@ -1,18 +1,15 @@
-import React from 'react'
+import React from "react";
 import user from "../../../assets/bij.jpg";
-import {format} from 'timeago.js'
+import { format } from "timeago.js";
 
-
-const Message = ({message,own}) => {
+const Message = ({ message, own }) => {
   return (
     <div className={`flex flex-col mt-5 ${own ? "items-end" : null}`}>
       <div className="messageTop flex">
         <img
           src={user}
           alt=""
-          className={`w-8 h-8 rounded-full object-cover mr-3 ${
-            own ? "hidden" : null
-          }`}
+          className={`w-8 h-8 rounded-full object-cover mr-3 ${own ? 'hidden' : null}`} 
         />
         <p
           className={`p-3 rounded-3xl ${
@@ -25,6 +22,6 @@ const Message = ({message,own}) => {
       <div className="text-xs mt-3">{format(message.createdAt)}</div>
     </div>
   );
-}
+};
 
-export default Message
+export default Message;

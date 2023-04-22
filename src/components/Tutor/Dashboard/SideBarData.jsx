@@ -16,7 +16,7 @@ export const SideBarData = [
   },
   {
     title: "CHAT",
-    path: "/tutor-edit-profile",
+    path: "/tutor-chat",
     icon: <AiIcons.AiFillHome />,
   },
   {

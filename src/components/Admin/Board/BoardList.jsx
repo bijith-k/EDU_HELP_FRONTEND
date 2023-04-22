@@ -1,30 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
-import ragam from "../../../assets/ragam.jpeg";
+
 import { FaSearch } from "react-icons/fa";
 
-import { styled } from "@mui/material/styles";
 import {
   Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
   TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper
-} from "@mui/material";
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios";
 
 
-const StyledTableCell = styled(TableCell)({
-  borderBottom: "none",
-  fontWeight: "bold",
-});
-
-const StyledTableContainer = styled(TableContainer)({
-  overflowX: "auto",
-});
+ 
 
 const BoardList = () => {
   const navigate = useNavigate();
@@ -95,7 +89,7 @@ const BoardList = () => {
           </div>
         </div>
 
-        <StyledTableContainer component={Paper} className="rounded-2xl mt-3">
+        {/* <StyledTableContainer component={Paper} className="rounded-2xl mt-3">
           <Table className="min-w-2">
             <TableHead>
               <TableRow className="bg-green-300">
@@ -127,12 +121,44 @@ const BoardList = () => {
                     </button>
                   </TableCell>
 
-                  {/* <TableCell><img src={ragam} className='w-24' alt="" /></TableCell> */}
+                   
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </StyledTableContainer>
+        </StyledTableContainer> */}
+        <TableContainer className="rounded-2xl mt-3">
+          <Table variant="striped" colorScheme="teal" bg={"blue.300"}>
+            {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
+            <Thead>
+              <Tr>
+                <Th isNumeric>No</Th>
+                <Th>Name of Board/University</Th>
+                <Th>Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {boards.map((board, index) => (
+                <Tr key={board._id}>
+                  <Td isNumeric>{index + 1}</Td>
+                  <Td>{board.name}</Td>
+                  <Td>
+                    <button
+                      onClick={() => board._id}
+                      className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                    >
+                      EDIT
+                    </button>
+                    <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
+                      UNLIST
+                    </button>
+                  </Td>
+                </Tr>
+              ))}
+               
+            </Tbody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );

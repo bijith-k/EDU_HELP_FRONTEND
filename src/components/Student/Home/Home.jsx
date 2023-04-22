@@ -14,7 +14,7 @@ const Home = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(student, "dddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+  
   // useEffect(() => {
   //   // Fetch boards from server on component mount
   //   axios.get(`admin/boards`)
@@ -40,7 +40,7 @@ const Home = () => {
           if (data.status) {
             dispatch(
               setStudent({
-                _id:data.student._id,
+                _id: data.student._id,
                 name: data.student.name,
                 email: data.student.email,
                 phone: data.student.phone,
@@ -48,6 +48,7 @@ const Home = () => {
                 board: data.student.board,
                 school: data.student.school,
                 status: data.student.status,
+                profilePicture: data.student.profilePicture,
                 token: data.token,
               })
             );
@@ -66,7 +67,7 @@ const Home = () => {
   }, [dispatch]);
 
   return (
-    <div className="h-screen w-full bg-slate-300 overflow-x-hidden">
+    <div className="h-screen w-full bg-slate-300 pt-16 overflow-x-hidden">
       {/* <Navbar /> */}
       <div className="bg-gray-400 h-72">
         <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
@@ -232,3 +233,32 @@ const Home = () => {
 };
 
 export default Home;
+
+// import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+// import React from 'react'
+
+// const Home = () => {
+//   return (
+//     <Tabs>
+//       <TabList className="bg-green-500">
+//         <Tab className="bg-red-300 w-1/3">One</Tab>
+//         <Tab className="bg-yellow-300 w-1/3">Two</Tab>
+//         <Tab className="bg-blue-300 w-1/3">Three</Tab>
+//       </TabList>
+
+//       <TabPanels>
+//         <TabPanel>
+//           <p>one!</p>
+//         </TabPanel>
+//         <TabPanel>
+//           <p>two!</p>
+//         </TabPanel>
+//         <TabPanel>
+//           <p>three!</p>
+//         </TabPanel>
+//       </TabPanels>
+//     </Tabs>
+//   );
+// }
+
+// export default Home

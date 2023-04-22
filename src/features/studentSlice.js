@@ -9,6 +9,7 @@ const initialState = {
   branch: "",
   school: "",
   status: "",
+  profilePicture:"",
   token: ""
 };
 
@@ -25,6 +26,7 @@ const studentSlice = createSlice({
       state.board = action.payload.board;
       state.school = action.payload.school;
       state.status = action.payload.status;
+      state.profilePicture = action.payload.profilePicture
       state.token = action.payload.token
     },
   },

@@ -71,7 +71,7 @@ const TutorLogin = () => {
   useEffect(() => {
     const token = localStorage.getItem("Ttoken");
     if (token) {
-      navigate("/tutor-profile");
+      navigate("/tutor-dashboard");
     }
   }, [navigate]);
   return (
