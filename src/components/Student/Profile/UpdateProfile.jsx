@@ -165,7 +165,7 @@ setLoading(true)
          } else {
            toast({
              title: res.data.message,
-             status: "success",
+             status: "error",
              duration: 5000,
              isClosable: true,
              position: "bottom-right",

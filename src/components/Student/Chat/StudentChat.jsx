@@ -162,6 +162,9 @@ const StudentChat = () => {
               placeholder="Search tutors"
               className="w-full bg-transparent py-3 border-slate-900 border-b-2"
             />
+            <p className="font-bold my-3 text-center text-lg">
+              Recent conversations
+            </p>
             {conversations.map((c) => (
               <div onClick={() => setCurrentChat(c)}>
                 <Conversation conversation={c} currentUser={student} />

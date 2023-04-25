@@ -3,32 +3,46 @@ import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
 
-import { styled } from "@mui/material/styles";
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-} from "@mui/material";
+ 
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios";
 import { useDispatch } from "react-redux";
 import { setQuestionData } from "../../../features/contentSlice";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 
-const StyledTableCell = styled(TableCell)({
-  borderBottom: "none",
-  fontWeight: "bold",
-});
-
-const StyledTableContainer = styled(TableContainer)({
-  overflowX: "auto",
-});
+ 
 const ManageQuestionPaper = () => {
   const dispatch = useDispatch();
-
+const toast = useToast();
+const [questionId, setQuestionId] = useState("");
+const { isOpen, onOpen, onClose } = useDisclosure();
+const handleOpen = (id) => {
+  onOpen();
+  setQuestionId(id);
+};
+const [rejectionReason, setRejectionReason] = useState("");
+ 
   const [questions, setQuestions] = useState([]);
 
   const [boards, setBoards] = useState([]);
@@ -39,7 +53,7 @@ const ManageQuestionPaper = () => {
   const [order, setOrder] = useState("ASC");
   const [toastMessage, setToastMessage] = useState("");
 
-  console.log(questions, "nooo");
+   
   useEffect(() => {
     axios
       .get(`admin/question-papers`, {
@@ -48,7 +62,7 @@ const ManageQuestionPaper = () => {
         },
       })
       .then((res) => {
-        console.log(res);
+         
         setQuestions(res.data);
       });
 
@@ -112,16 +126,66 @@ const ManageQuestionPaper = () => {
       .then((res) => {
         console.log(res);
         setToastMessage(res.data.message);
-        toast.success(res.data.message, {
-          position: "top-center",
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(err.data.message);
-        toast.error(err.data.message, {
-          position: "top-center",
+        setToastMessage(err.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
+      });
+  };
+
+
+  const handleReject = () => {
+    axios
+      .post(
+        `admin/reject-question-paper?question=${questionId}`,
+        { rejectionReason },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
+          },
+        }
+      )
+      .then((res) => {
+        setToastMessage(questionId);
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+
+        setRejectionReason("");
+        setQuestionId("");
+        onClose();
+      })
+      .catch((err) => {
+        console.log(err);
+        setToastMessage(err.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        setRejectionReason("");
+        setQuestionId("");
+        onClose();
       });
   };
 
@@ -140,15 +204,23 @@ const ManageQuestionPaper = () => {
       .then((res) => {
         console.log(res);
         setToastMessage(res.data.message);
-        toast.success(res.data.message, {
-          position: "top-center",
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(res.data.message);
-        toast.error(res.data.message, {
-          position: "top-center",
+        setToastMessage(err.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       });
   };
@@ -180,7 +252,7 @@ const ManageQuestionPaper = () => {
     <FaSearch />
   </div>
 </div> */}
-          <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
+          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
             <input
               type="text"
               name=""
@@ -191,51 +263,55 @@ const ManageQuestionPaper = () => {
             <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
               <FaSearch />
             </div>
-          </div>
+          </div> */}
 
           {/* <div className='bg-white p-2 rounded-2xl flex'>
           <button className='font-bold text-sky-900' onClick={()=>navigate('/admin-add-branch')}>ADD question paper</button>
         </div> */}
         </div>
 
-        <StyledTableContainer
-          component={Paper}
-          className="rounded-2xl mt-3  border-4 border-white"
-        >
-          <Table className="min-w-2">
-            <TableHead>
-              <TableRow className="bg-green-300">
-                <StyledTableCell className="">No</StyledTableCell>
-                <StyledTableCell onClick={() => sorting("name")}>
+        <TableContainer className="rounded-2xl mt-3">
+          <Table variant="simple">
+            <Thead>
+              <Tr className="bg-green-300 h-14">
+                <Th className="p-3 border">No</Th>
+                <Th onClick={() => sorting("name")} className="p-3 border">
                   Name of exam
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Name of subject
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Name of Branch
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Name of Board
-                </StyledTableCell>
-                <StyledTableCell className="text-center">
-                  Actions
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+                </Th>
+                <Th className="p-3 border text-center">Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody className="text-center">
               {questions.map((question, index) => (
-                <TableRow key={index} className="bg-gray-300 uppercase">
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{question.exam_name}</TableCell>
-                  <TableCell>{question.subject.name}</TableCell>
-                  <TableCell>{question.branch.name}</TableCell>
-                  <TableCell>{question.board.name}</TableCell>
-                  <TableCell className="flex justify-center">
+                <Tr key={index} className="bg-white uppercase">
+                  <Td className="border">{index + 1}</Td>
+                  <Td className="border">{question.exam_name}</Td>
+                  <Td className="border">{question.subject.name}</Td>
+                  <Td className="border">{question.branch.name}</Td>
+                  <Td className="border">{question.board.name}</Td>
+                  <Td className="border flex justify-center">
                     <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
                       {" "}
                       <a
-                        href={`${
+                        href={`${import.meta.env.VITE_BASE_PATH}${
                           question.file_path
                         }`}
                         target="_blank"
@@ -261,27 +337,61 @@ const ManageQuestionPaper = () => {
                           </button>
                         )}
                       </>
-                    ) : (
+                    ) : null}
+                    {!question.approved && !question.rejected ? (
                       <button
                         className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                         onClick={() => handleApprove(question._id)}
                       >
                         APPROVE
                       </button>
-                    )}
+                    ) : null}
+
+                    {!question.approved && !question.rejected ? (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleOpen(question._id)}
+                      >
+                        REJECT
+                      </button>
+                    ) : null}
                     {/* <button
                       className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                       onClick={() => handleEdit(question)}
                     >
                       EDIT
                     </button> */}
-                  </TableCell>
-                </TableRow>
+                  </Td>
+                </Tr>
               ))}
-            </TableBody>
+            </Tbody>
           </Table>
-        </StyledTableContainer>
+        </TableContainer>
       </div>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Reason for rejection</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>Add the reason</FormLabel>
+              <Input
+                placeholder="Type here..."
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="red" mr={3} onClick={handleReject}>
+              Reject
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

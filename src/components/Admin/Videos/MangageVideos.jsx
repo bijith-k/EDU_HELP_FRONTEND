@@ -3,32 +3,47 @@ import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
 
-import { styled } from "@mui/material/styles";
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-} from "@mui/material";
+ 
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setVideoData } from "../../../features/contentSlice";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 
-const StyledTableCell = styled(TableCell)({
-  borderBottom: "none",
-  fontWeight: "bold",
-});
 
-const StyledTableContainer = styled(TableContainer)({
-  overflowX: "auto",
-});
 const MangageVideos = () => {
   const dispatch = useDispatch();
+  const toast = useToast();
+  const [videoId, setVideoId] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleOpen = (id) => {
+    onOpen();
+    setVideoId(id);
+  };
+  const [rejectionReason, setRejectionReason] = useState("");
+
 
   const [videos, setVideos] = useState([]);
 
@@ -40,7 +55,7 @@ const MangageVideos = () => {
   const [order, setOrder] = useState("ASC");
   const [toastMessage, setToastMessage] = useState("");
 
-  console.log(videos, "nooo");
+   
   useEffect(() => {
     axios
       .get(`admin/videos`, {
@@ -49,7 +64,7 @@ const MangageVideos = () => {
         },
       })
       .then((res) => {
-        console.log(res);
+       
         setVideos(res.data);
       });
 
@@ -109,18 +124,62 @@ const MangageVideos = () => {
         }
       )
       .then((res) => {
-        console.log(res);
+        
         setToastMessage(res.data.message);
-        toast.success(res.data.message, {
-          position: "top-center",
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(err.data.message);
-        toast.error(err.data.message, {
-          position: "top-center",
+        setToastMessage(err.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
+      });
+  };
+
+  const handleReject = () => {
+    axios
+      .post(`admin/reject-videos?video=${videoId}`,{rejectionReason}, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
+        },
+      })
+      .then((res) => {
+        setToastMessage(videoId);
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        setRejectionReason("");
+        setVideoId("");
+        onClose();
+      })
+      .catch((err) => {
+        console.log(err);
+        setToastMessage(err.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+         setRejectionReason("");
+         setVideoId("");
+         onClose();
       });
   };
 
@@ -135,18 +194,26 @@ const MangageVideos = () => {
         }
       )
       .then((res) => {
-        console.log(res);
+        
         setToastMessage(res.data.message);
-        toast.success(res.data.message, {
-          position: "top-center",
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(res.data.message);
-        toast.error(res.data.message, {
-          position: "top-center",
-        });
+        setToastMessage(err.message);
+         toast({
+           title: err.message,
+           status: "error",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
       });
   };
 
@@ -177,7 +244,7 @@ const MangageVideos = () => {
   <FaSearch />
 </div>
 </div> */}
-          <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
+          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
             <input
               type="text"
               name=""
@@ -188,47 +255,52 @@ const MangageVideos = () => {
             <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
               <FaSearch />
             </div>
-          </div>
+          </div> */}
 
           {/* <div className='bg-white p-2 rounded-2xl flex'>
         <button className='font-bold text-sky-900' onClick={()=>navigate('/admin-add-branch')}>ADD VIDEOS</button>
       </div> */}
         </div>
 
-        <StyledTableContainer
-          component={Paper}
-          className="rounded-2xl mt-3  border-4 border-white"
-        >
-          <Table className="min-w-2">
-            <TableHead>
-              <TableRow className="bg-green-300">
-                <StyledTableCell className="">No</StyledTableCell>
-                <StyledTableCell onClick={() => sorting("name")}>
+        <TableContainer className="rounded-2xl mt-3">
+          <Table variant="simple">
+            <Thead>
+              <Tr className="bg-green-300 h-14">
+                <Th className="p-3 border">No</Th>
+                 
+                <Th className="p-3 border" onClick={() => sorting("name")}>
                   Name of video
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  className="p-3 border"
+                  onClick={() => sortingBranch("name")}
+                >
                   Name of subject
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  className="p-3 border"
+                  onClick={() => sortingBranch("name")}
+                >
                   Name of Branch
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  className="p-3 border"
+                  onClick={() => sortingBranch("name")}
+                >
                   Name of Board
-                </StyledTableCell>
-                <StyledTableCell className="text-center">
-                  Actions
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+                </Th>
+                <Th className="p-3 border text-center">Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
               {videos.map((video, index) => (
-                <TableRow key={index} className="bg-gray-300 uppercase">
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{video.video_name}</TableCell>
-                  <TableCell>{video.subject.name}</TableCell>
-                  <TableCell>{video.branch.name}</TableCell>
-                  <TableCell>{video.board.name}</TableCell>
-                  <TableCell className="flex justify-center">
+                <Tr key={index} className="bg-white uppercase">
+                  <Td className="border">{index + 1}</Td>
+                  <Td className="border">{video.video_name}</Td>
+                  <Td className="border">{video.subject.name}</Td>
+                  <Td className="border">{video.branch.name}</Td>
+                  <Td className="border">{video.board.name}</Td>
+                  <Td className="border flex justify-center">
                     <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
                       {" "}
                       <a href={video.video_link} target="_blank">
@@ -253,27 +325,60 @@ const MangageVideos = () => {
                           </button>
                         )}
                       </>
-                    ) : (
+                    ) : null}
+                    {!video.approved && !video.rejected ? (
                       <button
                         className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                         onClick={() => handleApprove(video._id)}
                       >
                         APPROVE
                       </button>
-                    )}
+                    ) : null}
+                    {!video.approved && !video.rejected ? (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleOpen(video._id)}
+                      >
+                        REJECT
+                      </button>
+                    ) : null}
                     {/* <button
                       className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                       onClick={() => handleEdit(video)}
                     >
                       EDIT
                     </button> */}
-                  </TableCell>
-                </TableRow>
+                  </Td>
+                </Tr>
               ))}
-            </TableBody>
+            </Tbody>
           </Table>
-        </StyledTableContainer>
+        </TableContainer>
       </div>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Reason for rejection</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>Add the reason</FormLabel>
+              <Input
+                placeholder="Type here..."
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="red" mr={3} onClick={handleReject}>
+              Reject
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

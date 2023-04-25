@@ -3,9 +3,12 @@ import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
 import axios from "../../../axios";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { useToast } from "@chakra-ui/react";
+
 
 const AddPlan = () => {
+  const toast = useToast()
+  const navigate = useNavigate()
    
   const [values, setValues] = useState({
     plan:'',
@@ -26,6 +29,39 @@ const AddPlan = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+     
+    const planNameRegex = /^[a-zA-Z0-9_-\s]+$/;
+    
+    if (!values.plan || !planNameRegex.test(values.plan)) {
+      return toast({
+        title: "Enter the name of the plan",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+    const durationRegex = /^1[0-2]$|^[1-9]$/;
+    if (!values.duration || !durationRegex.test(values.duration)) {
+      return toast({
+        title: "Enter the duration in number of months",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
+    const priceRegex = /^[1-9]\d*(\.\d{1,2})?$/
+    if (!values.price || !priceRegex.test(values.price)) {
+      return toast({
+        title: "Enter price for the plan",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
     axios
       .post(
         `admin/add-plan`,
@@ -33,15 +69,24 @@ const AddPlan = () => {
         config
       )
       .then((res) => {
-        console.log(res);
-        toast.success(res.data.message, {
-          position: "top-center",
+         
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
+        navigate('/admin-plans')
         
       })
       .catch((err) => {
-        toast.error(err.message, {
-          position: "top-center",
+        toast({
+          title: err.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
 
         console.error(err, "err");

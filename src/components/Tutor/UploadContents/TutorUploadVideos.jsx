@@ -121,6 +121,7 @@ const TutorUploadVideos = () => {
           board: selectedBoard,
           branch: selectedBranch,
           subject: selectedSubject,
+          exclusive: true,
         },
         config
       )

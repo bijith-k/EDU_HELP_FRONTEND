@@ -2,35 +2,47 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
-
-import { styled } from "@mui/material/styles";
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-} from "@mui/material";
+ 
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setNoteData } from "../../../features/contentSlice";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 
-const StyledTableCell = styled(TableCell)({
-  borderBottom: "none",
-  fontWeight: "bold",
-});
-
-const StyledTableContainer = styled(TableContainer)({
-  overflowX: "auto",
-});
+ 
 
 const ManageNotes = () => {
   const [notes, setNotes] = useState([]);
-
+const toast = useToast();
+const [noteId, setNoteId] = useState("");
+const { isOpen, onOpen, onClose } = useDisclosure();
+const handleOpen = (id) => {
+  onOpen();
+  setNoteId(id);
+};
+const [rejectionReason, setRejectionReason] = useState("");
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
 
@@ -106,18 +118,67 @@ const ManageNotes = () => {
         },
       })
       .then((res) => {
-        console.log(res);
+       
         setToastMessage(res.data.message);
-        toast.success(res.data.message, {
-          position: "top-center",
-        });
+         toast({
+           title: res.data.message,
+           status: "success",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(res.data.message);
-        toast.error(res.data.message, {
-          position: "top-center",
+        setToastMessage(res.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
+      });
+  };
+
+  const handleReject = () => {
+    axios
+      .post(
+        `admin/reject-notes?note=${noteId}`,
+        { rejectionReason },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
+          },
+        }
+      )
+      .then((res) => {
+        setToastMessage(noteId);
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+
+        setRejectionReason("");
+        setNoteId("");
+        onClose();
+      })
+      .catch((err) => {
+        console.log(err);
+        setToastMessage(res.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        setRejectionReason("");
+        setNoteId("");
+        onClose();
       });
   };
 
@@ -134,15 +195,23 @@ const ManageNotes = () => {
       .then((res) => {
         console.log(res);
         setToastMessage(res.data.message);
-        toast.success(res.data.message, {
-          position: "top-center",
-        });
+         toast({
+           title: res.data.message,
+           status: "success",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(res.data.message);
-        toast.error(res.data.message, {
-          position: "top-center",
+        setToastMessage(err.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       });
   };
@@ -174,7 +243,7 @@ const ManageNotes = () => {
     <FaSearch />
   </div>
 </div> */}
-          <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
+          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
             <input
               type="text"
               name=""
@@ -185,51 +254,55 @@ const ManageNotes = () => {
             <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
               <FaSearch />
             </div>
-          </div>
+          </div> */}
 
           {/* <div className='bg-white p-2 rounded-2xl flex'>
           <button className='font-bold text-sky-900' onClick={()=>navigate('/admin-add-branch')}>ADD NOTES</button>
         </div> */}
         </div>
 
-        <StyledTableContainer
-          component={Paper}
-          className="rounded-2xl mt-3  border-4 border-white"
-        >
-          <Table className="min-w-2">
-            <TableHead>
-              <TableRow className="bg-green-300">
-                <StyledTableCell className="">No</StyledTableCell>
-                <StyledTableCell onClick={() => sorting("name")}>
+        <TableContainer className="rounded-2xl mt-3">
+          <Table variant="simple">
+            <Thead>
+              <Tr className="bg-green-300 h-14">
+                <Th className="p-3 border">No</Th>
+                <Th className="p-3 border" onClick={() => sorting("name")}>
                   Name of Note
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  className="p-3 border"
+                  onClick={() => sortingBranch("name")}
+                >
                   Name of subject
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  className="p-3 border"
+                  onClick={() => sortingBranch("name")}
+                >
                   Name of Branch
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  className="p-3 border"
+                  onClick={() => sortingBranch("name")}
+                >
                   Name of Board
-                </StyledTableCell>
-                <StyledTableCell className="text-center">
-                  Actions
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+                </Th>
+                <Th className="p-3 border">Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
               {notes.map((note, index) => (
-                <TableRow key={index} className="bg-gray-300 uppercase">
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{note.note_name}</TableCell>
-                  <TableCell>{note.subject.name}</TableCell>
-                  <TableCell>{note.branch.name}</TableCell>
-                  <TableCell>{note.board.name}</TableCell>
-                  <TableCell className="flex justify-center">
+                <Tr key={index} className="bg-white uppercase">
+                  <Td className="border">{index + 1}</Td>
+                  <Td className="border">{note.note_name}</Td>
+                  <Td className="border">{note.subject.name}</Td>
+                  <Td className="border">{note.branch.name}</Td>
+                  <Td className="border">{note.board.name}</Td>
+                  <Td className="border flex justify-center">
                     <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
                       {" "}
                       <a
-                        href={`${
+                        href={`${import.meta.env.VITE_BASE_PATH}${
                           note.file_path
                         }`}
                         target="_blank"
@@ -255,93 +328,61 @@ const ManageNotes = () => {
                           </button>
                         )}
                       </>
-                    ) : (
+                    ) : null}
+
+                    {!note.approved && !note.rejected ? (
                       <button
                         className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                         onClick={() => handleApprove(note._id)}
                       >
                         APPROVE
                       </button>
-                    )}
-
+                    ) : null}
+                    {!note.approved && !note.rejected ? (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleOpen(note._id)}
+                      >
+                        REJECT
+                      </button>
+                    ) : null}
                     {/* <button
                       className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                       onClick={() => handleEdit(note)}
                     >
                       EDIT
                     </button> */}
-                  </TableCell>
-                </TableRow>
+                  </Td>
+                </Tr>
               ))}
-            </TableBody>
+            </Tbody>
           </Table>
-        </StyledTableContainer>
-        <div className='p-1 mt-2 bg-white w-full h-fit rounded-lg overflow-x-auto'>
-<table className='table-auto h-fit w-full border-2  border-white'>
-        <thead>
-          <tr className='bg-green-300 h-14 uppercase'>
-             <th className='p-3 border'>No</th>
-             <th className='p-3 border'>Name of Note</th>
-             <th className='p-3 border'>Name of subject</th>
-             <th className='p-3 border'>Name of Branch</th>
-             <th className='p-3 border'>Name of Board</th>
-             <th className='p-3 border'>Actions</th>
-          </tr>
-        </thead>
-        <tbody className='text-center'>
-        {notes.map((note, index) => (
-          <tr className='bg-gray-300 h-16' key={index}>
-            <td className='border'>{index + 1}</td>
-            <td className='border'>{note.note_name}</td>
-            <td className='border'>{note.subject.name}</td>
-            <td className='border'>{note.branch.name}</td>
-            <td className='border'>{note.board.name}</td>
-            <td className='border flex justify-center'>
-            <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
-                      {" "}
-                      <a
-                        href={`${
-                          note.file_path
-                        }`}
-                        target="_blank"
-                      >
-                        VIEW
-                      </a>{" "}
-                    </button>
-                    {note.approved ? (
-                      <>
-                        {note.listed ? (
-                          <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
-                            onClick={() => handleListUnlist(note._id)}
-                          >
-                            UNLIST
-                          </button>
-                        ) : (
-                          <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
-                            onClick={() => handleListUnlist(note._id)}
-                          >
-                            LIST
-                          </button>
-                        )}
-                      </>
-                    ) : (
-                      <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
-                        onClick={() => handleApprove(note._id)}
-                      >
-                        APPROVE
-                      </button>
-                    )}
-            </td>
-          </tr>
-            ))}
-        </tbody>
-       </table>
-  </div>
-      
+        </TableContainer>
       </div>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Reason for rejection</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>Add the reason</FormLabel>
+              <Input
+                placeholder="Type here..."
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="red" mr={3} onClick={handleReject}>
+              Reject
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

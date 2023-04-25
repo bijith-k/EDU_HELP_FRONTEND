@@ -2,29 +2,13 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
-
-import { styled } from "@mui/material/styles";
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-} from "@mui/material";
+ 
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios";
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 
 
-const StyledTableCell = styled(TableCell)({
-  borderBottom: "none",
-  fontWeight: "bold",
-});
-
-const StyledTableContainer = styled(TableContainer)({
-  overflowX: "auto",
-});
+ 
 const SubjectList = () => {
   const [subjects, setSubjects] = useState([]);
 
@@ -61,12 +45,28 @@ const SubjectList = () => {
       setOrder("ASC");
     }
   };
+
+  const handleEdit = (subject) => {
+    
+    localStorage.setItem("subjectId", subject._id);
+    localStorage.setItem("subBranchId", subject.branch._id);
+
+    // dispatch(
+    //   setBoardData({
+    //     board,
+    //   })
+    // );
+    navigate("/admin-edit-subject");
+  };
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
       <div>
         <Sidebar />
       </div>
-      <div className="w-full p-5 overflow-clip">
+      <div className="w-full overflow-clip">
+        <p className="bg-white w-full p-3 my-5 uppercase font-bold text-center">
+          manage subjects
+        </p>
         <div className="flex justify-around">
           {/* <div className="bg-white p-3 rounded-2xl inline-flex ">
   <input type="text" name="" id="" placeholder='search' className='inline-block' />
@@ -74,7 +74,7 @@ const SubjectList = () => {
     <FaSearch />
   </div>
 </div> */}
-          <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
+          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
             <input
               type="text"
               name=""
@@ -85,7 +85,7 @@ const SubjectList = () => {
             <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
               <FaSearch />
             </div>
-          </div>
+          </div> */}
 
           <div className="bg-white p-2 rounded-2xl flex">
             <button
@@ -97,46 +97,62 @@ const SubjectList = () => {
           </div>
         </div>
 
-        <StyledTableContainer component={Paper} className="rounded-2xl mt-3">
-          <Table className="min-w-2">
-            <TableHead>
-              <TableRow className="bg-green-300">
-                <StyledTableCell onClick={() => sorting("column1")}>
-                  No
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sorting("name")}>
+        <TableContainer className="rounded-2xl mt-3">
+          <Table variant="simple">
+            <Thead>
+              <Tr className="bg-green-300 h-14">
+                <Th className="p-3 border">No</Th>
+                <Th onClick={() => sorting("name")} className="p-3 border">
                   Name of Subject
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sorting("branch.name")}>
+                </Th>
+                <Th
+                  onClick={() => sorting("branch.name")}
+                  className="p-3 border"
+                >
                   Name of Branch
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sorting("column1")}>
+                </Th>
+                <Th
+                  onClick={() => sorting("column1")}
+                  className="p-3 border text-center"
+                >
                   Actions
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody className="text-center">
               {subjects.map((subject, index) => (
-                <TableRow key={subject._id} className="uppercase bg-slate-300">
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{subject.name}</TableCell>
-                  <TableCell>{subject.branch.name}</TableCell>
-                  <TableCell>
+                <Tr key={subject._id} className="uppercase bg-white">
+                  <Td className="border">{index + 1}</Td>
+                  <Td className="border">{subject.name}</Td>
+                  <Td className="border">{subject.branch.name}</Td>
+                  <Td className="border flex justify-center">
                     <button
-                      onClick={() => subject._id}
+                      onClick={() => handleEdit(subject)}
                       className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                     >
                       EDIT
                     </button>
-                    <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
-                      UNLIST
-                    </button>
-                  </TableCell>
-                </TableRow>
+                    {subject.listed ? (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleListUnlist(subject._id)}
+                      >
+                        UNLIST
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleListUnlist(subject._id)}
+                      >
+                        LIST
+                      </button>
+                    )}
+                  </Td>
+                </Tr>
               ))}
-            </TableBody>
+            </Tbody>
           </Table>
-        </StyledTableContainer>
+        </TableContainer>
       </div>
     </div>
   );

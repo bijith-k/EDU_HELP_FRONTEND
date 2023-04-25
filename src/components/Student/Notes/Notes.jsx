@@ -35,13 +35,14 @@ const Notes = () => {
           if (data.status) {
             dispatch(
               setStudent({
-                _id:data.student._id,
+                _id: data.student._id,
                 name: data.student.name,
                 email: data.student.email,
                 phone: data.student.phone,
                 branch: data.student.branch,
                 board: data.student.board,
                 school: data.student.school,
+                profilePicture: data.student.profilePicture,
                 status: data.student.status,
                 token: data.token,
               })

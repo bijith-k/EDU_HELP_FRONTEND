@@ -13,6 +13,7 @@ import {
   ButtonGroup,
   Button,
 } from "@chakra-ui/react";
+import Pagination from "../../Pagination/Pagination";
 
 
 const VideosContent = () => {
@@ -23,8 +24,14 @@ const VideosContent = () => {
   console.log(videos, "vid");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
+const [currentPage, setCurrentPage] = useState(1);
+const [videosPerPage, setVideosPerPage] = useState(3);
+const lastVideoIndex = currentPage * videosPerPage;
+const firstVideoIndex = lastVideoIndex - videosPerPage;
 
-  const video = videos.filter(
+const currentVideos = videos.slice(firstVideoIndex, lastVideoIndex);
+
+  const video = currentVideos.filter(
     (video) => video.branch._id === student.branch._id
   );
   console.log(video, "vidooooo");
@@ -170,7 +177,7 @@ const VideosContent = () => {
               //   {/* <iframe src={`http://localhost:4000/${question.file_path}`} width="100%" height="500px"></iframe> */}
               // </Card>
 
-              <Card maxW="sm" key={index} >
+              <Card maxW="sm" key={index}>
                 <CardBody>
                   {/* <Image
                     src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
@@ -314,6 +321,12 @@ const VideosContent = () => {
           </Card> */}
         </div>
       </div>
+      <Pagination
+        totalContents={videos.length}
+        contentsPerPage={videosPerPage}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
+      />
     </div>
   );
 };

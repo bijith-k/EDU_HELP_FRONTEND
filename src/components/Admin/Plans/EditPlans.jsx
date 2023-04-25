@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setNoteData } from "../../../features/contentSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios";
-import { toast } from "react-toastify";
+import { useToast } from "@chakra-ui/react";
 
 const EditPlans = () => {
  
-
+ const toast = useToast()
   const token = localStorage.getItem("Adtoken");
   const planId = localStorage.getItem("planId");
 
@@ -53,19 +53,35 @@ const EditPlans = () => {
 
     const planNameRegex = /^[a-zA-Z0-9_-\s]+$/;
     if (!updateData.plan || !planNameRegex.test(updateData.plan)) {
-      setErrors("Enter the name of the plan");
-      return;
+      return toast({
+        title: "Enter the name of the plan",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
-    const durationRegex = /^[0-9]+$/;
+    const durationRegex = /^1[0-2]$|^[1-9]$/;
     if (!updateData.duration || !durationRegex.test(updateData.duration)) {
-      setErrors("Enter the duration in number of months");
-      return;
+     
+      return toast({
+        title: "Enter the duration in number of months",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
 
-    const priceRegex = /^[0-9]+$/;
+    const priceRegex = /^[1-9]\d*(\.\d{1,2})?$/;
     if (!updateData.price || !priceRegex.test(updateData.price)) {
-      setErrors("Enter price for the plan");
-      return;
+      return toast({
+        title: "Enter price for the plan",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
  
 

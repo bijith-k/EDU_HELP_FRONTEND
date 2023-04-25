@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const Settings = () => {
   const student = useSelector((state) => state.student);
   const token = localStorage.getItem("Stoken");
-   
+   const navigate = useNavigate()
 
   const [showp, setShowp] = useState(false);
   const [showcp, setShowcp] = useState(false);
@@ -77,6 +77,8 @@ const config = {
             currentPassword:'',
             newPassword:''
           })
+           localStorage.removeItem("Stoken");
+           navigate("/signin");
            
          } else {
            toast({

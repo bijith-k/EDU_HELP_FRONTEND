@@ -2,30 +2,15 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { FaSearch } from "react-icons/fa";
 
-import { styled } from "@mui/material/styles";
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-} from "@mui/material";
+ 
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setEventsData, setNoteData } from "../../../features/contentSlice";
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
 
-const StyledTableCell = styled(TableCell)({
-  borderBottom: "none",
-  fontWeight: "bold",
-});
-
-const StyledTableContainer = styled(TableContainer)({
-  overflowX: "auto",
-});
+ 
 
 const ManageEvents = () => {
   const [events, setEvents] = useState([]);
@@ -38,8 +23,9 @@ const ManageEvents = () => {
   const [order, setOrder] = useState("ASC");
 
   const dispatch = useDispatch();
+  const toast = useToast();
 
-  console.log(events, "nooo");
+   
   useEffect(() => {
     axios
       .get(`admin/events`, {
@@ -80,6 +66,13 @@ const ManageEvents = () => {
     }
   };
 
+  function formatDate(dateString) {
+    const [date, time] = dateString.split("T");
+    const [year, month, day] = date.split("-");
+    const formattedDate = `${day}-${month}-${year.slice(-2)}`; // extract last two characters of year for yy format
+    return formattedDate;
+  }
+
   const sortingBranch = (col) => {
     if (order === "ASC") {
       const sorted = [...branches].sort((a, b) =>
@@ -110,15 +103,54 @@ const ManageEvents = () => {
       .then((res) => {
         console.log(res);
         setToastMessage(res.data.message);
-        toast.success(res.data.message, {
-          position: "top-center",
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       })
       .catch((err) => {
         console.log(err);
         setToastMessage(res.data.message);
-        toast.error(res.data.message, {
-          position: "top-center",
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
+  };
+
+  const handleReject = (id) => {
+    axios
+      .get(`admin/reject-events?event=${id}`, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setToastMessage(res.data.message);
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setToastMessage(res.data.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       });
   };
@@ -136,15 +168,23 @@ const ManageEvents = () => {
       .then((res) => {
         console.log(res);
         setToastMessage(res.data.message);
-        toast.success(res.data.message, {
-          position: "top-center",
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       })
       .catch((err) => {
         console.log(err);
         setToastMessage(res.data.message);
-        toast.error(res.data.message, {
-          position: "top-center",
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       });
   };
@@ -176,7 +216,7 @@ const ManageEvents = () => {
   <FaSearch />
 </div>
 </div> */}
-          <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
+          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
             <input
               type="text"
               name=""
@@ -187,72 +227,89 @@ const ManageEvents = () => {
             <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
               <FaSearch />
             </div>
-          </div>
+          </div> */}
 
           {/* <div className='bg-white p-2 rounded-2xl flex'>
         <button className='font-bold text-sky-900' onClick={()=>navigate('/admin-add-branch')}>ADD NOTES</button>
       </div> */}
         </div>
 
-        <StyledTableContainer
-          component={Paper}
-          className="rounded-2xl mt-3  border-4 border-white"
-        >
-          <Table className="min-w-2">
-            <TableHead>
-              <TableRow className="bg-green-300">
-                <StyledTableCell className="">No</StyledTableCell>
-                <StyledTableCell onClick={() => sorting("name")}>
+        <TableContainer className="rounded-2xl mt-3">
+          <Table variant="simple">
+            <Thead>
+              <Tr className="bg-green-300 h-14">
+                <Th className="p-3 border">No</Th>
+                <Th onClick={() => sorting("name")} className="p-3 border">
                   Name of event
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Organizer
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Location
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                  // width="20"
+                >
                   Description
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Starting Date
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Ending Date
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Link
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Contact
-                </StyledTableCell>
-                <StyledTableCell className="text-center">
-                  Actions
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+                </Th>
+                <Th className="p-3 border">Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody className="text-center">
               {events.map((event, index) => (
-                <TableRow key={index} className="bg-gray-300 uppercase">
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{event.name}</TableCell>
-                  <TableCell>{event.organizer}</TableCell>
-                  <TableCell>{event.location}</TableCell>
-                  <TableCell>{event.description}</TableCell>
-                  <TableCell>{event.startingDate}</TableCell>
-                  <TableCell>{event.endingDate}</TableCell>
-                  <TableCell className="lowercase">
+                <Tr key={index} className="bg-white uppercase">
+                  <Td className="border">{index + 1}</Td>
+                  <Td className="border">{event.name}</Td>
+                  <Td className="border">{event.organizer}</Td>
+                  <Td className="border">{event.location}</Td>
+                  <Td className="border">{event.description}</Td>
+                  <Td className="border">{formatDate(event.startingDate)}</Td>
+                  <Td className="border">{formatDate(event.endingDate)}</Td>
+                  <Td className="lowercase border">
                     <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
                       <a href={event.link} target="_blank">
                         Click
                       </a>
                     </button>
-                  </TableCell>
-                  <TableCell>{event.contact}</TableCell>
-                  <TableCell className="flex justify-center">
-                    <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
+                  </Td>
+                  <Td>{event.contact}</Td>
+                  <Td className="border flex justify-center">
+                    <button className="bg-sky-900 font-semibold text-white m-2 w-28 p-2 rounded-xl">
                       <a
-                        href={`${
+                        href={`${import.meta.env.VITE_BASE_PATH}${
                           event.poster
                         }`}
                         target="_blank"
@@ -278,14 +335,25 @@ const ManageEvents = () => {
                           </button>
                         )}
                       </>
-                    ) : (
+                    ) : null}
+
+                    {!event.approved && !event.rejected ? (
                       <button
                         className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                         onClick={() => handleApprove(event._id)}
                       >
                         APPROVE
                       </button>
-                    )}
+                    ) : null}
+
+                    {!event.approved && !event.rejected ? (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleReject(event._id)}
+                      >
+                        REJECT
+                      </button>
+                    ) : null}
 
                     {/* <button
                       className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
@@ -293,12 +361,12 @@ const ManageEvents = () => {
                     >
                       EDIT
                     </button> */}
-                  </TableCell>
-                </TableRow>
+                  </Td>
+                </Tr>
               ))}
-            </TableBody>
+            </Tbody>
           </Table>
-        </StyledTableContainer>
+        </TableContainer>
       </div>
     </div>
   );

@@ -45,17 +45,57 @@ const TutorLogin = () => {
                   name: response.data.tutor.name,
                   email: response.data.tutor.email,
                   phone: response.data.tutor.phone,
+                  branch: response.data.tutor.branch,
+                  board: response.data.tutor.board,
                   subjects: response.data.tutor.subjects,
                   timeFrom: response.data.tutor.timeFrom,
                   timeTo: response.data.tutor.timeTo,
                   profession: response.data.tutor.profession,
                   status: response.data.tutor.status,
+                  place:response.data.tutor.place,
+                  profilePicture: response.data.tutor.profilePicture,
                   token: response.data.token,
                 })
               );
               localStorage.setItem("Ttoken", response.data.token);
               localStorage.setItem("Tid", response.data.tutor._id);
               navigate("/tutor-dashboard");
+            }
+            else if (response.data.pending) {
+              dispatch(
+                setTutor({
+                  _id: response.data.tutor._id,
+                  name: response.data.tutor.name,
+                  email: response.data.tutor.email,
+                  phone: response.data.tutor.phone,
+                  branch: response.data.tutor.branch,
+                  board: response.data.tutor.board,
+                  subjects: response.data.tutor.subjects,
+                  timeFrom: response.data.tutor.timeFrom,
+                  timeTo: response.data.tutor.timeTo,
+                  profession: response.data.tutor.profession,
+                  status: response.data.tutor.status,
+                  place: response.data.tutor.place
+                })
+              );
+              navigate("/tutor-approval-pending");
+            } else if (response.data.rejected) {
+              dispatch(
+                setTutor({
+                  _id: response.data.tutor._id,
+                  name: response.data.tutor.name,
+                  email: response.data.tutor.email,
+                  phone: response.data.tutor.phone,
+                  branch: response.data.tutor.branch,
+                  board: response.data.tutor.board,
+                  subjects: response.data.tutor.subjects,
+                  timeFrom: response.data.tutor.timeFrom,
+                  timeTo: response.data.tutor.timeTo,
+                  profession: response.data.tutor.profession,
+                  rejection_reason: response.data.tutor.rejection_reason,
+                })
+              );
+              navigate("/tutor-approval-rejected");
             } else {
               toast.error(response.data.message);
             }

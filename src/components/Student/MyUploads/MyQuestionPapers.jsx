@@ -10,6 +10,13 @@ import {
   Divider,
   ButtonGroup,
   Button,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 import axios from "../../../axios";
 import { useSelector } from "react-redux";
@@ -21,6 +28,9 @@ const MyQuestionPapers = () => {
   const [questions, setQuestions] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const[change,setChange] = useState('')
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
+
 
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -112,6 +122,35 @@ const MyQuestionPapers = () => {
      });
    });
    }
+
+   
+
+   const handleDelete = (id) => {
+    onClose();
+     axios
+       .delete(`delete-questions?id=${id}`,{
+         headers: {
+           authorization: `Bearer ${localStorage.getItem("Stoken")}`,
+         },
+       })
+       .then((res) => {
+         console.log(res);
+         // setToastMessage(res.data.message);
+         toast.success(res.data.message, {
+           position: "top-center",
+         });
+         setChange(res.data.message);
+       })
+       .catch((err) => {
+         console.log(err);
+         // setToastMessage(res.data.message);
+         toast.error(err.message, {
+           position: "top-center",
+         });
+       });
+   };
+
+
   return (
     <div>
       {/* <div className="m-4 md:m-8 flex md:justify-evenly md:flex-row flex-col items-center ">
@@ -298,6 +337,44 @@ const MyQuestionPapers = () => {
                         MAKE PRIVATE
                       </Button>
                     )}
+
+                    <Button
+                      // size="medium"
+                      className="bg-red-500 text-white p-3 rounded-lg"
+                      onClick={onOpen}
+                    >
+                      DELETE
+                    </Button>
+                    <AlertDialog
+                      isOpen={isOpen}
+                      leastDestructiveRef={cancelRef}
+                      onClose={onClose}
+                    >
+                      <AlertDialogOverlay>
+                        <AlertDialogContent>
+                          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Delete Question Paper
+                          </AlertDialogHeader>
+
+                          <AlertDialogBody>
+                            Are you sure? You can't undo this action afterwards.
+                          </AlertDialogBody>
+
+                          <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                              Cancel
+                            </Button>
+                            <Button
+                              colorScheme="red"
+                              onClick={() => handleDelete(question._id)}
+                              ml={3}
+                            >
+                              Delete
+                            </Button>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialogOverlay>
+                    </AlertDialog>
                   </ButtonGroup>
                 </CardFooter>
               </Card>

@@ -3,15 +3,17 @@ import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
 import axios from "../../../axios";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const AddSubject = () => {
+  const toast = useToast()
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
   const [subjectName, setSubjectName] = useState("");
-
+  const navigate = useNavigate()
   useEffect(() => {
     // Fetch boards from server on component mount
     axios
@@ -59,6 +61,38 @@ const AddSubject = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+const nameRegex = /^[a-zA-Z0-9]+([ \-'][a-zA-Z0-9]+)*$/;
+
+    if (!selectedBoard) {
+      return toast({
+        title: "Please select a board",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+    if (!selectedBranch) {
+      return toast({
+        title: "Please select a branch",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
+    if (!subjectName || !nameRegex.test(subjectName)) {
+      return toast({
+        title: "Please enter the subject name",
+        description: "Don't start name with spaces",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
     axios
       .post(
         `admin/add-subject`,
@@ -66,18 +100,26 @@ const AddSubject = () => {
         config
       )
       .then((res) => {
-        console.log(res);
-        toast.success(res.data.message, {
-          position: "top-center",
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
         setSelectedBoard("");
         setSelectedBranch("");
         setSubjectName("");
+        navigate('/admin-subject')
       })
       .catch((err) => {
-        toast.error(err.message, {
-          position: "top-center",
-        });
+       toast({
+         title: err.message,
+         status: "success",
+         duration: 5000,
+         isClosable: true,
+         position: "top",
+       });
 
         console.error(err, "err");
       });

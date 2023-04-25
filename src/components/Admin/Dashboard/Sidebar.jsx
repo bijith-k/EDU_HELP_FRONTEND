@@ -13,6 +13,7 @@ import branch from "../../../assets/branch.png";
 import subject from "../../../assets/subject.png";
 import { useDispatch, useSelector } from "react-redux";
 import { selectedIcon } from "../../../features/sidebarSlice";
+import { BiLogOut } from "react-icons/bi";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Sidebar = () => {
     { title: "Board", src: board, gap: true, route: "/admin-board" },
     { title: "Branch", src: branch, route: "/admin-branch" },
     { title: "Subject", src: subject, route: "/admin-subject" },
-    { title: "Plans", src: subject, route: "/admin-plans" },
+    { title: "Plans", src: events, route: "/admin-plans" },
   ];
   return (
     <div className="flex">
@@ -99,6 +100,15 @@ const Sidebar = () => {
             </li>
           ))}
         </ul>
+        <button 
+          className="my-6 w-8 bg-red-500 text-white p-3 rounded-md"
+          onClick={() => {
+            localStorage.removeItem("Adtoken");
+            navigate("/admin");
+          }}
+        >
+          <BiLogOut  />
+        </button>
       </div>
       {/* <div className='p-7 text-2xl font-semibold flex-1 h-screen '>
         <h1>{title}</h1>

@@ -3,28 +3,13 @@ import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
 
-import { styled } from "@mui/material/styles";
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-} from "@mui/material";
+ 
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios";
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
 
 
-const StyledTableCell = styled(TableCell)({
-  borderBottom: "none",
-  fontWeight: "bold",
-});
-
-const StyledTableContainer = styled(TableContainer)({
-  overflowX: "auto",
-});
+ 
 
 const BranchList = () => {
   const [boards, setBoards] = useState([]);
@@ -33,6 +18,8 @@ const BranchList = () => {
   const navigate = useNavigate();
   const [data, setData] = useState("data hereeeeee");
   const [order, setOrder] = useState("ASC");
+  const [toastMessage, setToastMessage] = useState("");
+  const toast = useToast();
 
   useEffect(() => {
     axios
@@ -56,7 +43,7 @@ const BranchList = () => {
         console.log(res, "3");
         setBranches(res.data.branches);
       });
-  }, []);
+  }, [toastMessage]);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -91,12 +78,57 @@ const BranchList = () => {
       setOrder("ASC");
     }
   };
+
+  const handleEdit = (branch) => {
+    localStorage.setItem("branchId", branch._id);
+    // dispatch(
+    //   setBoardData({
+    //     board,
+    //   })
+    // );
+    navigate("/admin-edit-branch");
+  };
+
+  const handleListUnlist = (id) => {
+    axios
+      .put(`admin/branch-list-unlist?id=${id}`, null, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setToastMessage(id, res.data.message);
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setToastMessage(id, err.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
+  };
+
   return (
     <div className="bg-sky-900 flex overflow-x-hidden ">
       <div className="bg-dark-purple ">
         <Sidebar />
       </div>
-      <div className="w-full p-5 overflow-clip">
+      <div className="w-full overflow-clip">
+        <p className="bg-white w-full p-3 my-5 uppercase font-bold text-center">
+          manage branches
+        </p>
         <div className="flex justify-around">
           {/* <div className="bg-white p-3 rounded-2xl inline-flex ">
   <input type="text" name="" id="" placeholder='search' className='inline-block' />
@@ -104,7 +136,7 @@ const BranchList = () => {
     <FaSearch />
   </div>
 </div> */}
-          <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
+          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
             <input
               type="text"
               name=""
@@ -115,7 +147,7 @@ const BranchList = () => {
             <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
               <FaSearch />
             </div>
-          </div>
+          </div> */}
 
           <div className="bg-white p-2 rounded-2xl flex">
             <button
@@ -127,57 +159,69 @@ const BranchList = () => {
           </div>
         </div>
 
-        <StyledTableContainer component={Paper} className="rounded-2xl mt-3">
-          <Table className="min-w-2">
-            <TableHead>
-              <TableRow className="bg-green-300">
-                <StyledTableCell className="">No</StyledTableCell>
-                <StyledTableCell onClick={() => sorting("name")}>
+        <TableContainer className="rounded-2xl mt-3">
+          <Table variant="simple">
+            <Thead>
+              <Tr className="bg-green-300 h-14">
+                <Th className="p-3 border">No</Th>
+                <Th onClick={() => sorting("name")} className="p-3 border">
                   Name of Board/University
-                </StyledTableCell>
-                <StyledTableCell onClick={() => sortingBranch("name")}>
+                </Th>
+                <Th
+                  onClick={() => sortingBranch("name")}
+                  className="p-3 border"
+                >
                   Branch
-                </StyledTableCell>
-                <StyledTableCell>Actions</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+                </Th>
+                <Th className="p-3 border text-center">Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody className="text-center">
               {boards.map((board, index) => (
-                <React.Fragment key={board._id}>
-                  <TableRow className="bg-gray-400 uppercase">
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{board.name}</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
+                <React.Fragment>
+                  <Tr key={board._id} className="bg-white uppercase">
+                    <Td className="border">{index + 1}</Td>
+                    <Td className="border">{board.name}</Td>
+                    <Td></Td>
+                    <Td></Td>
+                  </Tr>
                   {branches
                     .filter((branch) => branch.board === board._id)
                     .map((branch) => (
-                      <TableRow
-                        key={branch._id}
-                        className="bg-gray-300 uppercase"
-                      >
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>{branch.name}</TableCell>
-                        <TableCell>
+                      <Tr key={branch._id} className="bg-white uppercase">
+                        <Td></Td>
+                        <Td></Td>
+                        <Td className="border">{branch.name}</Td>
+                        <Td className="border flex justify-center">
                           <button
-                            onClick={() => branch._id}
+                            onClick={() => handleEdit(branch)}
                             className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                           >
                             EDIT
                           </button>
-                          <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
-                            UNLIST
-                          </button>
-                        </TableCell>
-                      </TableRow>
+                          {branch.listed ? (
+                            <button
+                              className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                              onClick={() => handleListUnlist(branch._id)}
+                            >
+                              UNLIST
+                            </button>
+                          ) : (
+                            <button
+                              className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                              onClick={() => handleListUnlist(branch._id)}
+                            >
+                              LIST
+                            </button>
+                          )}
+                        </Td>
+                      </Tr>
                     ))}
                 </React.Fragment>
               ))}
-            </TableBody>
+            </Tbody>
           </Table>
-        </StyledTableContainer>
+        </TableContainer>
       </div>
     </div>
   );

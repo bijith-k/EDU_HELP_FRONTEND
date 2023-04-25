@@ -124,6 +124,7 @@ const TutorUploadNotes = () => {
           board: selectedBoard,
           branch: selectedBranch,
           subject: selectedSubject,
+          exclusive: true,
         },
         config
       )

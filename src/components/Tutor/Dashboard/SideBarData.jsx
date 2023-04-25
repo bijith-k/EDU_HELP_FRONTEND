@@ -10,6 +10,11 @@ export const SideBarData = [
     icon: <AiIcons.AiFillHome />,
   },
   {
+    title: "UPDATE PROFILE",
+    path: "/tutor-edit-profile",
+    icon: <AiIcons.AiFillHome />,
+  },
+  {
     title: "YOUR UPLOADS",
     path: "/tutor-uploads",
     icon: <AiIcons.AiFillHome />,
@@ -40,11 +45,15 @@ export const SideBarData = [
     icon: <AiIcons.AiFillHome />,
   },
   {
-    title: "FEE DETAILS",
-    path: "/tutor-edit-profile",
+    title: "SETTINGS",
+    path: "/tutor-settings",
     icon: <AiIcons.AiFillHome />,
   },
-    
+  // {
+  //   title: "FEE DETAILS",
+  //   path: "/tutor-edit-profile",
+  //   icon: <AiIcons.AiFillHome />,
+  // },
 ];
 
 export default SideBarData;

@@ -3,10 +3,13 @@ import { FaSearch } from 'react-icons/fa'
 import Sidebar from '../Dashboard/Sidebar'
 import { useNavigate } from 'react-router-dom'
 import axios from "../../../axios";
-import { toast } from 'react-toastify'
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+
+
 
 const ManagePlans = () => {
   const navigate = useNavigate()
+  const toast = useToast()
   const Token = localStorage.getItem("Adtoken")
   const [plans, setPlans] = useState([])
   const [toastMessage, setToastMessage] = useState("");
@@ -36,23 +39,31 @@ const ManagePlans = () => {
         }
       )
       .then((res) => {
-        console.log(res);
-        setToastMessage(id);
-        toast.success(res.data.message, {
-          position: "top-center",
+        
+        setToastMessage(id, res.data.message);
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       })
       .catch((err) => {
         console.log(err);
         setToastMessage(id);
-        toast.error(res.data.message, {
-          position: "top-center",
+        toast({
+          title: err.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
       });
   };
 
   const handleEdit = (plan) => {
-    console.log(plan, "nouuutesjrlj");
+    
     localStorage.setItem("planId", plan._id);
     // dispatch(
     //   setNoteData({
@@ -63,18 +74,21 @@ const ManagePlans = () => {
   };
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
-    <div>
-      <Sidebar />
-    </div>
-    <div className="w-full p-5 overflow-clip">
-      <div className="flex justify-around">
-        {/* <div className="bg-white p-3 rounded-2xl inline-flex ">
+      <div>
+        <Sidebar />
+      </div>
+      <div className="w-full overflow-clip">
+        <p className="bg-white w-full p-3 my-5 uppercase font-bold text-center">
+          manage plans
+        </p>
+        <div className="flex justify-around">
+          {/* <div className="bg-white p-3 rounded-2xl inline-flex ">
 <input type="text" name="" id="" placeholder='search' className='inline-block' />
 <div className='bg-sky-900 p-3 text-white rounded-full inline-block'>
   <FaSearch />
 </div>
 </div> */}
-        <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
+          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
           <input
             type="text"
             name=""
@@ -85,56 +99,53 @@ const ManagePlans = () => {
           <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
             <FaSearch />
           </div>
-        </div>
+        </div> */}
 
-        <div className="bg-white p-2 rounded-2xl flex">
-          <button
-            className="font-bold text-sky-900"
-            onClick={() => navigate("/admin-add-plans")}
-          >
-            ADD PLAN
-          </button>
+          <div className="bg-white p-2 rounded-2xl flex">
+            <button
+              className="font-bold text-sky-900"
+              onClick={() => navigate("/admin-add-plans")}
+            >
+              ADD PLAN
+            </button>
+          </div>
         </div>
-      </div>
-<div className='p-1 mt-2 bg-white w-full h-fit rounded-lg overflow-x-auto'>
-<table className='table-auto h-fit w-full border-2  border-white'>
-        <thead>
-          <tr className='bg-green-300 h-14 uppercase'>
-             <th className='p-3 border'>No</th>
-             <th className='p-3 border'>Plan</th>
-             <th className='p-3 border'>Duration(Month)</th>
-             <th className='p-3 border'>Price</th>
-             <th className='p-3 border'>Total Users</th>
-             <th className='p-3 border'>Actions</th>
-          </tr>
-        </thead>
-        <tbody className='text-center'>
-          {plans.map((plan,index)=> (
-              <tr className='bg-gray-300 h-16' key={index}>
-              <td className='border'>{index+1}</td>
-              <td className='border uppercase'>{plan.plan}</td>
-              <td className='border'>{plan.duration}</td>
-              <td className='border'>{plan.price}</td>
-              <td className='border'>100</td>
-              <td className='border flex justify-center'>
-               
-                        {plan.listed ? (
-                          <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
-                            onClick={() => handleListUnlist(plan._id)}
-                          >
-                            UNLIST
-                          </button>
-                        ) : (
-                          <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
-                            onClick={() => handleListUnlist(plan._id)}
-                          >
-                            LIST
-                          </button>
-                        )}
-                      
-                    
+        <TableContainer className="rounded-2xl mt-3">
+          <Table variant="simple">
+            <Thead>
+              <Tr className="bg-green-300 h-14">
+                <Th className="p-3 border">No</Th>
+                <Th className="p-3 border">Plan</Th>
+                <Th className="p-3 border">Duration(Month)</Th>
+                <Th className="p-3 border">Price</Th>
+                <Th className="p-3 border">Total Users</Th>
+                <Th className="p-3 border">Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody className="text-center">
+              {plans.map((plan, index) => (
+                <Tr className="bg-white h-16" key={index}>
+                  <Td className="border">{index + 1}</Td>
+                  <Td className="border uppercase">{plan.plan}</Td>
+                  <Td className="border">{plan.duration}</Td>
+                  <Td className="border">{plan.price}</Td>
+                  <Td className="border">{plan.used_by.length}</Td>
+                  <Td className="border flex justify-center">
+                    {plan.listed ? (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleListUnlist(plan._id)}
+                      >
+                        UNLIST
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleListUnlist(plan._id)}
+                      >
+                        LIST
+                      </button>
+                    )}
 
                     <button
                       className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
@@ -142,16 +153,15 @@ const ManagePlans = () => {
                     >
                       EDIT
                     </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-       </table>
-</div>
-      
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </div>
     </div>
-  </div>
-  )
+  );
 }
 
 export default ManagePlans

@@ -123,6 +123,7 @@ const UploadNotes = () => {
           board: selectedBoard,
           branch: selectedBranch,
           subject: selectedSubject,
+          exclusive: false,
         },
         config
       )

@@ -4,9 +4,13 @@ import { useState } from "react";
 import axios from "../../../axios";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
 
 const AddBranch = () => {
   const [boards, setBoards] = useState([]);
+   const navigate = useNavigate();
+   const toast = useToast();
   const [selectedBoard, setSelectedBoard] = useState("");
   const [branch, setBranch] = useState("");
   const token = localStorage.getItem("Adtoken");
@@ -36,6 +40,29 @@ const AddBranch = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const nameRegex = /^[a-zA-Z0-9]+([ \-'][a-zA-Z0-9]+)*$/;
+
+    if (!selectedBoard) {
+      return toast({
+        title: "Please select a board",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
+    if (!branch || !nameRegex.test(branch)) {
+      return toast({
+        title: "Please enter the branch name",
+        description: "Don't start name with spaces",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
     axios
       .post(
         `admin/add-branch`,
@@ -43,16 +70,25 @@ const AddBranch = () => {
         config
       )
       .then((res) => {
-        console.log(res);
-        toast.success(res.data.message, {
-          position: "top-center",
+         
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
         setSelectedBoard("");
         setBranch("");
+        navigate('/admin-branch')
       })
       .catch((err) => {
-        toast.error(err.message, {
-          position: "top-center",
+        toast({
+          title: err.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
         });
 
         console.error(err, "err");

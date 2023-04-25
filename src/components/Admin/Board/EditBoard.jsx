@@ -1,48 +1,127 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
 import axios from "../../../axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setBoardData } from "../../../features/contentSlice";
+import { useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 
 const EditBoard = () => {
-  const [board, setBoard] = useState({
-    board: "",
-  });
+  // const board = useSelector((state)=>state.contents.board)
+  const dispatch = useDispatch()
+  const navigate =useNavigate()
+  const toast = useToast()
+  // console.log(board,"booo")
+  const token = localStorage.getItem("Adtoken");
+  const [boardData, setBoardData] = useState('')
+  console.log(boardData)
+  useEffect(() => {
+    const boardId = localStorage.getItem("boardId")
+    axios
+      .get(`admin/boards?id=${boardId}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+       console.log(res.data.boards);
+        // dispatch(
+        //   setBoardData({
+        //     board: res.data.boards,
+        //   })
+        // );
+        setBoardData(res.data.boards)
+         
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+     
+  }, [])
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`board`, board);
+    let nameRegex = /^[a-zA-Z]+([ \-'][a-zA-Z]+)*$/;
+
+    if (!boardData.name || !nameRegex.test(boardData.name)) {
+      return toast({
+        title: "Please enter the board name",
+        description: "Don't start name with spaces and enter only letters",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
+    axios
+      .post(
+        `admin/edit-board?id=${boardData._id}`,
+        { ...boardData },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+         
+          localStorage.removeItem("boardId");
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          navigate("/admin-board");
+         
+      })
+      .catch((error) => {
+        console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
   };
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
       <div className="">
         <Sidebar />
       </div>
-      <div className="md:ml-20 ml-3 mt-10">
-        <h1 className="text-center text-black font-extrabold bg-white p-3 rounded-xl">
-          ADD BOARD/UNIVERSITY
+      <div className="w-full mt-10">
+        <h1 className="text-center text-black font-extrabold bg-white p-3">
+          EDIT BOARD/UNIVERSITY
         </h1>
         <form
           action=""
           onSubmit={handleSubmit}
-          className="flex flex-col mx-auto mt-8"
+          className="flex flex-col mx-auto w-3/4 mt-8"
         >
-          <label htmlFor="board" className="text-white">
-            Enter the name of board or university
-          </label>
+          {/* <label htmlFor="board" className='text-white'>Enter the name of board or university</label> */}
           <input
             type="text"
             name="board"
-            className="p-2 rounded-xl"
-            placeholder="Enter here.."
-            onChange={(e) => setBoard({ board: e.target.value })}
-            id=""
+            value={boardData.name}
+            className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
+            placeholder="Enter name of board or University"
+            onChange={(e) => setBoardData({...boardData,name:e.target.value})}
+            
           />
           <button
             type="submit"
-            className="bg-gray-300 text-sky-900 font-semibold mt-5 p-2 rounded-2xl"
+            className="bg-gray-300 text-sky-900 p-3 font-semibold rounded-lg mt-2"
           >
-            ADD BOARD/UNIVERSITY
+            EDIT BOARD/UNIVERSITY
           </button>
         </form>
       </div>

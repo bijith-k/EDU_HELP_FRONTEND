@@ -114,7 +114,7 @@ const Uploads = () => {
             }
             id="content active-content"
           >
-            <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3  md:grid-cols-2 gap-1 justify-items-center mt-10">
+            <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-1 justify-items-center mt-10">
               {/* <div className="py-10"> */}
                  <UploadedNotes />
               {/* </div> */}

@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "../../../axios";
 import { useSelector } from "react-redux";
+import Pagination from "../../Pagination/Pagination";
 
 const QuestionContent = () => {
   const student = useSelector((state) => state.student);
@@ -22,8 +23,15 @@ const QuestionContent = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
+const [currentPage, setCurrentPage] = useState(1);
+const [questionsPerPage, setQuestionsPerPage] = useState(3);
 
-  const QuestionPapers = questions.filter(
+const lastQuestionIndex = currentPage * questionsPerPage;
+const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
+
+const currentQuestions = questions.slice(firstQuestionIndex, lastQuestionIndex);
+
+  const QuestionPapers = currentQuestions.filter(
     (question) => question.branch._id === student.branch._id
   );
 
@@ -81,6 +89,7 @@ const QuestionContent = () => {
       });
   }, []);
 
+  
   return (
     <div>
       {/* <div className="m-4 md:m-8 flex md:justify-evenly md:flex-row flex-col items-center ">
@@ -186,7 +195,7 @@ const QuestionContent = () => {
               //     </CardActions>
               //     {/* <iframe src={`http://localhost:4000/${question.file_path}`} width="100%" height="500px"></iframe> */}
               //   </Card>
-              <Card maxW="sm" >
+              <Card maxW="sm">
                 <CardBody>
                   {/* <Image
                     src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
@@ -330,6 +339,12 @@ const QuestionContent = () => {
             </CardActions>
           </Card> */}
         </div>
+        <Pagination
+          totalContents={questions.length}
+          contentsPerPage={questionsPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
       </div>
     </div>
   );

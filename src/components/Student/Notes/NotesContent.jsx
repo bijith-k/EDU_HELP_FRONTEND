@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter, Stack, Heading, Text, Divider, ButtonGroup, Button } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import axios from "../../../axios";
+import Pagination from "../../Pagination/Pagination";
 
 const NotesContent = () => {
   const student = useSelector((state) => state.student);
@@ -10,7 +11,17 @@ const NotesContent = () => {
   const [subjects, setSubjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
-  const note = notes.filter((note) => note.branch._id === student.branch._id);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [notesPerPage, setNotesPerPage] = useState(3)
+  const lastNoteIndex = currentPage * notesPerPage;
+  const firstNoteIndex = lastNoteIndex - notesPerPage;
+
+  const currentNotes = notes.slice(firstNoteIndex, lastNoteIndex);
+
+  const note = currentNotes.filter(
+    (note) => note.branch._id === student.branch._id
+  );
+  
   const filteredData =
     searchQuery.trim() !== "" || selectedSubject !== ""
       ? note.filter((item) => {
@@ -64,6 +75,8 @@ const NotesContent = () => {
         console.log(error);
       });
   }, []);
+
+  
 
   return (
     <div>
@@ -330,6 +343,12 @@ const NotesContent = () => {
           </Card> */}
         </div>
       </div>
+      <Pagination
+        totalContents={notes.length}
+        contentsPerPage={notesPerPage}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
+      />
     </div>
   );
 };

@@ -111,6 +111,7 @@ const UploadVideos = () => {
           board: selectedBoard,
           branch: selectedBranch,
           subject: selectedSubject,
+          exclusive: false,
         },
         config
       )

@@ -13,17 +13,23 @@ import {
   Td,
   TableCaption,
   TableContainer,
+  useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios";
+import { useDispatch } from "react-redux";
+import { setBoardData } from "../../../features/contentSlice";
 
 
  
 
 const BoardList = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   const [boards, setBoards] = useState([]);
   const [order, setOrder] = useState("ASC");
+  const [toastMessage, setToastMessage] = useState("");
+ const toast = useToast()
 
   useEffect(() => {
     // Fetch boards from server on component mount
@@ -35,7 +41,7 @@ const BoardList = () => {
       })
       .then((res) => setBoards(res.data.boards))
       .catch((err) => console.error(err));
-  }, []);
+  }, [toastMessage]);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -53,12 +59,60 @@ const BoardList = () => {
       setOrder("ASC");
     }
   };
+
+  const handleEdit = (board) => {
+    localStorage.setItem("boardId", board._id);
+    // dispatch(
+    //   setBoardData({
+    //     board,
+    //   })
+    // );
+    navigate("/admin-edit-board");
+  };
+
+   const handleListUnlist = (id) => {
+     axios
+       .put(
+         `admin/board-list-unlist?id=${id}`,null,
+         {
+           headers: {
+             authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
+           },
+         }
+       )
+       .then((res) => {
+         console.log(res);
+         setToastMessage(id,res.data.message);
+         toast({
+           title: res.data.message,
+           status: "success",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
+       })
+       .catch((err) => {
+         console.log(err);
+         setToastMessage(id, err.message);
+         toast({
+           title: err.message,
+           status: "error",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
+       });
+   };
+
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
       <div>
         <Sidebar />
       </div>
-      <div className="w-full p-5 overflow-clip">
+      <div className="w-full overflow-clip">
+        <p className="bg-white w-full p-3 my-5 uppercase font-bold text-center">
+          manage boards
+        </p>
         <div className="flex justify-around">
           {/* <div className="bg-white p-3 rounded-2xl inline-flex ">
   <input type="text" name="" id="" placeholder='search' className='inline-block' />
@@ -66,7 +120,7 @@ const BoardList = () => {
     <FaSearch />
   </div>
 </div> */}
-          <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
+          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
             <input
               type="text"
               name=""
@@ -77,7 +131,7 @@ const BoardList = () => {
             <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
               <FaSearch />
             </div>
-          </div>
+          </div> */}
 
           <div className="bg-white p-2 rounded-2xl flex">
             <button
@@ -128,34 +182,53 @@ const BoardList = () => {
           </Table>
         </StyledTableContainer> */}
         <TableContainer className="rounded-2xl mt-3">
-          <Table variant="striped" colorScheme="teal" bg={"blue.300"}>
+          <Table variant="simple">
             {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
             <Thead>
-              <Tr>
-                <Th isNumeric>No</Th>
-                <Th>Name of Board/University</Th>
-                <Th>Actions</Th>
+              <Tr className="bg-green-300 h-14">
+                <Th isNumeric className="p-3 border">
+                  No
+                </Th>
+                <Th className="p-3 border">Name of Board/University</Th>
+                <Th className="p-3 border text-center">Actions</Th>
               </Tr>
             </Thead>
-            <Tbody>
+            <Tbody className="text-center">
               {boards.map((board, index) => (
-                <Tr key={board._id}>
-                  <Td isNumeric>{index + 1}</Td>
-                  <Td>{board.name}</Td>
-                  <Td>
+                <Tr key={board._id} className="bg-white uppercase">
+                  <Td isNumeric className="border">
+                    {index + 1}
+                  </Td>
+                  <Td className="border">{board.name}</Td>
+                  <Td className="border flex justify-center">
                     <button
-                      onClick={() => board._id}
+                      onClick={() => handleEdit(board)}
                       className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                     >
                       EDIT
                     </button>
-                    <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
-                      UNLIST
-                    </button>
+                    {board.listed ? (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleListUnlist(board._id)}
+                      >
+                        UNLIST
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        onClick={() => handleListUnlist(board._id)}
+                      >
+                        LIST
+                      </button>
+                    )}
+
+                    {/* <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
+                      DELETE
+                    </button> */}
                   </Td>
                 </Tr>
               ))}
-               
             </Tbody>
           </Table>
         </TableContainer>

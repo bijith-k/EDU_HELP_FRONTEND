@@ -2,12 +2,17 @@ import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
 import axios from "../../../axios";
-import { toast } from "react-toastify";
+
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
 
 const AddBoard = () => {
+  const navigate = useNavigate()
+  const toast = useToast()
   const [board, setBoard] = useState({
     board: "",
   });
+  
 
   const token = localStorage.getItem("Adtoken");
 
@@ -20,21 +25,42 @@ const AddBoard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(board);
+    let nameRegex = /^[a-zA-Z]+([ \-'][a-zA-Z]+)*$/;
+    
+    if (!board.board || !nameRegex.test(board.board)) {
+      return toast({
+        title: "Please enter the board name",
+        description:"Don't start name with spaces and enter only letters",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+    
     axios
       .post(`admin/add-board`, board, config)
       .then((res) => {
-        console.log(res);
-        toast.success(res.data.message, {
-          position: "top-center",
-        });
+        
+         toast({
+           title: res.data.message,
+           status: "success",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
         setBoard("");
+        navigate('/admin-board')
+
       })
       .catch((err) => {
-        toast.error(err.message, {
-          position: "top-center",
-        });
-
+         toast({
+           title: err.message,
+           status: "error",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
         console.error(err, "err");
       });
   };
