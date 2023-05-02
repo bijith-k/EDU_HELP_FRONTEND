@@ -1,11 +1,10 @@
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import ragam from "../../../assets/ragam.jpeg";
+import { useToast } from "@chakra-ui/react";
 
 const initialValues = {
   name: "",
@@ -26,13 +25,13 @@ const TutorSignUp = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
-
+const toast = useToast()
   const [boardError, setBoardError] = useState(null);
   const [branchError, setBranchError] = useState(null);
 
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
+    axiosInstance()
       .get(`auth/boards`)
       .then((res) => setBoards(res.data.board))
       .catch((err) => console.error(err));
@@ -40,11 +39,9 @@ const TutorSignUp = () => {
 
   useEffect(() => {
     if (selectedBoard) {
-      axios
+      axiosInstance()
         .get(
-          `${
-            import.meta.env.VITE_BASE_PATH
-          }auth/branches?board=${selectedBoard}`
+          `auth/branches?board=${selectedBoard}`
         )
         .then((res) => {
           setBranches(res.data.branches);
@@ -87,7 +84,7 @@ const TutorSignUp = () => {
           return;
         }
         setIsLoading(true);
-        axios
+        axiosInstance()
           .post(`auth/tutor-signup`, {
             ...values,
             board: selectedBoard,
@@ -96,16 +93,34 @@ const TutorSignUp = () => {
           .then((response) => {
             setIsLoading(false);
             if (response.data.otpSend) {
-              toast.success(response.data.message);
-              navigate("/tutor-otp");
+              toast({
+                title: response.data.message,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
+              navigate("/tutor/otp");
             } else {
               setIsLoading(false);
-              toast.error(response.data.message);
+              toast({
+                title: response.data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
             }
           })
           .catch((error) => {
             setIsLoading(false);
-            toast.error(error.message);
+            toast({
+              title: error.response.data.errors,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+            });
           });
         // action.resetForm();
       },
@@ -114,7 +129,7 @@ const TutorSignUp = () => {
   useEffect(() => {
     const token = localStorage.getItem("Ttoken");
     if (token) {
-      navigate("/tutor-profile");
+      navigate("/tutor/dashboard");
     }
   }, [navigate]);
 
@@ -383,7 +398,7 @@ const TutorSignUp = () => {
             Already have an account?
             <a
               className="no-underline border-b border-white text-yellow"
-              href="/tutor-signin"
+              href="/tutor"
             >
               Log in
             </a>
@@ -399,7 +414,7 @@ const TutorSignUp = () => {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      
     </div>
   );
 };

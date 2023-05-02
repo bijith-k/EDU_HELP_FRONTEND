@@ -7,73 +7,41 @@ import news from "../../../assets/news.jpg";
 import Footer from "./Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { setStudent } from "../../../features/studentSlice";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
+import Header from "../Header/Header";
 
 const Home = () => {
-  const student = useSelector((state) => state.student);
+  const { student } = useSelector((state) => state.student);
+  const [event, setEvent] = useState([])
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   
-  // useEffect(() => {
-  //   // Fetch boards from server on component mount
-  //   axios.get(`admin/boards`)
-  //     .then(res => setBoards(res.data.boards))
-  //     .catch(err => console.error(err));
-  // }, []);
-
-  // const board = boards.filter(board => board._id === student.board);
-  // console.log(board[0].name,'bb');
+  const navigate = useNavigate();
+console.log(event)
+  function formatDate(dateString) {
+    console.log(dateString)
+    const [date, time] = dateString.split("T");
+    const [year, month, day] = date.split("-");
+    const formattedDate = `${day}-${month}-${year.slice(-2)}`; // extract last two characters of year for yy format
+    return formattedDate;
+  }
 
   useEffect(() => {
-    const token = localStorage.getItem("Stoken");
-    console.log(token, "tok");
+    axiosInstance("Stoken")
+      .get(`get-events`)
+      .then((response) => {
+        setEvent(response.data[1])
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-    if (token) {
-      const fetchStudentData = async () => {
-        try {
-          const { data } = await axios.post(
-            ``,
-            { token }
-          );
-          console.log(data, "data");
-          if (data.status) {
-            dispatch(
-              setStudent({
-                _id: data.student._id,
-                name: data.student.name,
-                email: data.student.email,
-                phone: data.student.phone,
-                branch: data.student.branch,
-                board: data.student.board,
-                school: data.student.school,
-                status: data.student.status,
-                profilePicture: data.student.profilePicture,
-                token: data.token,
-              })
-            );
-          } else {
-            localStorage.removeItem("Stoken");
-            navigate("/signin");
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchStudentData();
-    } else {
-      navigate("/signin");
-    }
-  }, [dispatch]);
+  
 
   return (
     <div className="h-screen w-full bg-slate-300 pt-16 overflow-x-hidden">
       {/* <Navbar /> */}
-      <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
-          "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
-        </h1>
-      </div>
+      <Header />
       {student.branch.name === "1-10" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
           <div className="md:h-60 h-48 bg-slate-400 w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
@@ -175,8 +143,8 @@ const Home = () => {
             events happening across kerala
           </h1>
         </div>
-        <div className="row-span-3 flex justify-center items-center mb-4">
-          <div className="ml-4">
+        <div className="row-span-3 flex flex-row justify-center md:justify-evenly items-center mb-4">
+          {/* <div className="ml-4">
             <img src={ragam} alt="" className="object-cover  w-44 rounded-xl" />
           </div>
           <div className="md:ml-10 md:text-xl sm:text-base font-medium">
@@ -186,10 +154,37 @@ const Home = () => {
             <span>FROM : 20-03-2023</span> <br />
             <span>TO : 25-03-2023</span> <br />
             <span>WEBSITE : ragam.co.in</span> <br />
+          </div> */}
+          <div className="mx-3">
+            <img
+              src={`${import.meta.env.VITE_BASE_PATH}${event.poster}`}
+              alt=""
+              className="object-cover  w-44 h-44 rounded-xl"
+            />
+          </div>
+          <div className="flex flex-col md:flex-row justify-between">
+            <div className="md:text-xl text-sm mr-0 md:mr-32">
+              <span className="uppercase font-bold">{event.name}</span> <br />
+              <span>ORGANIZED BY : {event.organizer}</span> <br />
+              <span>LOCATION : {event.location}</span> <br />
+            </div>
+            <div className="md:text-xl text-sm">
+              {
+              event.startingDate ? (<>
+               <span>FROM : {formatDate(event.startingDate)}</span> <br />
+              <span>TO : {formatDate(event.endingDate)}</span> <br />
+              </>) : null 
+              }
+            
+              <span>WEBSITE : {event.link}</span> <br />
+            </div>
           </div>
         </div>
         <div className=" bg-blue-900 rounded-bl-3xl rounded-br-3xl flex items-center justify-center row-span-1">
-          <h1 className="uppercase text-yellow-200 font-semibold md:text-2xl p-2">
+          <h1
+            className="uppercase text-yellow-200 font-semibold md:text-2xl p-2 cursor-pointer"
+            onClick={() => navigate("/events")}
+          >
             view more events
           </h1>
         </div>

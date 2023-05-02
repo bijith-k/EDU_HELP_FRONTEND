@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../Home/Navbar";
 import { ImLocation2 } from "react-icons/im";
-import {FiPhoneCall} from 'react-icons/fi'
+import { FiPhoneCall } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
 import { setStudent } from "../../../features/studentSlice";
-
+import Header from "../Header/Header";
+import HeadTitle from "../Header/HeadTitle";
 
 const Events = () => {
   const [value, setValue] = React.useState("1");
 
-  const student = useSelector((state) => state.student);
+  const { student } = useSelector((state) => state.student);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = localStorage.getItem("Stoken");
-  const[events,setEvents] = useState([])
+  const [events, setEvents] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -29,68 +30,22 @@ const Events = () => {
   }
 
   useEffect(() => {
-    console.log(token, "tok");
-
-    if (token) {
-      const fetchStudentData = async () => {
-        try {
-          const { data } = await axios.post(
-            ``,
-            { token }
-          );
-          console.log(data, "data");
-          if (data.status) {
-            dispatch(
-              setStudent({
-                _id:data.student._id,
-                name: data.student.name,
-                email: data.student.email,
-                phone: data.student.phone,
-                branch: data.student.branch,
-                board: data.student.board,
-                school: data.student.school,
-                status: data.student.status,
-                token: data.token,
-              })
-            );
-          } else {
-            localStorage.removeItem("Stoken");
-            navigate("/signin");
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchStudentData();
-    } else {
-      navigate("/signin");
-    }
+    axiosInstance("Stoken")
+      .get(`get-events`)
+      .then((response) => {
+        setEvents(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
-  useEffect(() => {
-    axios
-    .get(`get-events`, {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => {
-      console.log("afasdfsdds");
-      console.log(response.data, "events");
-      setEvents(response.data);
-    }).catch((err)=>{
-      console.log('insd');
-      console.log(err);
-    })
-  }, [])
-  
-
-  
-
   return (
-    <div className="h-screen w-full bg-slate-300 overflow-x-hidden">
+    <div className="min-h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
       <Navbar />
-      <div className="bg-gray-400 h-72">
+      <Header />
+      <HeadTitle title={"events"} />
+      {/* <div className="bg-gray-400 h-72">
         <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
           "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
         </h1>
@@ -99,7 +54,7 @@ const Events = () => {
         <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
           events
         </h1>
-      </div>
+      </div> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 justify-items-center mt-5">
         {events.map((event, index) => (
           //  <div className="bg-gray-200 w-2/3 h-80 m-4 rounded-2xl ">
@@ -176,6 +131,6 @@ const Events = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Events
+export default Events;

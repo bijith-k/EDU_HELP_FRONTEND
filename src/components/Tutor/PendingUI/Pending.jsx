@@ -14,7 +14,7 @@ const Pending = () => {
           className="mr-10 bg-red-500 text-white p-3 rounded-md"
           onClick={() => {
             localStorage.removeItem("Ttoken");
-            navigate("/tutor-signin");
+            navigate("/tutor");
           }}
         >
           LOGOUT
@@ -25,7 +25,7 @@ const Pending = () => {
         <p className="font-bold text-2xl text-center">
           Your request to register as a tutor is reviewing by admin
         </p>
-        <p className="font-bold text-2xl text-center">Please visit after sometime .... </p>
+        <p className="font-bold text-2xl text-center">Please login after sometimes or check your mail for updates .... </p>
         <Spinner  className="h-14 w-14 mt-5" />
       </div>
     </div>

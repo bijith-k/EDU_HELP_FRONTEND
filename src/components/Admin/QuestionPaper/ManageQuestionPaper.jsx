@@ -3,9 +3,8 @@ import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
 
- 
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useDispatch } from "react-redux";
 import { setQuestionData } from "../../../features/contentSlice";
 import {
@@ -31,18 +30,17 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
- 
 const ManageQuestionPaper = () => {
   const dispatch = useDispatch();
-const toast = useToast();
-const [questionId, setQuestionId] = useState("");
-const { isOpen, onOpen, onClose } = useDisclosure();
-const handleOpen = (id) => {
-  onOpen();
-  setQuestionId(id);
-};
-const [rejectionReason, setRejectionReason] = useState("");
- 
+  const toast = useToast();
+  const [questionId, setQuestionId] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleOpen = (id) => {
+    onOpen();
+    setQuestionId(id);
+  };
+  const [rejectionReason, setRejectionReason] = useState("");
+
   const [questions, setQuestions] = useState([]);
 
   const [boards, setBoards] = useState([]);
@@ -53,28 +51,12 @@ const [rejectionReason, setRejectionReason] = useState("");
   const [order, setOrder] = useState("ASC");
   const [toastMessage, setToastMessage] = useState("");
 
-   
   useEffect(() => {
-    axios
-      .get(`admin/question-papers`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/question-papers`)
       .then((res) => {
-         
         setQuestions(res.data);
       });
-
-    // axios.get(`admin/boards`).then((res)=>{
-    //   console.log(res);
-    //   setBoards(res.data.boards)
-    // })
-
-    // axios.get(`admin/branches`).then((res)=>{
-    //   console.log(res,'3');
-    //   setBranches(res.data.branches)
-    // })
   }, [toastMessage]);
 
   const sorting = (col) => {
@@ -112,19 +94,9 @@ const [rejectionReason, setRejectionReason] = useState("");
   };
 
   const handleApprove = (id) => {
-    axios
-      .get(
-        `${
-          import.meta.env.VITE_BASE_PATH
-        }admin/approve-question-paper?question=${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .get(`admin/approve-question-paper?question=${id}`)
       .then((res) => {
-        console.log(res);
         setToastMessage(res.data.message);
         toast({
           title: res.data.message,
@@ -147,18 +119,11 @@ const [rejectionReason, setRejectionReason] = useState("");
       });
   };
 
-
   const handleReject = () => {
-    axios
-      .post(
-        `admin/reject-question-paper?question=${questionId}`,
-        { rejectionReason },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .post(`admin/reject-question-paper?question=${questionId}`, {
+        rejectionReason,
+      })
       .then((res) => {
         setToastMessage(questionId);
         toast({
@@ -190,19 +155,9 @@ const [rejectionReason, setRejectionReason] = useState("");
   };
 
   const handleListUnlist = (id) => {
-    axios
-      .get(
-        `${
-          import.meta.env.VITE_BASE_PATH
-        }admin/question-paper-list-unlist?question=${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .get(`admin/question-paper-list-unlist?question=${id}`)
       .then((res) => {
-        console.log(res);
         setToastMessage(res.data.message);
         toast({
           title: res.data.message,

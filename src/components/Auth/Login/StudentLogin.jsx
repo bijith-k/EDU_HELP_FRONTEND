@@ -1,13 +1,12 @@
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setStudent } from "../../../features/studentSlice";
 import ragam from "../../../assets/ragam.jpeg";
+import { useToast } from "@chakra-ui/react";
 
 const initialValues = {
   email: "",
@@ -18,7 +17,7 @@ const StudentLogin = () => {
   const [isLoading, setIsLoading] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const toast = useToast();
   const signUpSchema = Yup.object({
     email: Yup.string().email().required("Please enter your email"),
     password: Yup.string().required("Please enter your password"),
@@ -30,39 +29,43 @@ const StudentLogin = () => {
       validationSchema: signUpSchema,
       onSubmit: (values, action) => {
         setIsLoading(true);
-        axios
+        axiosInstance()
           .post(`auth/signin`, {
             ...values,
           })
           .then((response) => {
             setIsLoading(false);
             if (response.data.created) {
-              console.log(response.data, "dddaaattttaaaaa");
-
-              toast.success(response.data.message);
-              dispatch(
-                setStudent({
-                  name: response.data.student.name,
-                  email: response.data.student.email,
-                  phone: response.data.student.phone,
-                  branch: response.data.student.branch,
-                  board: response.data.student.board,
-                  school: response.data.student.school,
-                  status: response.data.student.status,
-                  profilePicture:response.data.student.profilePicture,
-                  token: response.data.token,
-                })
-              );
+              toast({
+                title: response.data.message,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
+              dispatch(setStudent({ student: response.data.student }));
               localStorage.setItem("Stoken", response.data.token);
               navigate("/");
             } else {
-              toast.error(response.data.message);
+              toast({
+                title: response.data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
             }
           })
           .catch((error) => {
             setIsLoading(false);
             console.log(error);
-            toast.error("Something gone wrong");
+            toast({
+              title: error.message,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+            });
           });
         // action.resetForm();
       },
@@ -147,14 +150,13 @@ const StudentLogin = () => {
             Login as a tutor?
             <a
               className="no-underline border-b border-white text-yellow"
-              href="/tutor-signin"
+              href="/tutor"
             >
               Login
             </a>
           </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

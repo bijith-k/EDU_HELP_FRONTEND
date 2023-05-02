@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import user from "../../../assets/bij.jpg";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 
 
 
@@ -15,11 +15,9 @@ const Conversation = ({conversation,currentUser}) => {
 
      const getTutors = async () =>{
       try {
-        const res = await axios.get(`get-tutors?id=${tutorId}`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axiosInstance("Stoken").get(
+          `get-tutors?id=${tutorId}`
+        );
         setTutor(res.data)
       } catch (error) {
         console.log(error);

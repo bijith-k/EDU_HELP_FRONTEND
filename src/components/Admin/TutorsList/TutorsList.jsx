@@ -1,145 +1,137 @@
-import React, { useEffect, useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
-import Sidebar from '../Dashboard/Sidebar'
-import { useNavigate } from 'react-router-dom'
-import axios from "../../../axios";
-import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure, useToast } from '@chakra-ui/react';
-
+import React, { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import Sidebar from "../Dashboard/Sidebar";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../axios";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 
 const TutorsList = () => {
- const toast = useToast();
- const [tutorId, setTutorId] = useState('')
+  const toast = useToast();
+  const [tutorId, setTutorId] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-const handleOpen = (id) => {
-  onOpen();
-  setTutorId(id)
-};
- const [rejectionReason, setRejectionReason] = useState('')
-  const navigate = useNavigate()
-  const Token = localStorage.getItem("Adtoken")
-  const [tutors, setTutors] = useState([])
+  const handleOpen = (id) => {
+    onOpen();
+    setTutorId(id);
+  };
+  const [rejectionReason, setRejectionReason] = useState("");
+  const navigate = useNavigate();
+  const Token = localStorage.getItem("Adtoken");
+  const [tutors, setTutors] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
- 
+
   useEffect(() => {
-    axios
-      .get(`admin/tutors`, {
-        headers: {
-          authorization: `Bearer ${Token}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/tutors`)
       .then((res) => {
-        console.log(res);
         setTutors(res.data);
       });
-      
   }, [toastMessage]);
 
   const handleBlockUnblock = (id) => {
-    axios
-      .put(
-        `admin/block-unblock-tutor?tutor=${id}`,null,
-        {
-          headers: {
-            authorization: `Bearer ${Token}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .put(`admin/block-unblock-tutor?tutor=${id}`)
       .then((res) => {
-         
         setToastMessage(id);
         toast({
-             title: res.data.message,
-             status: "success",
-             duration: 5000,
-             isClosable: true,
-             position: "top",
-           });
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       })
       .catch((err) => {
         console.log(err);
         setToastMessage(id);
         toast({
-             title: err.message,
-             status: "error",
-             duration: 5000,
-             isClosable: true,
-             position: "top",
-           });
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   };
 
-  const handleApprove = (id) =>{
-      axios.put(`admin/approve-tutor?tutor=${id}`,null,
-      {
-          headers: {
-            authorization: `Bearer ${Token}`,
-          },
-        }
-      ).then((res)=>{
- setToastMessage(id);
+  const handleApprove = (id) => {
+    axiosInstance("Adtoken")
+      .put(`admin/approve-tutor?tutor=${id}`)
+      .then((res) => {
+        setToastMessage(id);
         toast({
-             title: res.data.message,
-             status: "success",
-             duration: 5000,
-             isClosable: true,
-             position: "top",
-           });
-      }).catch((err)=>{
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      })
+      .catch((err) => {
         console.log(err);
         setToastMessage(id);
         toast({
-             title: err.message,
-             status: "error",
-             duration: 5000,
-             isClosable: true,
-             position: "top",
-           });
-      })
-  }
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
+  };
 
-   
-
-
-  const handleReject = () =>{
-       
-      axios.post(`admin/reject-tutor?tutor=${tutorId}`,{rejectionReason},
-      {
-          headers: {
-            authorization: `Bearer ${Token}`,
-          },
-        }
-      ).then((res)=>{
- setToastMessage(tutorId);
+  const handleReject = () => {
+    axiosInstance("Adtoken")
+      .post(`admin/reject-tutor?tutor=${tutorId}`, { rejectionReason })
+      .then((res) => {
+        setToastMessage(tutorId);
         toast({
-             title: res.data.message,
-             status: "success",
-             duration: 5000,
-             isClosable: true,
-             position: "top",
-           });
-            setRejectionReason("");
-            setTutorId("");
-            onClose();
-      }).catch((err)=>{
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        setRejectionReason("");
+        setTutorId("");
+        onClose();
+      })
+      .catch((err) => {
         console.log(err);
         setToastMessage(tutorId);
         toast({
-             title: err.message,
-             status: "error",
-             duration: 5000,
-             isClosable: true,
-             position: "top",
-           });
-            setRejectionReason("");
-            setTutorId("");
-            onClose();
-      })
-  }
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        setRejectionReason("");
+        setTutorId("");
+        onClose();
+      });
+  };
 
-
-
-
-   
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
       <div>
@@ -172,7 +164,7 @@ const handleOpen = (id) => {
 
         <TableContainer className="rounded-2xl mt-3">
           <Table variant="simple">
-            <Thead >
+            <Thead>
               <Tr className="bg-green-300">
                 <Th isNumeric className="p-3 border">
                   No
@@ -228,22 +220,23 @@ const handleOpen = (id) => {
                       </button>
                     ) : null}
 
-                    {tutor.approved ? ( tutor.blocked ? (
-                      <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
-                        onClick={() => handleBlockUnblock(tutor._id)}
-                      >
-                        UNBLOCK
-                      </button>
-                    ) : (
-                      <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
-                        onClick={() => handleBlockUnblock(tutor._id)}
-                      >
-                        BLOCK
-                      </button>
-                    )) : null }
-                   
+                    {tutor.approved ? (
+                      tutor.blocked ? (
+                        <button
+                          className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
+                          onClick={() => handleBlockUnblock(tutor._id)}
+                        >
+                          UNBLOCK
+                        </button>
+                      ) : (
+                        <button
+                          className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
+                          onClick={() => handleBlockUnblock(tutor._id)}
+                        >
+                          BLOCK
+                        </button>
+                      )
+                    ) : null}
                   </Td>
                 </Tr>
               ))}
@@ -278,6 +271,6 @@ const handleOpen = (id) => {
       </Modal>
     </div>
   );
-}
+};
 
-export default TutorsList
+export default TutorsList;

@@ -2,15 +2,20 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { FaSearch } from "react-icons/fa";
 
- 
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
-import { toast } from "react-toastify";
+import axiosInstance from "../../../axios";
 import { useDispatch } from "react-redux";
 import { setEventsData, setNoteData } from "../../../features/contentSlice";
-import { Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
-
- 
+import {
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useToast,
+} from "@chakra-ui/react";
 
 const ManageEvents = () => {
   const [events, setEvents] = useState([]);
@@ -25,28 +30,12 @@ const ManageEvents = () => {
   const dispatch = useDispatch();
   const toast = useToast();
 
-   
   useEffect(() => {
-    axios
-      .get(`admin/events`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/events`)
       .then((res) => {
-        console.log(res);
         setEvents(res.data);
       });
-
-    // axios.get(`admin/boards`).then((res)=>{
-    //   console.log(res);
-    //   setBoards(res.data.boards)
-    // })
-
-    // axios.get(`admin/branches`).then((res)=>{
-    //   console.log(res,'3');
-    //   setBranches(res.data.branches)
-    // })
   }, [toastMessage]);
 
   const sorting = (col) => {
@@ -91,17 +80,9 @@ const ManageEvents = () => {
   };
 
   const handleApprove = (id) => {
-    axios
-      .get(
-        `admin/approve-events?event=${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .get(`admin/approve-events?event=${id}`)
       .then((res) => {
-        console.log(res);
         setToastMessage(res.data.message);
         toast({
           title: res.data.message,
@@ -125,14 +106,9 @@ const ManageEvents = () => {
   };
 
   const handleReject = (id) => {
-    axios
-      .get(`admin/reject-events?event=${id}`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/reject-events?event=${id}`)
       .then((res) => {
-        console.log(res);
         setToastMessage(res.data.message);
         toast({
           title: res.data.message,
@@ -156,17 +132,9 @@ const ManageEvents = () => {
   };
 
   const handleListUnlist = (id) => {
-    axios
-      .get(
-        `admin/event-list-unlist?event=${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .get(`admin/event-list-unlist?event=${id}`)
       .then((res) => {
-        console.log(res);
         setToastMessage(res.data.message);
         toast({
           title: res.data.message,
@@ -189,16 +157,6 @@ const ManageEvents = () => {
       });
   };
 
-  // const handleEdit = (event) => {
-  //   console.log(event, "nouuutesjrlj");
-  //   localStorage.setItem("eventId", event._id);
-  //   dispatch(
-  //     setEventsData({
-  //       events: event,
-  //     })
-  //   );
-  //   navigate("/admin-edit-events");
-  // };
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
       <div>

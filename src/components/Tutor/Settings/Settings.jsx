@@ -1,116 +1,204 @@
-import React, { useState } from 'react'
-import Navbar from '../Dashboard/Navbar';
+import React, { useEffect, useState } from "react";
+import Navbar from "../Dashboard/Navbar";
 import {
   Button,
   Input,
   InputGroup,
+  InputLeftElement,
   InputRightElement,
   useToast,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import axios from "../../../axios";
-import { useNavigate } from 'react-router-dom';
+import axiosInstance from "../../../axios";
+import { useNavigate } from "react-router-dom";
+import { FiMail } from "react-icons/fi";
 
 const Settings = () => {
-   const tutor = useSelector((state) => state.tutor);
-   const token = localStorage.getItem("Ttoken");
-   const navigate = useNavigate()
+  const { tutor } = useSelector((state) => state.tutor);
+  const token = localStorage.getItem("Ttoken");
+  const navigate = useNavigate();
 
-   const [showp, setShowp] = useState(false);
-   const [showcp, setShowcp] = useState(false);
+  const [showp, setShowp] = useState(false);
+  const [showcp, setShowcp] = useState(false);
 
-   const handleClickP = () => setShowp(!showp);
-   const handleClickCP = () => setShowcp(!showcp);
-   const toast = useToast();
+  const handleClickP = () => setShowp(!showp);
+  const handleClickCP = () => setShowcp(!showcp);
+  const toast = useToast();
 
-   const [loading, setLoading] = useState(false);
-   const [passwords, setPasswords] = useState({
-     currentPassword: "",
-     newPassword: "",
-   });
+  useEffect(() => {
+    if (tutor.accepted == false && tutor.rejected == false) {
+      navigate("/tutor/approval-pending");
+    } else if (tutor.rejected) {
+      navigate("/tutor/approval-rejected");
+    } else if (tutor.blocked) {
+      localStorage.removeItem("Ttoken");
+      navigate("/tutor");
+      toast({
+        title: "Blocked",
+        description: "Your account is blocked by the admin",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }, []);
 
-   const handlePassword = async () => {
-     if (!passwords.currentPassword || !passwords.newPassword) {
-       return toast({
-         title: "Enter passwords",
-         status: "error",
-         duration: 5000,
-         isClosable: true,
-         position: "bottom-right",
-       });
-     }
-     if (passwords.newPassword.length < 6) {
-       return toast({
-         title: "Password should be atlest 6 character length",
-         status: "error",
-         duration: 5000,
-         isClosable: true,
-         position: "bottom-right",
-       });
-     }
+  const [loading, setLoading] = useState(false);
+  const [otpButtonLoading, setOtpButtonLoading] = useState(false);
+  const [passwords, setPasswords] = useState({
+    currentPassword: "",
+    newPassword: "",
+  });
 
-     setLoading(true);
+   const [email, setEmail] = useState("");
+   const [otp, setOtp] = useState("");
 
-     const config = {
-       headers: {
-         Authorization: `Bearer ${token}`,
-       },
-     };
+  const handlePassword = async () => {
+    if (!passwords.currentPassword || !passwords.newPassword) {
+      return toast({
+        title: "Enter passwords",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+    }
+    if (passwords.newPassword.length < 6) {
+      return toast({
+        title: "Password should be atlest 6 character length",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+    }
 
-     await axios
-       .post(
-         `tutor/change-password?id=${tutor._id}`,
-         {
-           ...passwords,
-         },
-         config
-       )
-       .then((res) => {
-         if (res.data.updated) {
-           toast({
-             title: res.data.message,
-             status: "success",
-             duration: 5000,
-             isClosable: true,
-             position: "bottom-right",
-           });
+    if (!email) {
+      return toast({
+        title: "Enter email to get otp for verification",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+    }
+    if (!otp) {
+      return toast({
+        title: "Enter otp got in email to continue",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+    }
 
-           setLoading(false);
-           setPasswords({
-             currentPassword: "",
-             newPassword: "",
-           });
+    setLoading(true);
 
-            localStorage.removeItem("Ttoken");
-            navigate("/tutor-signin");
-         } else {
-           toast({
-             title: res.data.message,
-             status: "error",
-             duration: 5000,
-             isClosable: true,
-             position: "bottom-right",
-           });
-           setLoading(false);
-           setPasswords({
-             currentPassword: "",
-             newPassword: "",
-           });
-         }
-       })
-       .catch((error) => {
-         console.log(error);
+    await axiosInstance("Ttoken")
+      .post(`tutor/change-password?id=${tutor._id}`, {
+        ...passwords,otp
+      })
+      .then((res) => {
+        if (res.data.updated) {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-right",
+          });
 
-         toast({
-           title: error.message,
-           status: "error",
-           duration: 5000,
-           isClosable: true,
-           position: "bottom-right",
-         });
-         setLoading(false);
-       });
-   };
+          setLoading(false);
+          setPasswords({
+            currentPassword: "",
+            newPassword: "",
+          });
+           setEmail("");
+           setOtp("");
+
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor/signin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-right",
+          });
+          setLoading(false);
+          // setPasswords({
+          //   currentPassword: "",
+          //   newPassword: "",
+          // });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-right",
+        });
+        setLoading(false);
+      });
+  };
+
+
+  const getOtp = async () => {
+    let emailRegex = /^\S+@\S+\.\S+$/;
+    if (!email || !emailRegex.test(email)) {
+      return toast({
+        title: "Enter email",
+        description: "Enter valid email only.Otp will be sent to that email",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+    }
+    setOtpButtonLoading(true);
+    await axiosInstance("Ttoken")
+      .post(`tutor/get-password-change-otp`, { email })
+      .then((res) => {
+        if (res.data.otpSend) {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-right",
+          });
+
+          setOtpButtonLoading(false);
+        } else {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-right",
+          });
+          setOtpButtonLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-right",
+        });
+        setOtpButtonLoading(false);
+      });
+  };
 
   return (
     <div className="bg-white h-screen">
@@ -118,7 +206,7 @@ const Settings = () => {
       <div className="bg-gray-500 uppercase h-14 text-center text-white font-bold text-xl pt-3">
         SETTINGS
       </div>
-      <div className="mt-5 w-2/3 mx-auto">
+      <div className="mt-5 w-2/3 mx-auto ">
         <InputGroup size="md">
           <Input
             pr="4.5rem"
@@ -135,7 +223,7 @@ const Settings = () => {
             </Button>
           </InputRightElement>
         </InputGroup>
-        <InputGroup size="md" className="mt-5">
+        <InputGroup size="md" className="my-5">
           <Input
             pr="4.5rem"
             type={showcp ? "text" : "password"}
@@ -151,6 +239,45 @@ const Settings = () => {
             </Button>
           </InputRightElement>
         </InputGroup>
+
+        <InputGroup>
+          <InputLeftElement
+            pointerEvents="none"
+            children={<FiMail color="gray.300" />}
+          />
+          <Input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="Enter email to get otp"
+          />
+          <InputRightElement width="7.5rem">
+            <Button
+              isLoading={otpButtonLoading}
+              h="1.75rem"
+              size="sm"
+              className="mr-1"
+              colorScheme="teal"
+              variant="solid"
+              onClick={getOtp}
+            >
+              Click to get otp
+            </Button>
+          </InputRightElement>
+        </InputGroup>
+
+        <InputGroup size="md" className="mt-5">
+          <Input
+            pr="4.5rem"
+            type="text"
+            placeholder="Enter the otp"
+            value={otp}
+            onChange={(e) => {
+              setOtp(e.target.value);
+            }}
+          />
+        </InputGroup>
+
         <Button
           isLoading={loading}
           loadingText="Updating"
@@ -164,6 +291,6 @@ const Settings = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Settings
+export default Settings;

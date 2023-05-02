@@ -16,29 +16,22 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useDispatch } from "react-redux";
 import { setBoardData } from "../../../features/contentSlice";
 
-
- 
-
 const BoardList = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [boards, setBoards] = useState([]);
   const [order, setOrder] = useState("ASC");
   const [toastMessage, setToastMessage] = useState("");
- const toast = useToast()
+  const toast = useToast();
 
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
-      .get(`admin/boards`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/boards`)
       .then((res) => setBoards(res.data.boards))
       .catch((err) => console.error(err));
   }, [toastMessage]);
@@ -67,42 +60,34 @@ const BoardList = () => {
     //     board,
     //   })
     // );
-    navigate("/admin-edit-board");
+    navigate("/admin/edit-board");
   };
 
-   const handleListUnlist = (id) => {
-     axios
-       .put(
-         `admin/board-list-unlist?id=${id}`,null,
-         {
-           headers: {
-             authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-           },
-         }
-       )
-       .then((res) => {
-         console.log(res);
-         setToastMessage(id,res.data.message);
-         toast({
-           title: res.data.message,
-           status: "success",
-           duration: 5000,
-           isClosable: true,
-           position: "top",
-         });
-       })
-       .catch((err) => {
-         console.log(err);
-         setToastMessage(id, err.message);
-         toast({
-           title: err.message,
-           status: "error",
-           duration: 5000,
-           isClosable: true,
-           position: "top",
-         });
-       });
-   };
+  const handleListUnlist = (id) => {
+    axiosInstance("Adtoken")
+      .put(`admin/board-list-unlist?id=${id}`)
+      .then((res) => {
+        setToastMessage(id, res.data.message);
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setToastMessage(id, err.message);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
+  };
 
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
@@ -136,7 +121,7 @@ const BoardList = () => {
           <div className="bg-white p-2 rounded-2xl flex">
             <button
               className="font-bold text-sky-900"
-              onClick={() => navigate("/admin-add-board")}
+              onClick={() => navigate("/admin/add-board")}
             >
               ADD BOARD
             </button>

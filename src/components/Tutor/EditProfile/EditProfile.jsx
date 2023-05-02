@@ -12,9 +12,15 @@ import { FiPhoneIncoming, FiMail } from "react-icons/fi";
 import { BsFillPersonFill } from "react-icons/bs";
 import { HiOutlineBuildingLibrary } from "react-icons/hi2";
 import { BsSignIntersectionSide, BsImage } from "react-icons/bs";
-import { MdAccessTime, MdLocationOn, MdOutlineSchool, MdSubject, MdWork } from "react-icons/md";
+import {
+  MdAccessTime,
+  MdLocationOn,
+  MdOutlineSchool,
+  MdSubject,
+  MdWork,
+} from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { setStudent } from "../../../features/studentSlice";
@@ -23,20 +29,37 @@ import Navbar from "../Dashboard/Navbar";
 import { setTutor } from "../../../features/tutorSlice";
 
 const EditProfile = () => {
-  const tutor = useSelector((state) => state.tutor);
-  console.log(tutor, "std");
+  const { tutor } = useSelector((state) => state.tutor);
 
   const token = localStorage.getItem("Ttoken");
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
-   
+
   const [selectedBoard, setSelectedBoard] = useState(tutor.board._id);
   const [selectedBranch, setSelectedBranch] = useState(tutor.branch._id);
   const toast = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  console.log(tutor, "std");
+  useEffect(() => {
+    if (tutor.accepted == false && tutor.rejected == false) {
+      navigate("/tutor/approval-pending");
+    } else if (tutor.rejected) {
+      navigate("/tutor/approval-rejected");
+    } else if (tutor.blocked) {
+      localStorage.removeItem("Ttoken");
+      navigate("/tutor");
+      toast({
+        title: "Blocked",
+        description: "Your account is blocked by the admin",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }, []);
+
   const [userData, setUserData] = useState({
     name: tutor.name,
     email: tutor.email,
@@ -55,7 +78,7 @@ const EditProfile = () => {
 
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
+    axiosInstance("Ttoken")
       .get(`tutor/boards`, {
         headers: {
           authorization: `Bearer ${token}`,
@@ -69,15 +92,8 @@ const EditProfile = () => {
 
   useEffect(() => {
     if (selectedBoard) {
-      axios
-        .get(
-          `${import.meta.env.VITE_BASE_PATH}tutor/branches?board=${selectedBoard}`,
-          {
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-          }
-        )
+      axiosInstance("Ttoken")
+        .get(`tutor/branches?board=${selectedBoard}`)
         .then((res) => {
           setBranches(res.data.branches);
         })
@@ -135,15 +151,9 @@ const EditProfile = () => {
       });
     }
 
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    };
     setLoading(true);
 
-    await axios
+    await axiosInstance("Ttoken")
       .post(
         `tutor/edit-profile-details?id=${tutor._id}`,
         {
@@ -151,11 +161,10 @@ const EditProfile = () => {
           board: selectedBoard,
           branch: selectedBranch,
         },
-        config
+        { headers: { "Content-Type": "multipart/form-data" } }
       )
       .then((res) => {
         if (res.data.updated) {
-          
           toast({
             title: res.data.message,
             status: "success",
@@ -164,26 +173,9 @@ const EditProfile = () => {
             position: "bottom-right",
           });
 
-          dispatch(
-            setTutor({
-              _id: res.data.tutor._id,
-              name: res.data.tutor.name,
-              email: res.data.tutor.email,
-              phone: res.data.tutor.phone,
-              branch: res.data.tutor.branch,
-              board: res.data.tutor.board,
-              subjects: res.data.tutor.subjects,
-              timeFrom: res.data.tutor.timeFrom,
-              timeTo: res.data.tutor.timeTo,
-              place: res.data.tutor.place,
-              profession: res.data.tutor.profession,
-              status: res.data.tutor.status,
-              profilePicture: res.data.tutor.profilePicture,
-              token,
-            })
-          );
+          dispatch(setTutor({ tutor: res.data.tutor }));
           setLoading(false);
-          navigate('/tutor-dashboard')
+          navigate("/tutor/dashboard");
         } else {
           toast({
             title: res.data.message,

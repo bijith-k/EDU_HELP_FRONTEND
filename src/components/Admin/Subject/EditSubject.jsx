@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useEffect } from "react";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
@@ -16,19 +16,15 @@ const EditSubject = () => {
   const navigate = useNavigate();
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
-      .get(`admin/boards`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/boards`)
       .then((res) => setBoards(res.data.boards))
       .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
     if (selectedBoard) {
-      axios
+      axiosInstance("Adtoken")
         .get(
           `${
             import.meta.env.VITE_BASE_PATH
@@ -53,15 +49,9 @@ const EditSubject = () => {
   const subjectId = localStorage.getItem("subjectId");
   const subBranchId = localStorage.getItem("subBranchId");
   useEffect(() => {
-    axios
-      .get(`admin/subjects?id=${subjectId}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/subjects?id=${subjectId}`)
       .then((res) => {
-        console.log(res.data.subjects);
-        
         setSelectedBranch(res.data.subjects.branch._id);
         setSubjectName(res.data.subjects.name);
       })
@@ -69,24 +59,16 @@ const EditSubject = () => {
         console.log(error);
       });
 
-      axios
-        .get(`admin/branches?id=${subBranchId}`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          console.log(res.data.branches);
-          // setBranchData(res.data.branches);
-          setSelectedBoard(res.data.branches.board._id);
-          // setBranch(res.data.branches.name);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    axiosInstance("Adtoken")
+      .get(`admin/branches?id=${subBranchId}`)
+      .then((res) => {
+        setSelectedBoard(res.data.branches.board._id);
+        // setBranch(res.data.branches.name);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
-
-
 
   const token = localStorage.getItem("Adtoken");
 
@@ -131,12 +113,11 @@ const EditSubject = () => {
         position: "top",
       });
     }
-    axios
-      .post(
-        `admin/edit-subject?id=${subjectId}`,
-        { branch: selectedBranch, subject: subjectName },
-        config
-      )
+    axiosInstance("Adtoken")
+      .post(`admin/edit-subject?id=${subjectId}`, {
+        branch: selectedBranch,
+        subject: subjectName,
+      })
       .then((res) => {
         localStorage.removeItem("subjectId");
         localStorage.removeItem("subBranchId");
@@ -151,7 +132,7 @@ const EditSubject = () => {
         setSelectedBoard("");
         setSelectedBranch("");
         setSubjectName("");
-        navigate("/admin-subject");
+        navigate("/admin/subject");
       })
       .catch((err) => {
         toast({

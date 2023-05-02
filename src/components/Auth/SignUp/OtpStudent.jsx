@@ -1,31 +1,31 @@
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setStudent } from "../../../features/studentSlice";
 import ragam from "../../../assets/ragam.jpeg";
+import { useToast } from "@chakra-ui/react";
 
 const initialValues = {
   otpPhone: "",
-  otpEmail: "",
+  // otpEmail: "",
 };
 
 const OtpStudent = () => {
   const [isLoading, setIsLoading] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const otpSchema = Yup.object({
     otpPhone: Yup.number().required(
       "Please enter otp received in the given mobile number"
     ),
-    otpEmail: Yup.number().required(
-      "Please enter otp received in the given email"
-    ),
+    // otpEmail: Yup.number().required(
+    //   "Please enter otp received in the given email"
+    // ),
   });
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
@@ -33,26 +33,44 @@ const OtpStudent = () => {
       initialValues: initialValues,
       validationSchema: otpSchema,
       onSubmit: (values, action) => {
+         
         setIsLoading(true);
-        axios
+        axiosInstance()
           .post(`auth/verify-otp`, {
             ...values,
           })
           .then((response) => {
-            console.log(response, "slkfsklfkl");
             setIsLoading(false);
             if (response.data.created) {
-              console.log(response.data);
-              toast.success(response.data.message);
+              toast({
+                title: response.data.message,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
               navigate("/signin");
             } else {
-              toast.error(response.data.message);
+              toast({
+                title: response.data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
             }
           })
           .catch((error) => {
             setIsLoading(false);
             console.log(error, "catchhh");
-            toast.error(error.response.data.errors);
+
+            toast({
+              title: error.response.data.errors,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+            });
           });
         // action.resetForm();
       },
@@ -87,10 +105,10 @@ const OtpStudent = () => {
           <div className="bg-white px-6 py-8 mt-0 rounded-2xl shadow-md text-black w-full">
             <h1 className="text-center font-semibold text-xl">ENTER OTP</h1>
             <p className="text-center font-sans font-thin text-xs mb-3">
-              CHECK THE INBOX OF GIVEN EMAIL <br /> AND MOBILE NUMBER FOR OTP
+              CHECK THE INBOX OF GIVEN MOBILE NUMBER FOR OTP
             </p>
             <form action="" onSubmit={handleSubmit}>
-              <input
+              {/* <input
                 type="text"
                 className="block border border-grey-light w-full p-3 rounded mb-4"
                 name="otpEmail"
@@ -103,7 +121,7 @@ const OtpStudent = () => {
                 <p className="form-error text-red-600 mb-2">
                   {errors.otpEmail}
                 </p>
-              ) : null}
+              ) : null} */}
 
               <input
                 type="text"
@@ -131,7 +149,6 @@ const OtpStudent = () => {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

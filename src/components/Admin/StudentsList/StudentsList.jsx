@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
-import Sidebar from '../Dashboard/Sidebar'
-import { useNavigate } from 'react-router-dom'
-import axios from "../../../axios";
-import { toast } from 'react-toastify'
+import React, { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import Sidebar from "../Dashboard/Sidebar";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../axios";
 import {
   Table,
   TableContainer,
@@ -16,39 +15,25 @@ import {
 } from "@chakra-ui/react";
 
 const StudentsList = () => {
- const toast = useToast();
+  const toast = useToast();
 
-  const navigate = useNavigate()
-  const Token = localStorage.getItem("Adtoken")
-  const [students, setStudents] = useState([])
+  const navigate = useNavigate();
+  const Token = localStorage.getItem("Adtoken");
+  const [students, setStudents] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
-console.log(students);
+
   useEffect(() => {
-    axios
-      .get(`admin/students`, {
-        headers: {
-          authorization: `Bearer ${Token}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/students`)
       .then((res) => {
-        console.log(res);
         setStudents(res.data);
       });
-      
   }, [toastMessage]);
 
   const handleBlockUnblock = (id) => {
-    axios
-      .put(
-        `admin/block-unblock-student?student=${id}`,null,
-        {
-          headers: {
-            authorization: `Bearer ${Token}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .put(`admin/block-unblock-student?student=${id}`)
       .then((res) => {
-        console.log(res);
         setToastMessage(id);
         toast({
           title: res.data.message,
@@ -71,7 +56,6 @@ console.log(students);
       });
   };
 
-   
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
       <div>
@@ -118,7 +102,7 @@ console.log(students);
             <Tbody className="text-center">
               {students.map((student, index) => (
                 <Tr className="bg-white" key={index}>
-                  <Td  className="border">{index + 1}</Td>
+                  <Td className="border">{index + 1}</Td>
                   <Td className="border uppercase">{student.name}</Td>
                   <Td className="border">{student.email}</Td>
                   <Td className="border">{student.phone}</Td>
@@ -150,6 +134,6 @@ console.log(students);
       </div>
     </div>
   );
-}
+};
 
-export default StudentsList
+export default StudentsList;

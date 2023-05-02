@@ -27,21 +27,21 @@ const Sidebar = () => {
   };
 
   const Menus = [
-    { title: "Dashboard", src: dashboard, route: "/admin-dashboard" },
-    { title: "Students", src: student, gap: true, route: "/admin-students" },
-    { title: "Tutors", src: tutor, route: "/admin-tutors" },
-    { title: "Notes", src: notes, gap: true, route: "/admin-notes" },
-    { title: "Videos", src: videos, route: "/admin-videos" },
+    { title: "Dashboard", src: dashboard, route: "/admin/dashboard" },
+    { title: "Students", src: student, gap: true, route: "/admin/students" },
+    { title: "Tutors", src: tutor, route: "/admin/tutors" },
+    { title: "Notes", src: notes, gap: true, route: "/admin/notes" },
+    { title: "Videos", src: videos, route: "/admin/videos" },
     {
       title: "Question Papers",
       src: question,
-      route: "/admin-question-papers",
+      route: "/admin/question-papers",
     },
-    { title: "Events", src: events, route: "/admin-events" },
-    { title: "Board", src: board, gap: true, route: "/admin-board" },
-    { title: "Branch", src: branch, route: "/admin-branch" },
-    { title: "Subject", src: subject, route: "/admin-subject" },
-    { title: "Plans", src: events, route: "/admin-plans" },
+    { title: "Events", src: events, route: "/admin/events" },
+    { title: "Board", src: board, gap: true, route: "/admin/board" },
+    { title: "Branch", src: branch, route: "/admin/branch" },
+    { title: "Subject", src: subject, route: "/admin/subject" },
+    { title: "Plans", src: events, route: "/admin/plans" },
   ];
   return (
     <div className="flex">
@@ -100,14 +100,14 @@ const Sidebar = () => {
             </li>
           ))}
         </ul>
-        <button 
+        <button
           className="my-6 w-8 bg-red-500 text-white p-3 rounded-md"
           onClick={() => {
             localStorage.removeItem("Adtoken");
             navigate("/admin");
           }}
         >
-          <BiLogOut  />
+          <BiLogOut />
         </button>
       </div>
       {/* <div className='p-7 text-2xl font-semibold flex-1 h-screen '>

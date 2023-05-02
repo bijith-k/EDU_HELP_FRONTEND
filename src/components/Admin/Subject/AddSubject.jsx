@@ -1,44 +1,31 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useEffect } from "react";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 const AddSubject = () => {
-  const toast = useToast()
+  const toast = useToast();
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
   const [subjectName, setSubjectName] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
-      .get(`admin/boards`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/boards`)
       .then((res) => setBoards(res.data.boards))
       .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
     if (selectedBoard) {
-      axios
-        .get(
-          `${
-            import.meta.env.VITE_BASE_PATH
-          }admin/branches?board=${selectedBoard}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-            },
-          }
-        )
+      axiosInstance("Adtoken")
+        .get(`admin/branches?board=${selectedBoard}`)
         .then((res) => {
           setBranches(res.data.branches);
         })
@@ -62,7 +49,7 @@ const AddSubject = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-const nameRegex = /^[a-zA-Z0-9]+([ \-'][a-zA-Z0-9]+)*$/;
+    const nameRegex = /^[a-zA-Z0-9]+([ \-'][a-zA-Z0-9]+)*$/;
 
     if (!selectedBoard) {
       return toast({
@@ -93,12 +80,12 @@ const nameRegex = /^[a-zA-Z0-9]+([ \-'][a-zA-Z0-9]+)*$/;
         position: "top",
       });
     }
-    axios
-      .post(
-        `admin/add-subject`,
-        { board: selectedBoard, branch: selectedBranch, subject: subjectName },
-        config
-      )
+    axiosInstance("Adtoken")
+      .post(`admin/add-subject`, {
+        board: selectedBoard,
+        branch: selectedBranch,
+        subject: subjectName,
+      })
       .then((res) => {
         toast({
           title: res.data.message,
@@ -110,16 +97,16 @@ const nameRegex = /^[a-zA-Z0-9]+([ \-'][a-zA-Z0-9]+)*$/;
         setSelectedBoard("");
         setSelectedBranch("");
         setSubjectName("");
-        navigate('/admin-subject')
+        navigate("/admin/subject");
       })
       .catch((err) => {
-       toast({
-         title: err.message,
-         status: "success",
-         duration: 5000,
-         isClosable: true,
-         position: "top",
-       });
+        toast({
+          title: err.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
 
         console.error(err, "err");
       });

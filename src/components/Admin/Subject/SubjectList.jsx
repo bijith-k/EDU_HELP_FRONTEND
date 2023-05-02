@@ -2,13 +2,19 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
- 
+
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
-import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import axiosInstance from "../../../axios";
+import {
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 
-
- 
 const SubjectList = () => {
   const [subjects, setSubjects] = useState([]);
 
@@ -17,14 +23,9 @@ const SubjectList = () => {
   const [order, setOrder] = useState("ASC");
 
   useEffect(() => {
-    axios
-      .get(`admin/subjects`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/subjects`)
       .then((res) => {
-        console.log(res, "5");
         setSubjects(res.data.subjects);
       });
   }, []);
@@ -47,7 +48,6 @@ const SubjectList = () => {
   };
 
   const handleEdit = (subject) => {
-    
     localStorage.setItem("subjectId", subject._id);
     localStorage.setItem("subBranchId", subject.branch._id);
 
@@ -56,7 +56,7 @@ const SubjectList = () => {
     //     board,
     //   })
     // );
-    navigate("/admin-edit-subject");
+    navigate("/admin/edit-subject");
   };
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
@@ -90,7 +90,7 @@ const SubjectList = () => {
           <div className="bg-white p-2 rounded-2xl flex">
             <button
               className="font-bold text-sky-900"
-              onClick={() => navigate("/admin-add-subject")}
+              onClick={() => navigate("/admin/add-subject")}
             >
               ADD SUBJECT
             </button>

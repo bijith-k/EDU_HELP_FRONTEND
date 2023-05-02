@@ -1,54 +1,44 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from '../Home/Navbar'
-import axios from '../../../axios'
-import {FaRupeeSign} from 'react-icons/fa'
-import { useNavigate } from 'react-router-dom'
-import { Spinner, useToast } from '@chakra-ui/react'
-import { useSelector } from 'react-redux'
-
+import React, { useEffect, useState } from "react";
+import Navbar from "../Home/Navbar";
+import axiosInstance from "../../../axios";
+import { FaRupeeSign } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { Spinner, useToast } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
+import Header from "../Header/Header";
+import HeadTitle from "../Header/HeadTitle";
 
 const Plans = () => {
-  const student = useSelector((state) => state.student);
+  const { student } = useSelector((state) => state.student);
 
-  const [plans, setPlans] = useState([])
-  const token = localStorage.getItem('Stoken')
-  const [selectedPlan, setSelectedPlan] = useState([])
-  console.log(selectedPlan,'sel');
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+  const [plans, setPlans] = useState([]);
+  const token = localStorage.getItem("Stoken");
+  const [selectedPlan, setSelectedPlan] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const toast = useToast()
+  const toast = useToast();
 
   useEffect(() => {
-    axios
-    .get(`get-plans`, {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    })
-    .then((res) => {
-      console.log(res);
-      setPlans(res.data);
-    });
-  }, [])
+    axiosInstance("Stoken")
+      .get(`get-plans`)
+      .then((res) => {
+        setPlans(res.data);
+      });
+  }, []);
 
   useEffect(() => {
-    axios
-      .get(`get-subscribed-plan?id=${student._id}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+    axiosInstance("Stoken")
+      .get(`get-subscribed-plan?id=${student._id}`)
       .then((res) => {
         if (res.data.subscribed) {
-           setIsSubscribed(true)
+          setIsSubscribed(true);
         }
       });
   }, []);
 
-  const initPayment = (data,plan) => {
-    console.log('innssa');
-    console.log(data,'p');
+  const initPayment = (data, plan) => {
     const options = {
       key: import.meta.env.VITE_KEY_ID,
       amount: data.amount,
@@ -60,25 +50,24 @@ const Plans = () => {
         try {
           const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
             response;
-          console.log(response, "res");
-           console.log(plan,'plu');
-          const { data } = await axios.post(
+
+          const { data } = await axiosInstance("Stoken").post(
             `verify-payment`,
-            { razorpay_payment_id, razorpay_order_id, razorpay_signature,plan },
             {
-              headers: {
-                authorization: `Bearer ${token}`,
-              },
+              razorpay_payment_id,
+              razorpay_order_id,
+              razorpay_signature,
+              plan,
             }
           );
-          console.log(data);
-           if(data.verified){
-            setLoading(false)
-            setSelectedPlan(null)
-            navigate('/tutors')
-           }else{
-            alert('error during payment')
-           }
+
+          if (data.verified) {
+            setLoading(false);
+            setSelectedPlan(null);
+            navigate("/tutors");
+          } else {
+            alert("error during payment");
+          }
         } catch (error) {
           console.log(error);
           setLoading(false);
@@ -89,16 +78,15 @@ const Plans = () => {
         color: "#3399cc",
       },
     };
-    console.log('topop');
-    console.log(options,'op');
+
     const rzp1 = new Razorpay(options);
     rzp1.open();
-  }
+  };
 
-  const handlePayment = async(plan) =>{
+  const handlePayment = async (plan) => {
     try {
       // setLoading(true)
-      if(isSubscribed){
+      if (isSubscribed) {
         return toast({
           title: "You already have a subscription plan",
           description: "Please check your profile page for details",
@@ -107,38 +95,28 @@ const Plans = () => {
           isClosable: true,
           position: "top",
         });
-      } 
-      const { data } = await axios.post(
-        `buy-plan`,
-        { id: plan._id },
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        }
-      ); 
-      console.log(data);
-      initPayment(data.data,plan)
+      }
+      const { data } = await axiosInstance("Stoken").post(`buy-plan`, {
+        id: plan._id,
+      });
+
+      initPayment(data.data, plan);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-
-  
-  
-
-  
-
+  };
 
   //  const isActive =
   //    response.data.student.subscription &&
   //    Date.now() < new Date(response.data.student.subscription.expiredAt);
   //  console.log(isActive, "activvvvvvvvv");
-  
+
   return (
-    <div className="h-screen w-full bg-slate-300 overflow-x-hidden">
+    <div className="min-h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
       <Navbar />
-      <div className="bg-gray-400 h-72">
+      <Header />
+      <HeadTitle title={"available plans"} />
+      {/* <div className="bg-gray-400 h-72">
         <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
           "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
         </h1>
@@ -147,7 +125,7 @@ const Plans = () => {
         <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
           available plans
         </h1>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 p-3 h-full">
         {plans.map((plan, index) => (
@@ -161,6 +139,9 @@ const Plans = () => {
             <p className="font-serif text-lg mt-8">
               Chat with tutors and clear <br /> your doubts
             </p>
+            <p className="font-serif text-lg mt-4">
+              Exclusive notes <br /> uploaded by tutors
+            </p>
             {/* <p>exclusive notes from tutors</p> */}
             <p className="font-serif text-lg mt-3">
               Plan validity : {plan.duration} Month
@@ -169,7 +150,7 @@ const Plans = () => {
               Price : <FaRupeeSign className="inline" /> {plan.price}{" "}
             </p>
             {loading ? (
-              <Spinner className='mt-5' />
+              <Spinner className="mt-5" />
             ) : (
               <span
                 onClick={() => {
@@ -177,18 +158,16 @@ const Plans = () => {
                   handlePayment(plan);
                 }}
               >
-                
                 <p className="bg-gray-200 p-2 text-black rounded-3xl uppercase font-bold mt-5 w-2/3 hover:bg-slate-500 hover:text-white mx-auto cursor-pointer">
                   buy now
-                </p> 
+                </p>
               </span>
-            
             )}
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
 
-export default Plans
+export default Plans;

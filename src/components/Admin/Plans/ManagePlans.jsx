@@ -1,45 +1,39 @@
-import React, { useEffect, useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
-import Sidebar from '../Dashboard/Sidebar'
-import { useNavigate } from 'react-router-dom'
-import axios from "../../../axios";
-import { Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
-
-
+import React, { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import Sidebar from "../Dashboard/Sidebar";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../axios";
+import {
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useToast,
+} from "@chakra-ui/react";
 
 const ManagePlans = () => {
-  const navigate = useNavigate()
-  const toast = useToast()
-  const Token = localStorage.getItem("Adtoken")
-  const [plans, setPlans] = useState([])
+  const navigate = useNavigate();
+  const toast = useToast();
+  const Token = localStorage.getItem("Adtoken");
+  const [plans, setPlans] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
-    axios
-      .get(`admin/plans`, {
-        headers: {
-          authorization: `Bearer ${Token}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/plans`)
       .then((res) => {
-        console.log(res);
         setPlans(res.data);
       });
-      localStorage.removeItem("planId");
+    localStorage.removeItem("planId");
   }, [toastMessage]);
 
   const handleListUnlist = (id) => {
-    axios
-      .get(
-        `admin/plan-list-unlist?plan=${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${Token}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .get(`admin/plan-list-unlist?plan=${id}`)
       .then((res) => {
-        
         setToastMessage(id, res.data.message);
         toast({
           title: res.data.message,
@@ -63,14 +57,13 @@ const ManagePlans = () => {
   };
 
   const handleEdit = (plan) => {
-    
     localStorage.setItem("planId", plan._id);
     // dispatch(
     //   setNoteData({
     //     note: note,
     //   })
     // );
-    navigate("/admin-edit-plans");
+    navigate("/admin/edit-plans");
   };
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
@@ -104,7 +97,7 @@ const ManagePlans = () => {
           <div className="bg-white p-2 rounded-2xl flex">
             <button
               className="font-bold text-sky-900"
-              onClick={() => navigate("/admin-add-plans")}
+              onClick={() => navigate("/admin/add-plans")}
             >
               ADD PLAN
             </button>
@@ -162,6 +155,6 @@ const ManagePlans = () => {
       </div>
     </div>
   );
-}
+};
 
-export default ManagePlans
+export default ManagePlans;

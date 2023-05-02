@@ -1,27 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardBody, CardFooter, Stack, Heading, Text, Divider, ButtonGroup, Button } from "@chakra-ui/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Stack,
+  Heading,
+  Text,
+  Divider,
+  ButtonGroup,
+  Button,
+  useToast,
+} from "@chakra-ui/react";
+import exclusive from "../../../assets/exclusive (1).png";
+
 import { useSelector } from "react-redux";
-import axios from "../../../axios";
 import Pagination from "../../Pagination/Pagination";
+import axiosInstance from "../../../axios";
+import { MdWorkspacePremium } from "react-icons/md";
+import Search from "../Search/Search";
 
 const NotesContent = () => {
-  const student = useSelector((state) => state.student);
+  const { student } = useSelector((state) => state.student);
+  const toast = useToast();
 
   const [notes, setNotes] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
-  const [currentPage, setCurrentPage] = useState(1)
-  const [notesPerPage, setNotesPerPage] = useState(3)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [notesPerPage, setNotesPerPage] = useState(4);
   const lastNoteIndex = currentPage * notesPerPage;
   const firstNoteIndex = lastNoteIndex - notesPerPage;
 
-  const currentNotes = notes.slice(firstNoteIndex, lastNoteIndex);
+  const handleSearchQuery = (data) => {
+    setSearchQuery(data);
+  };
 
-  const note = currentNotes.filter(
+  const handleSelectedSubject = (data) => {
+    setSelectedSubject(data);
+  };
+
+  
+  const note = notes.filter(
     (note) => note.branch._id === student.branch._id
   );
-  
+
+
+
   const filteredData =
     searchQuery.trim() !== "" || selectedSubject !== ""
       ? note.filter((item) => {
@@ -42,32 +68,25 @@ const NotesContent = () => {
         })
       : note;
 
+      let currentNotes;
+      if (searchQuery != "" || selectedSubject != "") {
+        currentNotes = filteredData;
+      } else {
+        currentNotes = filteredData.slice(firstNoteIndex, lastNoteIndex);
+      }
+
+
   useEffect(() => {
-    axios
-      .get(`get-notes`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Stoken")}`,
-        },
-      })
+    axiosInstance("Stoken")
+      .get(`get-notes?studentId=${student._id}`)
       .then((response) => {
-        console.log("afasdfsdds");
-        console.log(response.data, "sfasdfsdf");
         setNotes(response.data);
       });
   }, []);
 
   useEffect(() => {
-    axios
-      .get(
-        `subjects?branch=${
-          student.branch._id
-        }`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Stoken")}`,
-          },
-        }
-      )
+    axiosInstance("Stoken")
+      .get(`subjects?branch=${student.branch._id}`)
       .then((res) => {
         setSubjects(res.data.subjects);
       })
@@ -76,279 +95,141 @@ const NotesContent = () => {
       });
   }, []);
 
-  
+  const handleFavourite = (id) => {
+    axiosInstance("Stoken")
+      .get(`add-favourite-note/${id}`)
+      .then((res) => {
+        if (res.data.added) {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+        } else if (!res.data.added) {
+          toast({
+            title: res.data.message,
+            status: "warning",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+      });
+  };
 
   return (
     <div>
-      {/* <div className="m-4 md:m-8 flex md:justify-evenly md:flex-row flex-col items-center ">
-        <div className="bg-gray-400 w-max p-3 rounded-full md:mb-0 mb-4">
-          <input
-            type="text"
-            name=""
-            id=""
-            placeholder="Search notes"
-            className="bg-transparent placeholder-white font-semibold focus:outline-none"
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            size="small"
-            className="bg-green-400 font-semibold rounded-full"
-          >
-            Search
-          </Button>
-        </div>
-        <div>
-          {/* filter */}
-      {/* <FormControl className="w-56">
-            <InputLabel id="demo-simple-select-label">Subject</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={selectedSubject}
-              label="subject"
-              onChange={(e) => setSelectedSubject(e.target.value)}
-            >
-              <MenuItem value={""}>All Subjects</MenuItem>
-              {subjects.map((subject) => (
-                <MenuItem
-                  key={subject._id}
-                  value={subject.name}
-                  className="uppercase"
-                >
-                  {subject.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div> */}
-      {/* </div>  */}
+      {note.length > 0 ? (
+        <Search
+          searchQueryData={handleSearchQuery}
+          selectedSubjectData={handleSelectedSubject}
+        />
+      ) : null}
 
       <div className="flex justify-center">
-        <div className="grid md:grid-cols-4">
-          {filteredData.length > 0 ? (
-            filteredData.map((note, index) => (
-              // <Card
-              //   key={index}
-              //   sx={{ maxWidth: 345 }}
-              //   className="m-4 rounded-2xl shadow-xl bg-slate-100"
-              // >
-              //   <CardMedia
-              //     sx={{ height: 240 }}
-              //     className="m-3 rounded-2xl border"
-              //   >
-              // <iframe
-              //   title="PDF Viewer"
-              //   src={`${import.meta.env.VITE_BASE_PATH}${note.file_path}`}
-              //   height="240"
-              //   scrolling="no"
-              // />
-              //   </CardMedia>
-              //   <CardContent>
-              //     <Typography gutterBottom variant="h6" component="div">
-              //       {note.note_name}
-              //     </Typography>
-              //     <Typography variant="body2" color="text.secondary">
-              //       Class : {note.branch.name} <br />
-              //       Subject : {note.subject.name}
-              //     </Typography>
-              //   </CardContent>
-              //   <CardActions className="flex justify-center">
-              // <Button size="medium" className="bg-red-100 rounded-lg">
-              //   <a
-              //     href={`${import.meta.env.VITE_BASE_PATH}${
-              //       note.file_path
-              //     }`}
-              //     target="_blank"
-              //   >
-              //     DOWNLOAD
-              //   </a>
-              // </Button>
-              // <Button size="medium" className="bg-rose-100 rounded-lg">
-              //   ADD TO FAVOURITE
-              // </Button>
-              //   </CardActions>
-              // </Card>
-              <Card maxW="sm">
-                <CardBody>
-                  {/* <Image
-                    src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                    alt="Green double couch with wooden legs"
-                    borderRadius="lg"
-                  /> */}
-                  <iframe
-                    title="PDF Viewer"
-                    src={`${import.meta.env.VITE_BASE_PATH}${note.file_path}`}
-                    height="240"
-                    scrolling="no"
-                    borderRadius="lg"
-                  />
-                  <Stack mt="6" spacing="3">
-                    <Heading size="md"> {note.note_name}</Heading>
-                    <Text>
-                      Class : {note.branch.name} <br />
-                      Subject : {note.subject.name}
-                    </Text>
-                    {/* <Text color="blue.600" fontSize="2xl">
+        {note.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
+            {currentNotes.length > 0 ? (
+              currentNotes.map((note, index) => (
+                <Card
+                  maxW="sm"
+                  key={index}
+                  className={`relative ${
+                    note.exclusive ? "shadow-2xl  border-y-4" : null
+                  } `}
+                >
+                  {note.exclusive ? (
+                    <div class="absolute z-50 bottom-40 right-14 -mt-3 -mr-3  w-10 h-10">
+                      <img src={exclusive} alt="" />
+                    </div>
+                  ) : null}
+                  <CardBody className="flex flex-col">
+                    <iframe
+                      title="PDF Viewer"
+                      src={`${import.meta.env.VITE_BASE_PATH}${note.file_path}`}
+                      height="240"
+                      scrolling="no"
+                      borderRadius="lg"
+                    />
+                    <Stack mt="6" spacing="3">
+                      <Heading size="md" className="uppercase">
+                        {" "}
+                        {note.note_name}
+                      </Heading>
+                      <Text className="uppercase">
+                        Class : {note.branch.name} <br />
+                        Subject : {note.subject.name}
+                      </Text>
+
+                      {/* <Text color="blue.600" fontSize="2xl">
                       $450
                     </Text> */}
-                  </Stack>
-                </CardBody>
-                <Divider />
-                <CardFooter>
-                  <ButtonGroup spacing="2">
-                    {/* <Button variant="solid" colorScheme="blue">
+                    </Stack>
+                  </CardBody>
+                  <Divider />
+                  <CardFooter>
+                    <ButtonGroup spacing="2">
+                      {/* <Button variant="solid" colorScheme="blue">
                       Buy now
                     </Button> */}
-                    <Button className="bg-red-100 p-3 rounded-lg">
-                      <a
-                        href={`${import.meta.env.VITE_BASE_PATH}${
-                          note.file_path
-                        }`}
-                        target="_blank"
-                      >
-                        DOWNLOAD
-                      </a>
-                    </Button>
-                    {/* <Button variant="ghost" colorScheme="blue">
+                      <Button className="bg-red-100 p-3 rounded-lg">
+                        <a
+                          href={`${import.meta.env.VITE_BASE_PATH}${
+                            note.file_path
+                          }`}
+                          target="_blank"
+                        >
+                          DOWNLOAD
+                        </a>
+                      </Button>
+                      {/* <Button variant="ghost" colorScheme="blue">
                       Add to cart
                     </Button> */}
-                    <Button className="bg-rose-100 p-3 rounded-lg">
-                      ADD TO FAVOURITE
-                    </Button>
-                  </ButtonGroup>
-                </CardFooter>
-              </Card>
-            ))
-          ) : (
-            <p>
-              No results found for "{searchQuery}" and "{selectedSubject}"
-            </p>
-          )}
-          {/* <Card
-            sx={{ maxWidth: 345 }}
-            className="m-4 rounded-2xl shadow-xl bg-slate-100"
-          >
-            <CardMedia
-              sx={{ height: 240 }}
-              image={school}
-              title="green iguana"
-              className="m-3 rounded-2xl border"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
-                Social science Unit 1
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Class : 10 <br />
-                Subject : Social Science
-              </Typography>
-            </CardContent>
-            <CardActions className="flex justify-center">
-              <Button size="medium" className="bg-red-100 rounded-lg">
-                DOWNLOAD
-              </Button>
-              <Button size="medium" className="bg-rose-100 rounded-lg">
-                ADD TO FAVOURITE
-              </Button>
-            </CardActions>
-          </Card>
-          <Card
-            sx={{ maxWidth: 345 }}
-            className="m-4 rounded-2xl shadow-xl bg-slate-100"
-          >
-            <CardMedia
-              sx={{ height: 240 }}
-              className="m-3 rounded-2xl border"
-              component="a"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Your PDF file"
-              href="https://drive.google.com/file/d/1Z57xhXuBUjuxZBo8deyq6q9759k51hpZ/view?usp=share_link"
-              image={school}
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
-                Social science Unit 1
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Class : 10 <br />
-                Subject : Social Science
-              </Typography>
-            </CardContent>
-            <CardActions className="flex justify-center">
-              <Button size="medium" className="bg-red-100 rounded-lg">
-                DOWNLOAD
-              </Button>
-              <Button size="medium" className="bg-rose-100 rounded-lg">
-                ADD TO FAVOURITE
-              </Button>
-            </CardActions>
-          </Card>
-          <Card
-            sx={{ maxWidth: 345 }}
-            className="m-4 rounded-2xl shadow-xl bg-slate-100"
-          >
-            <CardMedia
-              sx={{ height: 240 }}
-              image={school}
-              title="green iguana"
-              className="m-3 rounded-2xl border"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
-                Social science Unit 1
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Class : 10 <br />
-                Subject : Social Science
-              </Typography>
-            </CardContent>
-            <CardActions className="flex justify-center">
-              <Button size="medium" className="bg-red-100 rounded-lg">
-                DOWNLOAD
-              </Button>
-              <Button size="medium" className="bg-rose-100 rounded-lg">
-                ADD TO FAVOURITE
-              </Button>
-            </CardActions>
-          </Card>
-          <Card
-            sx={{ maxWidth: 345 }}
-            className="m-4 rounded-2xl shadow-xl bg-slate-100"
-          >
-            <CardMedia
-              sx={{ height: 240 }}
-              image={school}
-              title="green iguana"
-              className="m-3 rounded-2xl border"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
-                Social science Unit 1
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Class : 10 <br />
-                Subject : Social Science
-              </Typography>
-            </CardContent>
-            <CardActions className="flex justify-center">
-              <Button size="medium" className="bg-red-100 rounded-lg">
-                DOWNLOAD
-              </Button>
-              <Button size="medium" className="bg-rose-100 rounded-lg">
-                ADD TO FAVOURITE
-              </Button>
-            </CardActions>
-          </Card> */}
-        </div>
+                      <Button
+                        className="bg-rose-100 p-3 rounded-lg"
+                        onClick={() => handleFavourite(note._id)}
+                      >
+                        ADD TO FAVOURITE
+                      </Button>
+                    </ButtonGroup>
+                  </CardFooter>
+                </Card>
+              ))
+            ) : (
+              <p>
+                No results found for "{searchQuery}" and "{selectedSubject}"
+              </p>
+            )}
+          </div>
+        ) : (
+          <div>
+            <p className="text-center font-bold text-lg">
+              No notes are there to display
+            </p>{" "}
+          </div>
+        )}
       </div>
-      <Pagination
-        totalContents={notes.length}
-        contentsPerPage={notesPerPage}
-        setCurrentPage={setCurrentPage}
-        currentPage={currentPage}
-      />
+
+      {searchQuery != "" || selectedSubject != "" ? null : (
+        <Pagination
+          totalContents={note.length}
+          contentsPerPage={notesPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
+      )}
     </div>
   );
 };

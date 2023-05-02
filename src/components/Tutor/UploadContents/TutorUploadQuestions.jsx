@@ -1,12 +1,13 @@
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Dashboard/Navbar";
+import { useToast } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
 const TutorUploadQuestions = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState("");
@@ -20,31 +21,39 @@ const TutorUploadQuestions = () => {
 
   const [errors, setErrors] = useState(null);
 
+  const { tutor } = useSelector((state) => state.tutor);
+
+  useEffect(() => {
+    if (tutor.accepted == false && tutor.rejected == false) {
+      navigate("/tutor/approval-pending");
+    } else if (tutor.rejected) {
+      navigate("/tutor/approval-rejected");
+    } else if (tutor.blocked) {
+      localStorage.removeItem("Ttoken");
+      navigate("/tutor");
+      toast({
+        title: "Blocked",
+        description: "Your account is blocked by the admin",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }, []);
+
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
-      .get(`tutor/boards`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Ttoken")}`,
-        },
-      })
+    axiosInstance("Ttoken")
+      .get(`tutor/boards`)
       .then((res) => setBoards(res.data.boards))
       .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
     if (selectedBoard) {
-      axios
-        .get(
-          `${
-            import.meta.env.VITE_BASE_PATH
-          }tutor/branches?board=${selectedBoard}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("Ttoken")}`,
-            },
-          }
-        )
+      axiosInstance("Ttoken")
+        .get(`tutor/branches?board=${selectedBoard}`)
         .then((res) => {
           setBranches(res.data.branches);
         })
@@ -58,17 +67,8 @@ const TutorUploadQuestions = () => {
 
   useEffect(() => {
     if (selectedBranch) {
-      axios
-        .get(
-          `${
-            import.meta.env.VITE_BASE_PATH
-          }tutor/subjects?branch=${selectedBranch}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("Ttoken")}`,
-            },
-          }
-        )
+      axiosInstance("Ttoken")
+        .get(`tutor/subjects?branch=${selectedBranch}`)
         .then((res) => {
           setSubjects(res.data.subjects);
         })
@@ -79,45 +79,55 @@ const TutorUploadQuestions = () => {
       setSubjects([]);
     }
 
-    toast.error(
-      errors,
-      {
-        position: "top-center",
-      },
-      { toastId: "success1" }
-    );
+    // toast({
+    //   title: errors,
+    //   status: "error",
+    //   duration: 5000,
+    //   isClosable: true,
+    //   position: "top",
+    // });
   }, [selectedBranch, selectedBoard, errors]);
 
   // useEffect(() => {
 
   // }, [errors])
 
+  const errorToast = (message) => {
+    toast({
+      title: message,
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "top",
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!selectedBoard) {
-      setErrors("Select a board");
+      errorToast("Select a board");
       return;
     }
     if (!selectedBranch) {
-      setErrors("Select a branch");
+      errorToast("Select a branch");
       return;
     }
     if (!selectedSubject) {
-      setErrors("Select a subject");
+      errorToast("Select a subject");
       return;
     }
 
     const fileNameRegex = /^[a-zA-Z0-9_-\s]+$/;
     if (!questionData.examName || !fileNameRegex.test(questionData.examName)) {
-      setErrors("Enter the name of the exam");
+      errorToast("Enter the name of the exam");
       return;
     }
     if (
       !questionData.questions ||
       questionData.questions.type !== "application/pdf"
     ) {
-      setErrors(
+      errorToast(
         "Select a question paper to upload or You have selected a file otherthan pdf"
       );
       return;
@@ -131,7 +141,7 @@ const TutorUploadQuestions = () => {
       },
     };
 
-    await axios
+    await axiosInstance("Ttoken")
       .post(
         `tutor/upload-question-papers`,
         {
@@ -139,22 +149,32 @@ const TutorUploadQuestions = () => {
           board: selectedBoard,
           branch: selectedBranch,
           subject: selectedSubject,
-          exclusive:true
+          exclusive: true,
         },
-        config
+        { headers: { "Content-Type": "multipart/form-data" } }
       )
       .then((res) => {
         if (res.data.uploaded) {
-          navigate("/tutor-uploads");
+          navigate("/tutor/uploads");
         } else {
-          toast.error(res.data.message, {
-            position: "top-center",
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
           });
         }
       })
       .catch((error) => {
         console.log(error);
-        toast.error("Server error");
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   };
   return (

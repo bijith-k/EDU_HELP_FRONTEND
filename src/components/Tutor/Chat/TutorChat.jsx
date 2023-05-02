@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { io } from "socket.io-client";
 import Navbar from "../Dashboard/Navbar";
 import Message from "./Message";
@@ -10,7 +10,7 @@ import Conversation from "./Conversation";
 // var socket,selectedChatCompare;
 
 const TutorChat = () => {
-  const tutor = useSelector((state) => state.tutor);
+  const {tutor} = useSelector((state) => state.tutor);
   
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
@@ -34,6 +34,25 @@ const TutorChat = () => {
   //       setSocketConnected(true)
   //   })
   // },[])
+
+  useEffect(() => {
+    if (tutor.accepted == false && tutor.rejected == false) {
+      navigate("/tutor/approval-pending");
+    } else if (tutor.rejected) {
+      navigate("/tutor/approval-rejected");
+    } else if (tutor.blocked) {
+      localStorage.removeItem("Ttoken");
+      navigate("/tutor");
+      toast({
+        title: "Blocked",
+        description: "Your account is blocked by the admin",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }, []);
 
   
 
@@ -65,11 +84,9 @@ const TutorChat = () => {
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await axios.get(`tutor/get-conversation/${tutor._id}`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axiosInstance("Ttoken").get(
+          `tutor/get-conversation/${tutor._id}`
+        );
         setConversations(res.data);
       } catch (error) {
         console.log(error);
@@ -81,11 +98,9 @@ const TutorChat = () => {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        const res = await axios.get(`tutor/get-message/${currentChat?._id}`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axiosInstance("Ttoken").get(
+          `tutor/get-message/${currentChat?._id}`
+        );
         setMessages(res.data);
         // socket.emit("join chat",currentChat._id)
       } catch (error) {
@@ -128,11 +143,10 @@ const TutorChat = () => {
     });
 
     try {
-      const res = await axios.post(`tutor/new-message`, message, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axiosInstance("Ttoken").post(
+        `tutor/new-message`,
+        message
+      );
       // socket.emit('new message',res.data)
       setMessages([...messages, res.data]);
       setNewMessage("");

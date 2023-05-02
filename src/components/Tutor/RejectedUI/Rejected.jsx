@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Rejected = () => {
   const navigate = useNavigate();
-  const tutor = useSelector((state) => state.tutor);
+  const {tutor} = useSelector((state) => state.tutor);
 
 
   return (
@@ -24,7 +24,7 @@ const Rejected = () => {
           className="mt-10 bg-red-600 text-white p-3 rounded-md"
           onClick={() => {
             localStorage.removeItem("Ttoken");
-            navigate("/tutor-signin");
+            navigate("/tutor");
           }}
         >
           LOGOUT

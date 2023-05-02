@@ -1,48 +1,37 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 
 const EditBranch = () => {
   const [boards, setBoards] = useState([]);
-  const [branchData,setBranchData] = useState({})
-  console.log(branchData,"daaatttta");
+  const [branchData, setBranchData] = useState({});
+
   const navigate = useNavigate();
   const toast = useToast();
-  const [selectedBoard, setSelectedBoard] = useState('');
+  const [selectedBoard, setSelectedBoard] = useState("");
   const [branch, setBranch] = useState("");
   const token = localStorage.getItem("Adtoken");
-  console.log(boards, "boards");
+
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
-      .get(`admin/boards`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/boards`)
       .then((res) => setBoards(res.data.boards))
       .catch((err) => console.error(err));
   }, []);
-  
-   const branchId = localStorage.getItem("branchId");
+
+  const branchId = localStorage.getItem("branchId");
   useEffect(() => {
-   
-    axios
-      .get(`admin/branches?id=${branchId}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/branches?id=${branchId}`)
       .then((res) => {
-        console.log(res.data.branches);
         setBranchData(res.data.branches);
         setSelectedBoard(res.data.branches.board._id);
-        setBranch(res.data.branches.name)
+        setBranch(res.data.branches.name);
       })
       .catch((error) => {
         console.log(error);
@@ -85,12 +74,11 @@ const EditBranch = () => {
         position: "top",
       });
     }
-    axios
-      .post(
-        `admin/edit-branch?id=${branchId}`,
-        { board: selectedBoard, branch: branch },
-        config
-      )
+    axiosInstance("Adtoken")
+      .post(`admin/edit-branch?id=${branchId}`, {
+        board: selectedBoard,
+        branch: branch,
+      })
       .then((res) => {
         localStorage.removeItem("branchId");
         toast({
@@ -102,7 +90,7 @@ const EditBranch = () => {
         });
         setSelectedBoard("");
         setBranch("");
-        navigate("/admin-branch");
+        navigate("/admin/branch");
       })
       .catch((err) => {
         toast({

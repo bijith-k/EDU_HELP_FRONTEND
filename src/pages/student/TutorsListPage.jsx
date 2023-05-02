@@ -1,10 +1,10 @@
 import React from 'react'
 import Tutors from '../../components/Student/TutorsList/Tutors'
 
-const TutorsList = () => {
+const TutorsListPage = () => {
   return (
     <Tutors />
   )
 }
 
-export default TutorsList
+export default TutorsListPage

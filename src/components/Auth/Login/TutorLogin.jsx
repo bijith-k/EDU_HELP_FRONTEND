@@ -1,14 +1,13 @@
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setStudent } from "../../../features/studentSlice";
 import ragam from "../../../assets/ragam.jpeg";
 import { setTutor } from "../../../features/tutorSlice";
+import { useToast } from "@chakra-ui/react";
 
 const initialValues = {
   email: "",
@@ -18,6 +17,7 @@ const TutorLogin = () => {
   const [isLoading, setIsLoading] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const signUpSchema = Yup.object({
     email: Yup.string().email().required("Please enter your email"),
@@ -30,79 +30,51 @@ const TutorLogin = () => {
       validationSchema: signUpSchema,
       onSubmit: (values, action) => {
         setIsLoading(true);
-        axios
+        axiosInstance()
           .post(`auth/tutor-signin`, {
             ...values,
           })
           .then((response) => {
             setIsLoading(false);
             if (response.data.created) {
-              console.log(response.data);
-              toast.success(response.data.message);
-              dispatch(
-                setTutor({
-                  _id: response.data.tutor._id,
-                  name: response.data.tutor.name,
-                  email: response.data.tutor.email,
-                  phone: response.data.tutor.phone,
-                  branch: response.data.tutor.branch,
-                  board: response.data.tutor.board,
-                  subjects: response.data.tutor.subjects,
-                  timeFrom: response.data.tutor.timeFrom,
-                  timeTo: response.data.tutor.timeTo,
-                  profession: response.data.tutor.profession,
-                  status: response.data.tutor.status,
-                  place:response.data.tutor.place,
-                  profilePicture: response.data.tutor.profilePicture,
-                  token: response.data.token,
-                })
-              );
+              toast({
+                title: response.data.message,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
+              dispatch(setTutor({ tutor: response.data.tutor }));
               localStorage.setItem("Ttoken", response.data.token);
               localStorage.setItem("Tid", response.data.tutor._id);
-              navigate("/tutor-dashboard");
-            }
-            else if (response.data.pending) {
-              dispatch(
-                setTutor({
-                  _id: response.data.tutor._id,
-                  name: response.data.tutor.name,
-                  email: response.data.tutor.email,
-                  phone: response.data.tutor.phone,
-                  branch: response.data.tutor.branch,
-                  board: response.data.tutor.board,
-                  subjects: response.data.tutor.subjects,
-                  timeFrom: response.data.tutor.timeFrom,
-                  timeTo: response.data.tutor.timeTo,
-                  profession: response.data.tutor.profession,
-                  status: response.data.tutor.status,
-                  place: response.data.tutor.place
-                })
-              );
-              navigate("/tutor-approval-pending");
+              navigate("/tutor/dashboard");
+            } else if (response.data.pending) {
+              localStorage.setItem("Tid", response.data.tutor._id);
+              localStorage.setItem("Ttoken", response.data.token);
+              navigate("/tutor/approval-pending");
             } else if (response.data.rejected) {
-              dispatch(
-                setTutor({
-                  _id: response.data.tutor._id,
-                  name: response.data.tutor.name,
-                  email: response.data.tutor.email,
-                  phone: response.data.tutor.phone,
-                  branch: response.data.tutor.branch,
-                  board: response.data.tutor.board,
-                  subjects: response.data.tutor.subjects,
-                  timeFrom: response.data.tutor.timeFrom,
-                  timeTo: response.data.tutor.timeTo,
-                  profession: response.data.tutor.profession,
-                  rejection_reason: response.data.tutor.rejection_reason,
-                })
-              );
-              navigate("/tutor-approval-rejected");
+              localStorage.setItem("Tid", response.data.tutor._id);
+              localStorage.setItem("Ttoken", response.data.token);
+              navigate("/tutor/approval-rejected");
             } else {
-              toast.error(response.data.message);
+              toast({
+                title: response.data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
             }
           })
           .catch((error) => {
             setIsLoading(false);
-            toast.error(error.message);
+            toast({
+              title: error.message,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+            });
           });
         // action.resetForm();
       },
@@ -111,7 +83,7 @@ const TutorLogin = () => {
   useEffect(() => {
     const token = localStorage.getItem("Ttoken");
     if (token) {
-      navigate("/tutor-dashboard");
+      navigate("/tutor/dashboard");
     }
   }, [navigate]);
   return (
@@ -177,7 +149,7 @@ const TutorLogin = () => {
             Don't have an account?
             <a
               className="no-underline border-b border-white text-yellow"
-              href="/tutor-signup"
+              href="/tutor/signup"
             >
               Signup
             </a>
@@ -193,7 +165,6 @@ const TutorLogin = () => {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

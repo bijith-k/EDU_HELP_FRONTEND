@@ -4,7 +4,6 @@
 // import { MdClose } from "react-icons/md";
 
 import * as React from "react";
- 
 
 import {
   Box,
@@ -87,6 +86,10 @@ const menuItems = [
         href: "/profile",
       },
       {
+        label: "Favourites",
+        href: "/favourites",
+      },
+      {
         label: "Chats",
         href: "/chats",
       },
@@ -106,11 +109,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const bg = useColorModeValue("white", "gray.800");
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  // function handleClick() {
-  //   // console.log("Button clicked");
-  //   navigate('/anywhere')
-  // }
 
   return (
     <Box
@@ -218,7 +216,9 @@ const Navbar = () => {
                     <MenuList>
                       <MenuGroup title={item.label}>
                         {item.subMenu.map((subItem) => (
-                          <MenuItem as={Link} href={subItem.href}>
+                          <MenuItem
+                            onClick={() =>navigate(subItem.href)}
+                          >
                             {subItem.label}
                           </MenuItem>
                         ))}
@@ -226,7 +226,10 @@ const Navbar = () => {
                     </MenuList>
                   </Menu>
                 ) : (
-                  <Button as={Link} href={item.href} variant="ghost">
+                  <Button
+                    onClick={() => navigate(item.href)}
+                    variant="ghost"
+                  >
                     {item.label}
                   </Button>
                 )

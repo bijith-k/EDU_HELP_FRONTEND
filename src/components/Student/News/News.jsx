@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import Pagination from '../../Pagination/Pagination';
-import Navbar from '../Home/Navbar';
-import axios from "../../../axios";
+import React, { useEffect, useState } from "react";
+import Pagination from "../../Pagination/Pagination";
+import Navbar from "../Home/Navbar";
+import axios from "axios";
 import news from "../../../assets/news.jpg";
+import Header from "../Header/Header";
+import HeadTitle from "../Header/HeadTitle";
 
 const News = () => {
-
   const [currentPage, setCurrentPage] = useState(1);
   const [newsPerPage, setNewsPerPage] = useState(4);
 
-  
   const lastNewsIndex = currentPage * newsPerPage;
   const firstNewsIndex = lastNewsIndex - newsPerPage;
-const [news, setNews] = useState([]);
-console.log(news)
+  const [news, setNews] = useState([]);
+
   const currentNews = news.slice(firstNewsIndex, lastNewsIndex);
 
-  
   // useEffect(() => {
   //   const fetchNews = async () => {
   //     const response = await axios.get(
@@ -30,9 +29,11 @@ console.log(news)
   //   fetchNews();
   // }, []);
   return (
-    <div className="min-h-screen w-full bg-slate-300 overflow-x-hidden">
+    <div className="min-h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
       <Navbar />
-      <div className="bg-gray-400 h-72">
+      <Header />
+      <HeadTitle title={"news"} />
+      {/* <div className="bg-gray-400 h-72">
         <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
           "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
         </h1>
@@ -41,7 +42,7 @@ console.log(news)
         <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
           news
         </h1>
-      </div>
+      </div> */}
       <div>
         <div className="h-4/6">
           {currentNews.map((news, index) => (
@@ -98,6 +99,6 @@ console.log(news)
       </div>
     </div>
   );
-}
+};
 
-export default News
+export default News;

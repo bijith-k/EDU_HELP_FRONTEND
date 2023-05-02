@@ -3,10 +3,8 @@ import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
 
- 
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
-import { toast } from "react-toastify";
+import axiosInstance from "../../../axios";
 import { useDispatch } from "react-redux";
 import { setVideoData } from "../../../features/contentSlice";
 import {
@@ -32,7 +30,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-
 const MangageVideos = () => {
   const dispatch = useDispatch();
   const toast = useToast();
@@ -44,7 +41,6 @@ const MangageVideos = () => {
   };
   const [rejectionReason, setRejectionReason] = useState("");
 
-
   const [videos, setVideos] = useState([]);
 
   const [boards, setBoards] = useState([]);
@@ -55,28 +51,12 @@ const MangageVideos = () => {
   const [order, setOrder] = useState("ASC");
   const [toastMessage, setToastMessage] = useState("");
 
-   
   useEffect(() => {
-    axios
-      .get(`admin/videos`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/videos`)
       .then((res) => {
-       
         setVideos(res.data);
       });
-
-    // axios.get(`admin/boards`).then((res)=>{
-    //   console.log(res);
-    //   setBoards(res.data.boards)
-    // })
-
-    // axios.get(`admin/branches`).then((res)=>{
-    //   console.log(res,'3');
-    //   setBranches(res.data.branches)
-    // })
   }, [toastMessage]);
 
   const sorting = (col) => {
@@ -114,17 +94,9 @@ const MangageVideos = () => {
   };
 
   const handleApprove = (id) => {
-    axios
-      .get(
-        `admin/approve-videos?video=${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .get(`admin/approve-videos?video=${id}`)
       .then((res) => {
-        
         setToastMessage(res.data.message);
         toast({
           title: res.data.message,
@@ -148,12 +120,8 @@ const MangageVideos = () => {
   };
 
   const handleReject = () => {
-    axios
-      .post(`admin/reject-videos?video=${videoId}`,{rejectionReason}, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .post(`admin/reject-videos?video=${videoId}`, { rejectionReason })
       .then((res) => {
         setToastMessage(videoId);
         toast({
@@ -177,24 +145,16 @@ const MangageVideos = () => {
           isClosable: true,
           position: "top",
         });
-         setRejectionReason("");
-         setVideoId("");
-         onClose();
+        setRejectionReason("");
+        setVideoId("");
+        onClose();
       });
   };
 
   const handleListUnlist = (id) => {
-    axios
-      .get(
-        `admin/video-list-unlist?video=${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .get(`admin/video-list-unlist?video=${id}`)
       .then((res) => {
-        
         setToastMessage(res.data.message);
         toast({
           title: res.data.message,
@@ -207,26 +167,16 @@ const MangageVideos = () => {
       .catch((err) => {
         console.log(err);
         setToastMessage(err.message);
-         toast({
-           title: err.message,
-           status: "error",
-           duration: 5000,
-           isClosable: true,
-           position: "top",
-         });
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   };
 
-  // const handleEdit = (video) => {
-  //   console.log(video, 32222222);
-  //   localStorage.setItem("videoId", video._id);
-  //   dispatch(
-  //     setVideoData({
-  //       videos: video,
-  //     })
-  //   );
-  //   navigate("/admin-edit-videos");
-  // };
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
       <div>
@@ -267,7 +217,7 @@ const MangageVideos = () => {
             <Thead>
               <Tr className="bg-green-300 h-14">
                 <Th className="p-3 border">No</Th>
-                 
+
                 <Th className="p-3 border" onClick={() => sorting("name")}>
                   Name of video
                 </Th>

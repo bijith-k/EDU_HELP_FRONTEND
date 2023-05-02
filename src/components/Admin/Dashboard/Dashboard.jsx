@@ -1,151 +1,112 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 
-
-import { Chart as ChartJS, ArcElement, Tooltip, Legend,CategoryScale,
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
   LinearScale,
   BarElement,
-  Title, } from "chart.js";
-import { Doughnut, Pie,Bar } from "react-chartjs-2";
+  Title,
+} from "chart.js";
+import { Doughnut, Pie, Bar } from "react-chartjs-2";
 
-ChartJS.register(ArcElement, Tooltip, Legend,CategoryScale,
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
   LinearScale,
   BarElement,
-  Title,);
+  Title
+);
 
- 
 const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top',
+      position: "top",
     },
     title: {
       display: true,
-      text: 'Chart.js Bar Chart',
+      text: "Chart.js Bar Chart",
     },
   },
 };
 
- 
 const Dashboard = () => {
+  const Token = localStorage.getItem("Adtoken");
+  const [students, setStudents] = useState(0);
+  const [tutors, setTutors] = useState(0);
 
-  const Token = localStorage.getItem('Adtoken')
-  const [students, setStudents] = useState(0)
-const [tutors, setTutors] = useState(0)
-
-const [boards, setBoards] = useState([]);
-const [count, setCount] = useState({
-  note:0,
-  videos:0,
-  questions:0
-})
-const [notesCount, setNotesCount] = useState('')
-const [videosCount, setVideosCount] = useState('')
-const [questionsCount, setQuestionsCount] = useState("");
-
- 
-
-useEffect(() => {
-  const fetchBoards = async () => {
-    const res = await axios.get("admin/board-content-count", {
-      headers: {
-        authorization: `Bearer ${Token}`,
-      },
-    });
-    setBoards(res.data);
-  };
-  fetchBoards();
-}, []);
+  const [boards, setBoards] = useState([]);
+  const [count, setCount] = useState({
+    note: 0,
+    videos: 0,
+    questions: 0,
+  });
+  const [notesCount, setNotesCount] = useState("");
+  const [videosCount, setVideosCount] = useState("");
+  const [questionsCount, setQuestionsCount] = useState("");
 
   useEffect(() => {
-    axios
-      .get(`admin/students`, {
-        headers: {
-          authorization: `Bearer ${Token}`,
-        },
-      })
+    const fetchBoards = async () => {
+      const res = await axiosInstance("Adtoken").get(
+        "admin/board-content-count"
+      );
+      setBoards(res.data);
+    };
+    fetchBoards();
+  }, []);
+
+  useEffect(() => {
+    axiosInstance("Adtoken")
+      .get(`admin/students`)
       .then((res) => {
-        console.log(res);
         setStudents(res.data.length);
       });
 
-      axios
-        .get(`admin/tutors`, {
-          headers: {
-            authorization: `Bearer ${Token}`,
-          },
-        })
-        .then((res) => {
-          console.log(res);
-          setTutors(res.data.length);
-        });
+    axiosInstance("Adtoken")
+      .get(`admin/tutors`)
+      .then((res) => {
+        setTutors(res.data.length);
+      });
 
-        axios
-          .get(`admin/notes`, {
-            headers: {
-              authorization: `Bearer ${Token}`,
-            },
-          })
-          .then((res) => {
-            
-            setNotesCount(res.data.length);
-            console.log(notesCount,"not");
-          });
+    axiosInstance("Adtoken")
+      .get(`admin/notes`)
+      .then((res) => {
+        setNotesCount(res.data.length);
+      });
 
-          
-          axios
-            .get(`admin/videos`, {
-              headers: {
-                authorization: `Bearer ${Token}`,
-              },
-            })
-            .then((res) => {
-             
-              setVideosCount( res.data.length);
-            console.log(videosCount,"vid");
+    axiosInstance("Adtoken")
+      .get(`admin/videos`)
+      .then((res) => {
+        setVideosCount(res.data.length);
+      });
 
-            });
-
-
-            axios
-              .get(`admin/question-papers`, {
-                headers: {
-                  authorization: `Bearer ${Token}`,
-                },
-              })
-              .then((res) => {
-                 
-               setQuestionsCount(res.data.length);
-            console.log(questionsCount,"que");
-
-              });
+    axiosInstance("Adtoken")
+      .get(`admin/question-papers`)
+      .then((res) => {
+        setQuestionsCount(res.data.length);
+      });
   }, []);
 
-
-  
-
-
-  const labels = [
-    "January",
-    "February",
-    "March",
-    
-  ];
-
+  const labels = ["January", "February", "March"];
 
   const data = {
     labels,
     datasets: [
       {
         label: "Dataset 1",
-        data: [10,20,100],
+        data: [10, 20, 100],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
-      }
+      },
     ],
   };
-  
+
   const contentsCount = {
     labels: ["Notes", "Videos", "Question Papers"],
     datasets: [

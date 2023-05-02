@@ -6,47 +6,47 @@ import * as IoIcons from "react-icons/io";
 export const SideBarData = [
   {
     title: "DASHBOARD",
-    path: "/tutor-dashboard",
+    path: "/tutor/dashboard",
     icon: <AiIcons.AiFillHome />,
   },
   {
     title: "UPDATE PROFILE",
-    path: "/tutor-edit-profile",
+    path: "/tutor/edit-profile",
     icon: <AiIcons.AiFillHome />,
   },
   {
     title: "YOUR UPLOADS",
-    path: "/tutor-uploads",
+    path: "/tutor/uploads",
     icon: <AiIcons.AiFillHome />,
   },
   {
     title: "CHAT",
-    path: "/tutor-chat",
+    path: "/tutor/chat",
     icon: <AiIcons.AiFillHome />,
   },
   {
     title: "UPLOAD NOTES",
-    path: "/tutor-upload-notes",
+    path: "/tutor/upload-notes",
     icon: <AiIcons.AiFillHome />,
   },
   {
     title: "UPLOAD VIDEOS",
-    path: "/tutor-upload-videos",
+    path: "/tutor/upload-videos",
     icon: <AiIcons.AiFillHome />,
   },
   {
     title: "UPLOAD QUESTIONS",
-    path: "/tutor-upload-questions",
+    path: "/tutor/upload-questions",
     icon: <AiIcons.AiFillHome />,
   },
   {
     title: "ADD EVENTS",
-    path: "/tutor-add-events",
+    path: "/tutor/add-events",
     icon: <AiIcons.AiFillHome />,
   },
   {
     title: "SETTINGS",
-    path: "/tutor-settings",
+    path: "/tutor/settings",
     icon: <AiIcons.AiFillHome />,
   },
   // {

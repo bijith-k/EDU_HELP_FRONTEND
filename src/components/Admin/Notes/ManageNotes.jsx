@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
- 
+
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
-import { toast } from "react-toastify";
+import axiosInstance from "../../../axios";
 import { useDispatch } from "react-redux";
 import { setNoteData } from "../../../features/contentSlice";
 import {
@@ -31,18 +30,16 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
- 
-
 const ManageNotes = () => {
   const [notes, setNotes] = useState([]);
-const toast = useToast();
-const [noteId, setNoteId] = useState("");
-const { isOpen, onOpen, onClose } = useDisclosure();
-const handleOpen = (id) => {
-  onOpen();
-  setNoteId(id);
-};
-const [rejectionReason, setRejectionReason] = useState("");
+  const toast = useToast();
+  const [noteId, setNoteId] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleOpen = (id) => {
+    onOpen();
+    setNoteId(id);
+  };
+  const [rejectionReason, setRejectionReason] = useState("");
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
 
@@ -52,28 +49,12 @@ const [rejectionReason, setRejectionReason] = useState("");
 
   const dispatch = useDispatch();
 
-  console.log(notes, "nooo");
   useEffect(() => {
-    axios
-      .get(`admin/notes`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/notes`)
       .then((res) => {
-        console.log(res);
         setNotes(res.data);
       });
-
-    // axios.get(`admin/boards`).then((res)=>{
-    //   console.log(res);
-    //   setBoards(res.data.boards)
-    // })
-
-    // axios.get(`admin/branches`).then((res)=>{
-    //   console.log(res,'3');
-    //   setBranches(res.data.branches)
-    // })
   }, [toastMessage]);
 
   const sorting = (col) => {
@@ -111,22 +92,17 @@ const [rejectionReason, setRejectionReason] = useState("");
   };
 
   const handleApprove = (id) => {
-    axios
-      .get(`admin/approve-notes?note=${id}`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/approve-notes?note=${id}`)
       .then((res) => {
-       
         setToastMessage(res.data.message);
-         toast({
-           title: res.data.message,
-           status: "success",
-           duration: 5000,
-           isClosable: true,
-           position: "top",
-         });
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -142,16 +118,8 @@ const [rejectionReason, setRejectionReason] = useState("");
   };
 
   const handleReject = () => {
-    axios
-      .post(
-        `admin/reject-notes?note=${noteId}`,
-        { rejectionReason },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .post(`admin/reject-notes?note=${noteId}`, { rejectionReason })
       .then((res) => {
         setToastMessage(noteId);
         toast({
@@ -183,25 +151,17 @@ const [rejectionReason, setRejectionReason] = useState("");
   };
 
   const handleListUnlist = (id) => {
-    axios
-      .get(
-        `admin/note-list-unlist?note=${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .get(`admin/note-list-unlist?note=${id}`)
       .then((res) => {
-        console.log(res);
         setToastMessage(res.data.message);
-         toast({
-           title: res.data.message,
-           status: "success",
-           duration: 5000,
-           isClosable: true,
-           position: "top",
-         });
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -216,16 +176,6 @@ const [rejectionReason, setRejectionReason] = useState("");
       });
   };
 
-  // const handleEdit = (note) => {
-  //   console.log(note, "nouuutesjrlj");
-  //   localStorage.setItem("noteId", note._id);
-  //   dispatch(
-  //     setNoteData({
-  //       note: note,
-  //     })
-  //   );
-  //   navigate("/admin-edit-notes");
-  // };
   return (
     <div className="bg-sky-900 flex overflow-x-hidden">
       <div className="bg-dark-purple">

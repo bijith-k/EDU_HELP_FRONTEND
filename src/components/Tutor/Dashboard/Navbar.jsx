@@ -71,7 +71,7 @@ const Navbar = () => {
               onClick={() => {
                 localStorage.removeItem("Ttoken");
                 localStorage.removeItem("Tid")
-                navigate("/tutor-signin");
+                navigate("/tutor");
               }}
             >
               logout

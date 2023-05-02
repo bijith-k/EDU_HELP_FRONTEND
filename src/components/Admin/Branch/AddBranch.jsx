@@ -1,28 +1,23 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 
 const AddBranch = () => {
   const [boards, setBoards] = useState([]);
-   const navigate = useNavigate();
-   const toast = useToast();
+  const navigate = useNavigate();
+  const toast = useToast();
   const [selectedBoard, setSelectedBoard] = useState("");
   const [branch, setBranch] = useState("");
   const token = localStorage.getItem("Adtoken");
-  console.log(boards, "boards");
+
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
-      .get(`admin/boards`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/boards`)
       .then((res) => setBoards(res.data.boards))
       .catch((err) => console.error(err));
   }, []);
@@ -63,14 +58,9 @@ const AddBranch = () => {
         position: "top",
       });
     }
-    axios
-      .post(
-        `admin/add-branch`,
-        { board: selectedBoard, branch: branch },
-        config
-      )
+    axiosInstance("Adtoken")
+      .post(`admin/add-branch`, { board: selectedBoard, branch: branch })
       .then((res) => {
-         
         toast({
           title: res.data.message,
           status: "success",
@@ -80,7 +70,7 @@ const AddBranch = () => {
         });
         setSelectedBoard("");
         setBranch("");
-        navigate('/admin-branch')
+        navigate("/admin/branch");
       })
       .catch((err) => {
         toast({

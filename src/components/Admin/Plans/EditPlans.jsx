@@ -1,55 +1,43 @@
- 
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { setNoteData } from "../../../features/contentSlice";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useToast } from "@chakra-ui/react";
 
 const EditPlans = () => {
- 
- const toast = useToast()
+  const toast = useToast();
   const token = localStorage.getItem("Adtoken");
   const planId = localStorage.getItem("planId");
 
-
   const navigate = useNavigate();
-   
- 
 
   const [errors, setErrors] = useState(null);
 
   const [updateData, setUpdateData] = useState({
-    plan: '',
+    plan: "",
     duration: "",
-    price:''
+    price: "",
   });
 
   useEffect(() => {
-    axios
-      .get(`admin/plans?id=${planId}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/plans?id=${planId}`)
       .then((res) => {
-        console.log(res, "res");
-        setUpdateData({ plan: res.data.plan,
-        duration:res.data.duration,
-        price:res.data.price });
+        setUpdateData({
+          plan: res.data.plan,
+          duration: res.data.duration,
+          price: res.data.price,
+        });
       })
       .catch((error) => {
         console.log(error);
       });
-
-     
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-     
 
     const planNameRegex = /^[a-zA-Z0-9_-\s]+$/;
     if (!updateData.plan || !planNameRegex.test(updateData.plan)) {
@@ -63,7 +51,6 @@ const EditPlans = () => {
     }
     const durationRegex = /^1[0-2]$|^[1-9]$/;
     if (!updateData.duration || !durationRegex.test(updateData.duration)) {
-     
       return toast({
         title: "Enter the duration in number of months",
         status: "warning",
@@ -83,7 +70,6 @@ const EditPlans = () => {
         position: "top",
       });
     }
- 
 
     const config = {
       headers: {
@@ -92,19 +78,14 @@ const EditPlans = () => {
       },
     };
 
-    await axios
-      .post(
-        `admin/edit-plans?plan=${planId}`,
-        {
-          ...updateData,
-         
-        },
-        config
-      )
+    await axiosInstance("Adtoken")
+      .post(`admin/edit-plans?plan=${planId}`, {
+        ...updateData,
+      })
       .then((res) => {
         if (res.data.updated) {
           localStorage.removeItem("planId");
-          navigate("/admin-plans");
+          navigate("/admin/plans");
         } else {
           toast.error(res.data.message, {
             position: "top-center",
@@ -134,7 +115,7 @@ const EditPlans = () => {
                 {errors}
               </p>
             ) : null}
-            
+
             <label htmlFor="plan" className=" font-medium text-white">
               Edit the name of plan
             </label>
@@ -150,7 +131,7 @@ const EditPlans = () => {
               }}
             />
 
-<label htmlFor="duration" className=" font-medium text-white">
+            <label htmlFor="duration" className=" font-medium text-white">
               Edit the duration of the plan
             </label>
             <input
@@ -165,7 +146,7 @@ const EditPlans = () => {
               }}
             />
 
-<label htmlFor="price" className=" font-medium text-white">
+            <label htmlFor="price" className=" font-medium text-white">
               Edit the price of plan
             </label>
             <input
@@ -179,7 +160,7 @@ const EditPlans = () => {
                 setErrors(null);
               }}
             />
-            
+
             <button
               type="submit"
               className="bg-dark-purple p-3 font-semibold text-white rounded-lg mt-2"
@@ -193,4 +174,4 @@ const EditPlans = () => {
   );
 };
 
-export default EditPlans
+export default EditPlans;

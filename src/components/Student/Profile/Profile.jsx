@@ -4,14 +4,14 @@ import user from "../../../assets/user.png";
 import UpdateProfile from './UpdateProfile';
 import { useSelector } from 'react-redux';
 import { BiRupee } from "react-icons/bi";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 
 
 const Profile = () => {
-  const student = useSelector((state) => state.student);
+  const {student} = useSelector((state) => state.student);
   const token = localStorage.getItem("Stoken");
   const [notesCount, setNotesCount] = useState('')
   const [videosCount, setVideosCount] = useState("");
@@ -34,17 +34,13 @@ const Profile = () => {
   }
 
   useEffect( () => {
-    axios
-      .get(`get-upload-counts?id=${student._id}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+    axiosInstance("Stoken")
+      .get(`get-upload-counts?id=${student._id}`)
       .then((response) => {
-        console.log(response,"count")
-         setNotesCount(response.data.noteCounts)
-         setVideosCount(response.data.videoCounts);
-         setQuestionsCount(response.data.questionCounts);
+        
+        setNotesCount(response.data.noteCounts);
+        setVideosCount(response.data.videoCounts);
+        setQuestionsCount(response.data.questionCounts);
       })
       .catch((error) => {
         console.log(error);
@@ -54,21 +50,16 @@ const Profile = () => {
 
 
   useEffect(() => {
-    axios
-      .get(`get-subscribed-plan?id=${student._id}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+    axiosInstance("Stoken")
+      .get(`get-subscribed-plan?id=${student._id}`)
       .then((res) => {
-        if(res.data.subscribed){
-           
+        if (res.data.subscribed) {
           setPlan({
             name: res.data.plan.plan,
             startDate: res.data.plan.used_by[0].startedAt,
             endDate: res.data.plan.used_by[0].expiredAt,
             price: res.data.plan.price,
-            duration:res.data.plan.duration
+            duration: res.data.plan.duration,
           });
         }
       });

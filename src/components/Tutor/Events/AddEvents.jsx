@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "../Dashboard/Navbar";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+
+import { useSelector } from "react-redux";
+import { useToast } from "@chakra-ui/react";
 
 const initialValues = {
   name: "",
@@ -20,6 +22,29 @@ const initialValues = {
 
 const AddEvents = () => {
   const navigate = useNavigate();
+
+  const toast = useToast();
+
+  const { tutor } = useSelector((state) => state.tutor);
+
+  useEffect(() => {
+    if (tutor.accepted == false && tutor.rejected == false) {
+      navigate("/tutor/approval-pending");
+    } else if (tutor.rejected) {
+      navigate("/tutor/approval-rejected");
+    } else if (tutor.blocked) {
+      localStorage.removeItem("Ttoken");
+      navigate("/tutor");
+      toast({
+        title: "Blocked",
+        description: "Your account is blocked by the admin",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }, []);
 
   const eventSchema = Yup.object({
     name: Yup.string().min(2).max(25).required("Please enter the events name"),
@@ -53,33 +78,41 @@ const AddEvents = () => {
       initialValues,
       validationSchema: eventSchema,
       onSubmit: (values, action) => {
-        const token = localStorage.getItem("Ttoken");
-        const config = {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        console.log(values);
-        axios
+        axiosInstance("Ttoken")
           .post(
             `tutor/add-event`,
             {
               ...values,
             },
-            config
+            { headers: { "Content-Type": "multipart/form-data" } }
           )
           .then((response) => {
             if (response.data.added) {
               // toast.success(response.data.message);
               navigate("/tutor-dashboard");
             } else {
-              toast.error(response.data.message);
+              toast({
+                title: response.data.message,
+
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
             }
           })
           .catch((error) => {
             console.log(error);
-            toast.error(error.response.data.errors);
+
+            // toast.error(error.response.data.messge);
+            toast({
+              title: error.response.data.messge,
+
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+            });
           });
       },
     });
@@ -110,7 +143,9 @@ const AddEvents = () => {
               setFieldValue("name", e.target.value);
             }}
           />
-          {touched.name && errors.name && <div className="text-white">{errors.name}</div>}
+          {touched.name && errors.name && (
+            <div className="text-white">{errors.name}</div>
+          )}
           <label htmlFor="organizer" className=" font-medium">
             Enter the name of organizer
           </label>
@@ -143,7 +178,9 @@ const AddEvents = () => {
               setFieldValue("location", e.target.value);
             }}
           />
-          {touched.location && errors.location && <div className="text-white">{errors.location}</div>}
+          {touched.location && errors.location && (
+            <div className="text-white">{errors.location}</div>
+          )}
 
           <label htmlFor="description" className=" font-medium">
             Write a short description about the event
@@ -222,7 +259,9 @@ const AddEvents = () => {
               setFieldValue("link", e.target.value);
             }}
           />
-          {touched.link && errors.link && <div className="text-white">{errors.link}</div>}
+          {touched.link && errors.link && (
+            <div className="text-white">{errors.link}</div>
+          )}
 
           <label htmlFor="contact" className=" font-medium">
             Contact number
@@ -238,7 +277,9 @@ const AddEvents = () => {
               setFieldValue("contact", e.target.value);
             }}
           />
-          {touched.contact && errors.contact && <div className="text-white">{errors.contact}</div>}
+          {touched.contact && errors.contact && (
+            <div className="text-white">{errors.contact}</div>
+          )}
 
           <label htmlFor="poster" className=" font-medium block">
             Poster of the event
@@ -252,7 +293,9 @@ const AddEvents = () => {
               setFieldValue("poster", e.target.files[0]);
             }}
           />
-          {touched.poster && errors.poster && <div className="text-white">{errors.poster}</div>}
+          {touched.poster && errors.poster && (
+            <div className="text-white">{errors.poster}</div>
+          )}
 
           <p>
             {" "}

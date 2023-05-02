@@ -4,60 +4,84 @@ import UploadedNotes from "./UploadedNotes";
 import UploadedQuestions from "./UploadedQuestions";
 import { UploadedVideos } from "./UploadedVideos";
 import { setTutor } from "../../../features/tutorSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
+import { Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from "@chakra-ui/react";
 
 const Uploads = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [toggleState, setToggleState] = useState(1);
+  const toast = useToast()
 
   const toggleTab = (index) => {
     setToggleState(index);
   };
 
 
-  useEffect(() => {
-    const token = localStorage.getItem("Ttoken");
-    console.log(token, "tok");
+  const { tutor } = useSelector((state) => state.tutor);
 
-    if (token) {
-      const fetchTutorData = async () => {
-        try {
-          const { data } = await axios.post(
-            `tutor`,
-            { token }
-          );
-          console.log(data, "data");
-          if (data.status) {
-            dispatch(
-              setTutor({
-                _id:data.tutor._id,
-                name: data.tutor.name,
-                email: data.tutor.email,
-                phone: data.tutor.phone,
-                subjects: data.tutor.subjects,
-                timeFrom: data.tutor.timeFrom,
-                timeTo: data.tutor.timeTo,
-                profession: data.tutor.profession,
-                status:data.tutor.status,
-                token: data.token,
-              })
-            );
-          } else {
-            localStorage.removeItem("Ttoken");
-            navigate("/tutor-signin");
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchTutorData();
-    } else {
-      navigate("/tutor-signin");
+  useEffect(() => {
+    if (tutor.accepted == false && tutor.rejected == false) {
+      navigate("/tutor/approval-pending");
+    } else if (tutor.rejected) {
+      navigate("/tutor/approval-rejected");
+    } else if (tutor.blocked) {
+      localStorage.removeItem("Ttoken");
+      navigate("/tutor");
+      toast({
+        title: "Blocked",
+        description: "Your account is blocked by the admin",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
-  }, [dispatch]);
+  }, []);
+
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("Ttoken");
+  //   console.log(token, "tok");
+
+  //   if (token) {
+  //     const fetchTutorData = async () => {
+  //       try {
+  //         const { data } = await axios.post(
+  //           `tutor`,
+  //           { token }
+  //         );
+  //         console.log(data, "data");
+  //         if (data.status) {
+  //           dispatch(
+  //             setTutor({
+  //               _id:data.tutor._id,
+  //               name: data.tutor.name,
+  //               email: data.tutor.email,
+  //               phone: data.tutor.phone,
+  //               subjects: data.tutor.subjects,
+  //               timeFrom: data.tutor.timeFrom,
+  //               timeTo: data.tutor.timeTo,
+  //               profession: data.tutor.profession,
+  //               status:data.tutor.status,
+  //               token: data.token,
+  //             })
+  //           );
+  //         } else {
+  //           localStorage.removeItem("Ttoken");
+  //           navigate("/tutor-signin");
+  //         }
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     };
+  //     fetchTutorData();
+  //   } else {
+  //     navigate("/tutor-signin");
+  //   }
+  // }, [dispatch]);
 
   return (
     <div className="bg-gray-600 min-h-screen w-full overflow-x-hidden">
@@ -65,7 +89,25 @@ const Uploads = () => {
       <div className="bg-gray-500 uppercase h-14 text-center text-white font-bold text-xl pt-3">
         your uploads
       </div>
-      <div
+      <Tabs variant="line" colorScheme="green">
+        <TabList className="bg-gray-300 text-black">
+          <Tab className="w-1/3">NOTES</Tab>
+          <Tab className="w-1/3">VIDEOS</Tab>
+          <Tab className="w-1/3">QUESTION PAPERS</Tab>
+        </TabList>
+        <TabPanels className="bg-slate-400">
+          <TabPanel>
+            <UploadedNotes />
+          </TabPanel>
+          <TabPanel>
+            <UploadedVideos />
+          </TabPanel>
+          <TabPanel>
+            <UploadedQuestions />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+      {/* <div
         className="flex flex-col  w-full h-80  break-words "
         id="container"
       >
@@ -115,36 +157,9 @@ const Uploads = () => {
             id="content active-content"
           >
             <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-1 justify-items-center mt-10">
-              {/* <div className="py-10"> */}
+             
                  <UploadedNotes />
-              {/* </div> */}
-              {/* <div className="py-10">
-                <div className="rounded overflow-hidden shadow-lg  max-w-sm">
-                  <img
-                    src="https://www.pexels.com/photo/black-nikon-dslr-camera-on-white-book-9222655/"
-                    alt="img"
-                    className=""
-                  />
-                </div>
-              </div>
-              <div className="py-10">
-                <div className="rounded overflow-hidden shadow-lg  max-w-sm">
-                  <img
-                    src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fimages%2Fsearch%2Fnature%2F&psig=AOvVaw1fNg9IVNosZgNNxE1lW-LP&ust=1680961822414000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCNj9v_T0l_4CFQAAAAAdAAAAABAE"
-                    alt="img"
-                    className=""
-                  />
-                </div>
-              </div>
-              <div className="py-10">
-                <div className="rounded overflow-hidden shadow-lg  max-w-sm">
-                  <img
-                    src="https://www.pexels.com/photo/black-nikon-dslr-camera-on-white-book-9222655/"
-                    alt="img"
-                    className=""
-                  />
-                </div>
-              </div> */}
+               
             </div>
           </div>
           <div
@@ -173,7 +188,7 @@ const Uploads = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

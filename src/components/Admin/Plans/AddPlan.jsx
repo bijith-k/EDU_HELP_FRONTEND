@@ -1,22 +1,20 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useEffect } from "react";
 import { useToast } from "@chakra-ui/react";
-
+import { useNavigate } from "react-router-dom";
 
 const AddPlan = () => {
-  const toast = useToast()
-  const navigate = useNavigate()
-   
-  const [values, setValues] = useState({
-    plan:'',
-    duration:'',
-    price:''
-  });
+  const toast = useToast();
+  const navigate = useNavigate();
 
-   
+  const [values, setValues] = useState({
+    plan: "",
+    duration: "",
+    price: "",
+  });
 
   const token = localStorage.getItem("Adtoken");
 
@@ -29,9 +27,9 @@ const AddPlan = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-     
+
     const planNameRegex = /^[a-zA-Z0-9_-\s]+$/;
-    
+
     if (!values.plan || !planNameRegex.test(values.plan)) {
       return toast({
         title: "Enter the name of the plan",
@@ -52,7 +50,7 @@ const AddPlan = () => {
       });
     }
 
-    const priceRegex = /^[1-9]\d*(\.\d{1,2})?$/
+    const priceRegex = /^[1-9]\d*(\.\d{1,2})?$/;
     if (!values.price || !priceRegex.test(values.price)) {
       return toast({
         title: "Enter price for the plan",
@@ -62,14 +60,9 @@ const AddPlan = () => {
         position: "top",
       });
     }
-    axios
-      .post(
-        `admin/add-plan`,
-        { ...values },
-        config
-      )
+    axiosInstance("Adtoken")
+      .post(`admin/add-plan`, { ...values })
       .then((res) => {
-         
         toast({
           title: res.data.message,
           status: "success",
@@ -77,8 +70,7 @@ const AddPlan = () => {
           isClosable: true,
           position: "top",
         });
-        navigate('/admin-plans')
-        
+        navigate("/admin/plans");
       })
       .catch((err) => {
         toast({
@@ -106,28 +98,24 @@ const AddPlan = () => {
           onSubmit={handleSubmit}
           className="flex flex-col mx-auto w-3/4 mt-8"
         >
-          
           <input
             type="text"
             placeholder="Enter plan name"
-             
-            onChange={(e) => setValues({...values,plan:e.target.value})}
+            onChange={(e) => setValues({ ...values, plan: e.target.value })}
             id="name"
             className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
           />
           <input
             type="text"
             placeholder="Enter plan duration"
-             
-            onChange={(e) => setValues({...values,duration:e.target.value})}
+            onChange={(e) => setValues({ ...values, duration: e.target.value })}
             id="duration"
             className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
           />
           <input
             type="text"
             placeholder="Enter price"
-             
-            onChange={(e) => setValues({...values,price:e.target.value})}
+            onChange={(e) => setValues({ ...values, price: e.target.value })}
             id="price"
             className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
           />
@@ -143,4 +131,4 @@ const AddPlan = () => {
   );
 };
 
-export default AddPlan
+export default AddPlan;

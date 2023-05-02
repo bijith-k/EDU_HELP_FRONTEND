@@ -1,9 +1,10 @@
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "../Home/Navbar";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
+import Header from "../Header/Header";
+import HeadTitle from "../Header/HeadTitle";
 
 const UploadQuestionPapers = () => {
   const navigate = useNavigate();
@@ -17,29 +18,21 @@ const UploadQuestionPapers = () => {
     examName: "",
     questions: null,
   });
-
+  const toast = useToast();
   const [errors, setErrors] = useState(null);
 
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
-      .get(`boards`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Stoken")}`,
-        },
-      })
+    axiosInstance("Stoken")
+      .get(`boards`)
       .then((res) => setBoards(res.data.boards))
       .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
     if (selectedBoard) {
-      axios
-        .get(`branches?board=${selectedBoard}`, {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Stoken")}`,
-          },
-        })
+      axiosInstance("Stoken")
+        .get(`branches?board=${selectedBoard}`)
         .then((res) => {
           setBranches(res.data.branches);
         })
@@ -53,12 +46,8 @@ const UploadQuestionPapers = () => {
 
   useEffect(() => {
     if (selectedBranch) {
-      axios
-        .get(`subjects?branch=${selectedBranch}`, {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("Stoken")}`,
-          },
-        })
+      axiosInstance("Stoken")
+        .get(`subjects?branch=${selectedBranch}`)
         .then((res) => {
           setSubjects(res.data.subjects);
         })
@@ -68,13 +57,13 @@ const UploadQuestionPapers = () => {
     } else {
       setSubjects([]);
     }
-    toast.error(
-      errors,
-      {
-        position: "top-center",
-      },
-      { toastId: "success1" }
-    );
+    // toast({
+    //   title: err.message,
+    //   status: "error",
+    //   duration: 5000,
+    //   isClosable: true,
+    //   position: "top",
+    // });
   }, [selectedBranch, selectedBoard, errors]);
 
   // useEffect(() => {
@@ -113,14 +102,8 @@ const UploadQuestionPapers = () => {
     }
 
     const token = localStorage.getItem("Stoken");
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    };
 
-    await axios
+    await axiosInstance("Stoken")
       .post(
         `upload-question-papers`,
         {
@@ -130,26 +113,45 @@ const UploadQuestionPapers = () => {
           subject: selectedSubject,
           exclusive: false,
         },
-        config
+        { headers: { "Content-Type": "multipart/form-data" } }
       )
       .then((res) => {
         if (res.data.uploaded) {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
           navigate("/notes");
         } else {
-          toast.error(res.data.message, {
-            position: "top-center",
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
           });
         }
       })
       .catch((error) => {
         console.log(error);
-        toast.error("Server error");
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   };
   return (
-    <div className="bg-gray-300 h-full w-full overflow-x-hidden">
+    <div className="bg-gray-300 h-full pt-16 w-full overflow-x-hidden">
       <Navbar />
-      <div className="bg-gray-400 h-72">
+      <Header />
+      <HeadTitle title={"upload question papers"} />
+      {/* <div className="bg-gray-400 h-72">
         <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
           "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
         </h1>
@@ -158,7 +160,7 @@ const UploadQuestionPapers = () => {
         <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
           upload question papers
         </h1>
-      </div>
+      </div> */}
       <form action="" onSubmit={handleSubmit} className="m-3 w-3/4 mx-auto">
         {/* {errors ? <p className=" text-red-500 font-normal bg-white border-2 border-red-500  my-2 w-fit rounded-xl p-2 mx-auto">{errors}</p> : null } */}
         <select

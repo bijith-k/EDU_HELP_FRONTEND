@@ -1,13 +1,12 @@
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setStudent } from "../../../features/studentSlice";
 import ragam from "../../../assets/ragam.jpeg";
+import { useToast } from "@chakra-ui/react";
 
 const initialValues = {
   email: "",
@@ -19,6 +18,7 @@ const AdminLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const toast = useToast();
   const signUpSchema = Yup.object({
     email: Yup.string().email().required("Please enter your email"),
     password: Yup.string().required("Please enter your password"),
@@ -30,24 +30,41 @@ const AdminLogin = () => {
       validationSchema: signUpSchema,
       onSubmit: (values, action) => {
         setIsLoading(true);
-        axios
+        axiosInstance()
           .post(`auth/admin-signin`, {
             ...values,
           })
           .then((response) => {
             setIsLoading(false);
             if (response.data.created) {
-              console.log(response.data);
-              toast.success(response.data.message);
+              toast({
+                title: response.data.message,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
               localStorage.setItem("Adtoken", response.data.token);
-              navigate("/admin-dashboard");
+              navigate("/admin/dashboard");
             } else {
-              toast.error(response.data.message);
+              toast({
+                title: response.data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
             }
           })
           .catch((error) => {
             setIsLoading(false);
-            toast.error(error.response.data.message);
+            toast({
+              title: error.response.data.message,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+            });
           });
         // action.resetForm();
       },
@@ -56,7 +73,7 @@ const AdminLogin = () => {
   useEffect(() => {
     const token = localStorage.getItem("Adtoken");
     if (token) {
-      navigate("/admin-dashboard");
+      navigate("/admin/dashboard");
     }
   }, [navigate]);
 
@@ -118,28 +135,8 @@ const AdminLogin = () => {
               )}
             </form>
           </div>
-
-          <div className="text-grey-dark mt-6">
-            Don't have an account?
-            <a
-              className="no-underline border-b border-white text-yellow"
-              href="/signup"
-            >
-              Signup
-            </a>
-          </div>
-          <div className="text-grey-dark mb-5">
-            Login as a tutor?
-            <a
-              className="no-underline border-b border-white text-yellow"
-              href="/tutor-signin"
-            >
-              Login
-            </a>
-          </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

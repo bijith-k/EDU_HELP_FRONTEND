@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+
 import Navbar from "../Dashboard/Navbar";
+import { useToast } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
 const TutorUploadNotes = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState("");
@@ -20,31 +23,39 @@ const TutorUploadNotes = () => {
     noteName: "",
   });
 
+  const { tutor } = useSelector((state) => state.tutor);
+
+  useEffect(() => {
+    if (tutor.accepted == false && tutor.rejected == false) {
+      navigate("/tutor/approval-pending");
+    } else if (tutor.rejected) {
+      navigate("/tutor/approval-rejected");
+    } else if (tutor.blocked) {
+      localStorage.removeItem("Ttoken");
+      navigate("/tutor");
+      toast({
+        title: "Blocked",
+        description: "Your account is blocked by the admin",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }, []);
+
   useEffect(() => {
     // Fetch boards from server on component mount
-    axios
-      .get(`tutor/boards`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Ttoken")}`,
-        },
-      })
+    axiosInstance("Ttoken")
+      .get(`tutor/boards`)
       .then((res) => setBoards(res.data.boards))
       .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
     if (selectedBoard) {
-      axios
-        .get(
-          `${
-            import.meta.env.VITE_BASE_PATH
-          }tutor/branches?board=${selectedBoard}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("Ttoken")}`,
-            },
-          }
-        )
+      axiosInstance("Ttoken")
+        .get(`tutor/branches?board=${selectedBoard}`)
         .then((res) => {
           setBranches(res.data.branches);
         })
@@ -58,17 +69,8 @@ const TutorUploadNotes = () => {
 
   useEffect(() => {
     if (selectedBranch) {
-      axios
-        .get(
-          `${
-            import.meta.env.VITE_BASE_PATH
-          }tutor/subjects?branch=${selectedBranch}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("Ttoken")}`,
-            },
-          }
-        )
+      axiosInstance("Ttoken")
+        .get(`tutor/subjects?branch=${selectedBranch}`)
         .then((res) => {
           setSubjects(res.data.subjects);
         })
@@ -80,29 +82,39 @@ const TutorUploadNotes = () => {
     }
   }, [selectedBranch, selectedBoard]);
 
+  const errorToast = (message) => {
+    toast({
+      title: message,
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "top",
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!selectedBoard) {
-      setErrors("Select a board");
+      errorToast("Select a board");
       return;
     }
     if (!selectedBranch) {
-      setErrors("Select a branch");
+      errorToast("Select a branch");
       return;
     }
     if (!selectedSubject) {
-      setErrors("Select a subject");
+      errorToast("Select a subject");
       return;
     }
 
     const noteNameRegex = /^[a-zA-Z0-9_-\s]+$/;
     if (!notesData.noteName || !noteNameRegex.test(notesData.noteName)) {
-      setErrors("Enter the name of the note");
+      errorToast("Enter the name of the note");
       return;
     }
     if (!notesData.note || notesData.note.type !== "application/pdf") {
-      setErrors(
+      errorToast(
         "Select a note to upload or You have selected a file otherthan pdf"
       );
       return;
@@ -116,7 +128,7 @@ const TutorUploadNotes = () => {
       },
     };
 
-    await axios
+    await axiosInstance("Ttoken")
       .post(
         `tutor/upload-notes`,
         {
@@ -126,20 +138,30 @@ const TutorUploadNotes = () => {
           subject: selectedSubject,
           exclusive: true,
         },
-        config
+        { headers: { "Content-Type": "multipart/form-data" } }
       )
       .then((res) => {
         if (res.data.uploaded) {
-          navigate("/tutor-uploads");
+          navigate("/tutor/uploads");
         } else {
-          toast.error(res.data.message, {
-            position: "top-center",
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
           });
         }
       })
       .catch((error) => {
         console.log(error);
-        toast.error("Server error");
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   };
   return (
@@ -152,11 +174,11 @@ const TutorUploadNotes = () => {
           </h1>
         </div>
         <form action="" onSubmit={handleSubmit} className="m-3 w-3/4 mx-auto">
-          {errors ? (
+          {/* {errors ? (
             <p className=" text-red-500 font-normal bg-white border-2 border-red-500  my-2 w-fit rounded-xl p-2 mx-auto">
               {errors}
             </p>
-          ) : null}
+          ) : null} */}
           <select
             name="board"
             value={selectedBoard}

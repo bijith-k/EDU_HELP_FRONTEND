@@ -5,54 +5,58 @@ import SideBar from "./SideBarData";
 import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
-
+import axiosInstance from "../../../axios";
+import { useToast } from "@chakra-ui/react";
 
 const TutorDashboard = () => {
-  const tutor = useSelector((state) => state.tutor);
-  console.log(tutor)
-  const navigate = useNavigate()
-  const [notesCount, setNotesCount] = useState(0)
-  const [questionsCount, setQuestionsCount] = useState(0)
-  const [videosCount, setVideosCount] = useState(0)
-  const token = localStorage.getItem('Ttoken')
+  const { tutor } = useSelector((state) => state.tutor);
+
+  const navigate = useNavigate();
+  const [notesCount, setNotesCount] = useState(0);
+  const [questionsCount, setQuestionsCount] = useState(0);
+  const [videosCount, setVideosCount] = useState(0);
+  const token = localStorage.getItem("Ttoken");
+  const toast = useToast();
+
+  useEffect(() => {
+    if (tutor.accepted == false && tutor.rejected == false) {
+      navigate("/tutor/approval-pending");
+    } else if (tutor.rejected) {
+      navigate("/tutor/approval-rejected");
+    } else if (tutor.blocked) {
+      localStorage.removeItem("Ttoken");
+      navigate("/tutor");
+      toast({
+        title: "Blocked",
+        description: "Your account is blocked by the admin",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const Tid = localStorage.getItem("Tid");
-    console.log(tutor._id, "iddd");
-    axios
-      .get(`tutor/uploaded-notes?id=${Tid}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+
+    axiosInstance("Ttoken")
+      .get(`tutor/uploaded-notes?id=${Tid}`)
       .then((response) => {
-         
         setNotesCount(response.data.length);
       });
 
-      axios
-        .get(`tutor/uploaded-questions?id=${Tid}`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-           
-           
-          setQuestionsCount(response.data.length);
-        });
+    axiosInstance("Ttoken")
+      .get(`tutor/uploaded-questions?id=${Tid}`)
+      .then((response) => {
+        setQuestionsCount(response.data.length);
+      });
 
-        axios
-          .get(`tutor/uploaded-videos?id=${Tid}`, {
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-             
-            setVideosCount(response.data.length);
-          });
+    axiosInstance("Ttoken")
+      .get(`tutor/uploaded-videos?id=${Tid}`)
+      .then((response) => {
+        setVideosCount(response.data.length);
+      });
   }, []);
 
   return (
@@ -109,7 +113,6 @@ const TutorDashboard = () => {
               {" "}
               <h1 className="text-4xl font-medium text-gray-700">
                 {tutor.name}
-                 
               </h1>{" "}
               {/* <p className="font-light text-gray-600 mt-3">
                 Bucharest, Romania
@@ -122,7 +125,7 @@ const TutorDashboard = () => {
               </p>{" "} */}
               <button
                 className="text-indigo-500 py-2 px-4  font-medium mt-4 uppercase"
-                onClick={() => navigate("/tutor-edit-profile")}
+                onClick={() => navigate("/tutor/edit-profile")}
               >
                 {" "}
                 click to update your profile informations
@@ -153,7 +156,7 @@ const TutorDashboard = () => {
             <div className=" flex flex-col justify-center">
               <button
                 className="text-indigo-500 py-2 px-4  font-medium mt-4 uppercase"
-                onClick={() => navigate("/tutor-uploads")}
+                onClick={() => navigate("/tutor/uploads")}
               >
                 {" "}
                 view your uploads

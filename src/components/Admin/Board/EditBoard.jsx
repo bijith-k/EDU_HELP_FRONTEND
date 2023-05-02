@@ -1,48 +1,29 @@
 import React, { useEffect } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setBoardData } from "../../../features/contentSlice";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-
 const EditBoard = () => {
-  // const board = useSelector((state)=>state.contents.board)
-  const dispatch = useDispatch()
-  const navigate =useNavigate()
-  const toast = useToast()
-  // console.log(board,"booo")
-  const token = localStorage.getItem("Adtoken");
-  const [boardData, setBoardData] = useState('')
-  console.log(boardData)
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const [boardData, setBoardData] = useState("");
+
   useEffect(() => {
-    const boardId = localStorage.getItem("boardId")
-    axios
-      .get(`admin/boards?id=${boardId}`,
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        }
-      )
+    const boardId = localStorage.getItem("boardId");
+    axiosInstance("Adtoken")
+      .get(`admin/boards?id=${boardId}`)
       .then((res) => {
-       console.log(res.data.boards);
-        // dispatch(
-        //   setBoardData({
-        //     board: res.data.boards,
-        //   })
-        // );
-        setBoardData(res.data.boards)
-         
+        setBoardData(res.data.boards);
       })
       .catch((error) => {
         console.log(error);
       });
-     
-  }, [])
-  
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,28 +40,18 @@ const EditBoard = () => {
       });
     }
 
-    axios
-      .post(
-        `admin/edit-board?id=${boardData._id}`,
-        { ...boardData },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+    axiosInstance("Adtoken")
+      .post(`admin/edit-board?id=${boardData._id}`, { ...boardData })
       .then((res) => {
-         
-          localStorage.removeItem("boardId");
-          toast({
-            title: res.data.message,
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-            position: "top",
-          });
-          navigate("/admin-board");
-         
+        localStorage.removeItem("boardId");
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        navigate("/admin/board");
       })
       .catch((error) => {
         console.log(error);
@@ -114,8 +85,9 @@ const EditBoard = () => {
             value={boardData.name}
             className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
             placeholder="Enter name of board or University"
-            onChange={(e) => setBoardData({...boardData,name:e.target.value})}
-            
+            onChange={(e) =>
+              setBoardData({ ...boardData, name: e.target.value })
+            }
           />
           <button
             type="submit"

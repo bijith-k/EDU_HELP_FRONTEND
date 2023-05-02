@@ -2,9 +2,11 @@ import React from "react";
 import Navbar from "../Home/Navbar";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useToast } from "@chakra-ui/react";
+import Header from "../Header/Header";
+import HeadTitle from "../Header/HeadTitle";
 
 const initialValues = {
   name: "",
@@ -17,8 +19,10 @@ const initialValues = {
   contact: "",
   poster: "",
 };
+
 const AddEvents = () => {
   const navigate = useNavigate();
+  const toast = useToast();
 
   const eventSchema = Yup.object({
     name: Yup.string().min(2).max(25).required("Please enter the events name"),
@@ -52,40 +56,53 @@ const AddEvents = () => {
       initialValues,
       validationSchema: eventSchema,
       onSubmit: (values, action) => {
-        const token = localStorage.getItem("Stoken");
-        const config = {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        console.log(values);
-        axios
+        axiosInstance("Stoken")
           .post(
             `add-event`,
             {
               ...values,
             },
-            config
+            { headers: { "Content-Type": "multipart/form-data" } }
           )
           .then((response) => {
             if (response.data.added) {
-              // toast.success(response.data.message);
+              toast({
+                title: response.data.message,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
+
               navigate("/");
             } else {
-              toast.error(response.data.message);
+              toast({
+                title: response.data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
             }
           })
           .catch((error) => {
             console.log(error);
-            toast.error(error.response.data.errors);
+            toast({
+              title: error.response.data.errors,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+            });
           });
       },
     });
   return (
-    <div className="bg-gray-300 h-full w-full overflow-x-hidden">
+    <div className="bg-gray-300 h-full pt-16 w-full overflow-x-hidden">
       <Navbar />
-      <div className="bg-gray-400 h-72">
+      <Header />
+      <HeadTitle title={"add events"} />
+      {/* <div className="bg-gray-400 h-72">
         <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
           "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
         </h1>
@@ -94,7 +111,7 @@ const AddEvents = () => {
         <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
           add events
         </h1>
-      </div>
+      </div> */}
       <form action="" onSubmit={handleSubmit} className="p-3 w-3/4 mx-auto">
         {/* {errors ? <p className=" text-red-500 font-normal bg-white border-2 border-red-500  my-2 w-fit rounded-xl p-2 mx-auto">{errors}</p> : null } */}
 

@@ -4,14 +4,16 @@ import Conversation from "./Conversation";
 import Message from "./Message";
 import ChatOnline from "./ChatOnline";
 import { useSelector } from "react-redux";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 import { io } from "socket.io-client";
+import Header from "../Header/Header";
+import HeadTitle from "../Header/HeadTitle";
 
 // const ENDPOINT = "http://localhost:4000";
 // var socket,selectedChatCompare;
 
 const StudentChat = () => {
-  const student = useSelector((state) => state.student);
+  const {student} = useSelector((state) => state.student);
 
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
@@ -62,11 +64,9 @@ const StudentChat = () => {
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await axios.get(`get-conversation/${student._id}`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axiosInstance("Stoken").get(
+          `get-conversation/${student._id}`
+        );
         setConversations(res.data);
       } catch (error) {
         console.log(error);
@@ -78,11 +78,9 @@ const StudentChat = () => {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        const res = await axios.get(`get-message/${currentChat?._id}`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axiosInstance("Stoken").get(
+          `get-message/${currentChat?._id}`
+        );
         setMessages(res.data);
         // socket.emit("join chat",currentChat._id)
       } catch (error) {
@@ -125,11 +123,7 @@ const StudentChat = () => {
     });
 
     try {
-      const res = await axios.post(`new-message`, message, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axiosInstance("Stoken").post(`new-message`, message);
       // socket.emit('new message',res.data)
       setMessages([...messages, res.data]);
       setNewMessage("");
@@ -143,18 +137,10 @@ const StudentChat = () => {
   }, [messages]);
 
   return (
-    <div className="h-screen w-full bg-slate-300 overflow-x-hidden">
+    <div className="min-h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
       <Navbar />
-      <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
-          "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
-        </h1>
-      </div>
-      <div className="bg-blue-500">
-        <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
-          chats
-        </h1>
-      </div>
+      <Header />
+      <HeadTitle title={"chats"} />
       <div className=" pb-16 flex w-full">
         <div className="w-3/12 ">
           <div className="chatMenuWrapper p-3  min-h-full">

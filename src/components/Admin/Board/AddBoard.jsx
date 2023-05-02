@@ -1,67 +1,55 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 
 const AddBoard = () => {
-  const navigate = useNavigate()
-  const toast = useToast()
+  const navigate = useNavigate();
+  const toast = useToast();
   const [board, setBoard] = useState({
     board: "",
   });
-  
-
-  const token = localStorage.getItem("Adtoken");
-
-  const config = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${token}`,
-    },
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let nameRegex = /^[a-zA-Z]+([ \-'][a-zA-Z]+)*$/;
-    
+
     if (!board.board || !nameRegex.test(board.board)) {
       return toast({
         title: "Please enter the board name",
-        description:"Don't start name with spaces and enter only letters",
+        description: "Don't start name with spaces and enter only letters",
         status: "warning",
         duration: 5000,
         isClosable: true,
         position: "top",
       });
     }
-    
-    axios
-      .post(`admin/add-board`, board, config)
-      .then((res) => {
-        
-         toast({
-           title: res.data.message,
-           status: "success",
-           duration: 5000,
-           isClosable: true,
-           position: "top",
-         });
-        setBoard("");
-        navigate('/admin-board')
 
+    axiosInstance("Adtoken")
+      .post(`admin/add-board`, board)
+      .then((res) => {
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        setBoard("");
+        navigate("/admin/board");
       })
       .catch((err) => {
-         toast({
-           title: err.message,
-           status: "error",
-           duration: 5000,
-           isClosable: true,
-           position: "top",
-         });
-        console.error(err, "err");
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        console.log(err, "err");
       });
   };
 

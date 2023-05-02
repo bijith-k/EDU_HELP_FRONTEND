@@ -3,13 +3,18 @@ import Sidebar from "../Dashboard/Sidebar";
 import ragam from "../../../assets/ragam.jpeg";
 import { FaSearch } from "react-icons/fa";
 
- 
 import { useNavigate } from "react-router-dom";
-import axios from "../../../axios";
-import { Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
-
-
- 
+import axiosInstance from "../../../axios";
+import {
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useToast,
+} from "@chakra-ui/react";
 
 const BranchList = () => {
   const [boards, setBoards] = useState([]);
@@ -22,25 +27,15 @@ const BranchList = () => {
   const toast = useToast();
 
   useEffect(() => {
-    axios
-      .get(`admin/boards`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/boards`)
       .then((res) => {
-        console.log(res);
         setBoards(res.data.boards);
       });
 
-    axios
-      .get(`admin/branches`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .get(`admin/branches`)
       .then((res) => {
-        console.log(res, "3");
         setBranches(res.data.branches);
       });
   }, [toastMessage]);
@@ -86,18 +81,13 @@ const BranchList = () => {
     //     board,
     //   })
     // );
-    navigate("/admin-edit-branch");
+    navigate("/admin/edit-branch");
   };
 
   const handleListUnlist = (id) => {
-    axios
-      .put(`admin/branch-list-unlist?id=${id}`, null, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("Adtoken")}`,
-        },
-      })
+    axiosInstance("Adtoken")
+      .put(`admin/branch-list-unlist?id=${id}`)
       .then((res) => {
-        console.log(res);
         setToastMessage(id, res.data.message);
         toast({
           title: res.data.message,
@@ -152,7 +142,7 @@ const BranchList = () => {
           <div className="bg-white p-2 rounded-2xl flex">
             <button
               className="font-bold text-sky-900"
-              onClick={() => navigate("/admin-add-branch")}
+              onClick={() => navigate("/admin/add-branch")}
             >
               ADD BRANCH
             </button>
