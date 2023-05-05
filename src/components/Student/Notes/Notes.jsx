@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setStudent } from "../../../features/studentSlice";
 import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
 
 const Notes = () => {
   const [value, setValue] = React.useState("1");
@@ -21,15 +22,17 @@ const Notes = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  
   
   
 
   return (
-    <div className="min-h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
+    <div className="max-w-screen-2xl mx-auto min-h-screen w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
       <Navbar />
       <Header />
-       
-      <div className="bg-blue-500">
+
+      <div className="bg-[#232946]">
         {student.branch.name === "1-10" && (
           <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
             class 1 to 10
@@ -86,7 +89,7 @@ const Notes = () => {
       {/* </TabContext> */}
 
       <Tabs variant="line" colorScheme="green">
-        <TabList className="bg-slate-100 text-black">
+        <TabList className="bg-[#fffffe] text-black">
           <Tab className="w-1/3">NOTES</Tab>
           <Tab className="w-1/3">VIDEOS</Tab>
           <Tab className="w-1/3">QUESTION PAPERS</Tab>
@@ -103,6 +106,9 @@ const Notes = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <div className="mt-5">
+        <Footer />
+      </div>
     </div>
   );
 };

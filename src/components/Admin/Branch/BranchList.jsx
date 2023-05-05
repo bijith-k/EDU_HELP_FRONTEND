@@ -111,7 +111,7 @@ const BranchList = () => {
   };
 
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden ">
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden ">
       <div className="bg-dark-purple ">
         <Sidebar />
       </div>
@@ -139,9 +139,9 @@ const BranchList = () => {
             </div>
           </div> */}
 
-          <div className="bg-white p-2 rounded-2xl flex">
+          <div className="bg-green-600  p-2 rounded-2xl flex">
             <button
-              className="font-bold text-sky-900"
+              className="font-bold text-white"
               onClick={() => navigate("/admin/add-branch")}
             >
               ADD BRANCH
@@ -185,20 +185,20 @@ const BranchList = () => {
                         <Td className="border flex justify-center">
                           <button
                             onClick={() => handleEdit(branch)}
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                            className="bg-yellow-600 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                           >
                             EDIT
                           </button>
                           {branch.listed ? (
                             <button
-                              className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                              className="bg-gray-600 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                               onClick={() => handleListUnlist(branch._id)}
                             >
                               UNLIST
                             </button>
                           ) : (
                             <button
-                              className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                              className="bg-blue-400 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                               onClick={() => handleListUnlist(branch._id)}
                             >
                               LIST

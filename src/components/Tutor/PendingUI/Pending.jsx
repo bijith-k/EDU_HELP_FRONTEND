@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Pending = () => {
   const navigate = useNavigate()
   return (
-    <div className="bg-green-200 h-screen flex flex-col">
+    <div className="bg-green-200 min-h-screen max-w-screen-2xl mx-auto flex flex-col">
       <div className="bg-green-200 flex justify-between items-center">
         <p className="text-center font-semibold uppercase text-xl p-10">
           welcome to edu-help
@@ -25,8 +25,10 @@ const Pending = () => {
         <p className="font-bold text-2xl text-center">
           Your request to register as a tutor is reviewing by admin
         </p>
-        <p className="font-bold text-2xl text-center">Please login after sometimes or check your mail for updates .... </p>
-        <Spinner  className="h-14 w-14 mt-5" />
+        <p className="font-bold text-2xl text-center">
+          Please login after sometimes or check your mail for updates ....{" "}
+        </p>
+        <Spinner className="h-14 w-14 mt-5" />
       </div>
     </div>
   );

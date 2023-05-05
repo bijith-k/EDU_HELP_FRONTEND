@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { FiMail } from "react-icons/fi";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
+import Footer from "../Footer/Footer";
 
 const Settings = () => {
   const { student } = useSelector((state) => state.student);
@@ -188,7 +189,7 @@ const Settings = () => {
       });
   }
   return (
-    <div className="min-h-screen w-full pt-16 bg-white overflow-x-hidden">
+    <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16  overflow-x-hidden">
       <Navbar />
       <Header />
       <HeadTitle title={"settings"} />
@@ -280,6 +281,9 @@ const Settings = () => {
       <div className="mt-5 w-2/3 mx-auto">
 
       </div> */}
+      <div className="mt-5">
+        <Footer />
+      </div>
     </div>
   );
 };

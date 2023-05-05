@@ -219,7 +219,7 @@ const FavouriteNotes = () => {
             )}
           </div>
         ) : (
-          <div>
+          <div className="h-40">
             <p className="text-center font-bold text-lg">
               Nothing in favourite notes
             </p>

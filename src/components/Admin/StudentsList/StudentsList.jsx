@@ -57,8 +57,8 @@ const StudentsList = () => {
   };
 
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
-      <div>
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
+      <div className="bg-dark-purple">
         <Sidebar />
       </div>
       <div className="w-full overflow-clip">
@@ -112,14 +112,14 @@ const StudentsList = () => {
                   <Td className="border flex justify-center">
                     {student.blocked ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
+                        className="bg-green-500 font-semibold text-white m-2 w-24 p-2 rounded-xl"
                         onClick={() => handleBlockUnblock(student._id)}
                       >
                         UNBLOCK
                       </button>
                     ) : (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
+                        className="bg-red-700 font-semibold text-white m-2 w-24 p-2 rounded-xl"
                         onClick={() => handleBlockUnblock(student._id)}
                       >
                         BLOCK

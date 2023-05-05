@@ -133,8 +133,8 @@ const TutorsList = () => {
   };
 
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
-      <div>
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
+      <div className="bg-dark-purple">
         <Sidebar />
       </div>
       <div className="w-full overflow-clip">
@@ -201,10 +201,10 @@ const TutorsList = () => {
                   <Td className="border">{tutor.branch.name}</Td>
                   <Td className="border">{tutor.profession}</Td>
 
-                  <Td className="border flex justify-center">
+                  <Td className="border flex justify-start">
                     {!tutor.approved && !tutor.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
+                        className="bg-green-500 font-semibold text-white m-2 w-24 p-2 rounded-xl"
                         onClick={() => handleApprove(tutor._id)}
                       >
                         APPROVE
@@ -212,7 +212,7 @@ const TutorsList = () => {
                     ) : null}
                     {!tutor.approved && !tutor.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
+                        className="bg-red-500 font-semibold text-white m-2 w-24 p-2 rounded-xl"
                         // onClick={() => handleReject(tutor._id)}
                         onClick={() => handleOpen(tutor._id)}
                       >
@@ -223,14 +223,14 @@ const TutorsList = () => {
                     {tutor.approved ? (
                       tutor.blocked ? (
                         <button
-                          className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
+                          className="bg-green-700 font-semibold text-white m-2 w-24 p-2 rounded-xl"
                           onClick={() => handleBlockUnblock(tutor._id)}
                         >
                           UNBLOCK
                         </button>
                       ) : (
                         <button
-                          className="bg-sky-900 font-semibold text-white m-2 w-24 p-2 rounded-xl"
+                          className="bg-red-700 font-semibold text-white m-2 w-24 p-2 rounded-xl"
                           onClick={() => handleBlockUnblock(tutor._id)}
                         >
                           BLOCK

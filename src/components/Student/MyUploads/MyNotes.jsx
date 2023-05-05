@@ -24,8 +24,10 @@ import {
 } from "@chakra-ui/react";
 import Pagination from "../../Pagination/Pagination";
 import Search from "../Search/Search";
+import { useNavigate } from "react-router-dom";
 
 const MyNotes = () => {
+  const navigate = useNavigate()
   const { student } = useSelector((state) => state.student);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -86,18 +88,49 @@ const MyNotes = () => {
     axiosInstance("Stoken")
       .get(`get-notes?id=${student._id}`)
       .then((response) => {
-        setNotes(response.data);
-      });
+        if (response.data.status==false) {
+           
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setNotes(response.data);
+        }
+      }).catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      })
   }, [change]);
 
   useEffect(() => {
     axiosInstance("Stoken")
       .get(`subjects?branch=${student.branch._id}`)
       .then((res) => {
-        setSubjects(res.data.subjects);
+         
+          setSubjects(res.data.subjects);
+        
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -105,14 +138,26 @@ const MyNotes = () => {
     axiosInstance("Stoken")
       .put(`notes-private-public?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          setChange(res.data.message);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -131,14 +176,26 @@ const MyNotes = () => {
     axiosInstance("Stoken")
       .delete(`delete-notes?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          setChange(res.data.message);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -277,8 +334,10 @@ const MyNotes = () => {
             )}
           </div>
         ) : (
-          <div>
-            <p className="text-center font-bold text-lg">You haven't uploaded any notes</p>
+          <div className="h-40">
+            <p className="text-center font-bold text-lg">
+              You haven't uploaded any notes
+            </p>
           </div>
         )}
       </div>

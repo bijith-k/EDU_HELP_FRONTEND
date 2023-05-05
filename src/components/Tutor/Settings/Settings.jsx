@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
 import { FiMail } from "react-icons/fi";
+import Footer from "../Footer/Footer";
 
 const Settings = () => {
   const { tutor } = useSelector((state) => state.tutor);
@@ -201,9 +202,9 @@ const Settings = () => {
   };
 
   return (
-    <div className="bg-white h-screen">
+    <div className="bg-gray-50 min-h-screen max-w-screen-2xl mx-auto">
       <Navbar />
-      <div className="bg-gray-500 uppercase h-14 text-center text-white font-bold text-xl pt-3">
+      <div className="bg-gray-600 uppercase h-14 text-center text-white font-bold text-xl pt-3">
         SETTINGS
       </div>
       <div className="mt-5 w-2/3 mx-auto ">
@@ -288,6 +289,9 @@ const Settings = () => {
         >
           UPDATE PASSWORD
         </Button>
+      </div>
+      <div className="mt-5">
+        <Footer />
       </div>
     </div>
   );

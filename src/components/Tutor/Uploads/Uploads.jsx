@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
 import { Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from "@chakra-ui/react";
+import Footer from "../Footer/Footer";
 
 const Uploads = () => {
   const dispatch = useDispatch()
@@ -84,9 +85,9 @@ const Uploads = () => {
   // }, [dispatch]);
 
   return (
-    <div className="bg-gray-600 min-h-screen w-full overflow-x-hidden">
+    <div className="bg-gray-400 min-h-screen max-w-screen-2xl mx-auto w-full overflow-x-hidden">
       <Navbar />
-      <div className="bg-gray-500 uppercase h-14 text-center text-white font-bold text-xl pt-3">
+      <div className="bg-gray-600 uppercase h-14 text-center text-white font-bold text-xl pt-3">
         your uploads
       </div>
       <Tabs variant="line" colorScheme="green">
@@ -95,7 +96,7 @@ const Uploads = () => {
           <Tab className="w-1/3">VIDEOS</Tab>
           <Tab className="w-1/3">QUESTION PAPERS</Tab>
         </TabList>
-        <TabPanels className="bg-slate-400">
+        <TabPanels className="bg-gray-400 min-h-screen">
           <TabPanel>
             <UploadedNotes />
           </TabPanel>
@@ -107,88 +108,10 @@ const Uploads = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
-      {/* <div
-        className="flex flex-col  w-full h-80  break-words "
-        id="container"
-      >
-        <div className="flex" id="bloc-tabs">
-          <div
-            className={
-              toggleState === 1
-                ? "p-4 text-center w-1/2 bg-slate-900 text-white cursor-pointer border-b-2  box-border relative outline-0"
-                : "p-4 text-center w-1/2 bg-gray-300 cursor-pointer border-b-2 box-border relative outline-0"
-            }
-            id="tabs active-tabs"
-            onClick={() => toggleTab(1)}
-          >
-            NOTES
-          </div>
-          <div
-            className={
-              toggleState === 2
-                ? "p-4 text-center w-1/2 bg-slate-900 text-white cursor-pointer border-b-2  box-border relative outline-0"
-                : "p-4 text-center w-1/2 bg-gray-300 cursor-pointer border-b-2 box-border relative outline-0"
-            }
-            id="tabs"
-            onClick={() => toggleTab(2)}
-          >
-            VIDEOS
-          </div>
-          <div
-            className={
-              toggleState === 3
-                ? "p-4 text-center w-1/2 bg-slate-900 text-white cursor-pointer border-b-2  box-border relative outline-0"
-                : "p-4 text-center w-1/2 bg-gray-300 cursor-pointer border-b-2 box-border relative outline-0"
-            }
-            id="tabs"
-            onClick={() => toggleTab(3)}
-          >
-            QUESTION PAPERS
-          </div>
-        </div>
 
-        <div className="flex-grow" id="content-tabs">
-          <div
-            className={
-              toggleState === 1
-                ? "bg-slate-400 p-5 w-full min-h-screen block"
-                : "bg-slate-400 p-5 w-full h-screen hidden"
-            }
-            id="content active-content"
-          >
-            <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-1 justify-items-center mt-10">
-             
-                 <UploadedNotes />
-               
-            </div>
-          </div>
-          <div
-            className={
-              toggleState === 2
-                ? "bg-slate-400 p-5 w-full min-h-screen block"
-                : "bg-slate-400 p-5 w-full min-h-screen hidden"
-            }
-            id="content active-content"
-          >
-            <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3  md:grid-cols-2 gap-1 justify-items-center mt-10">
-             
-              <UploadedVideos />
-            </div>
-          </div>
-          <div
-            className={
-              toggleState === 3
-                ? "bg-slate-400 p-5 w-full min-h-screen block"
-                : "bg-slate-400 p-5 w-full min-h-screen hidden"
-            }
-            id="content active-content"
-          >
-           <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3  md:grid-cols-2 gap-1 justify-items-center mt-10">
-           <UploadedQuestions />
-            </div>
-          </div>
-        </div>
-      </div> */}
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 };

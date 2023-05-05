@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
+import Footer from "../Footer/Footer";
 
 const initialValues = {
   name: "",
@@ -98,7 +99,7 @@ const AddEvents = () => {
       },
     });
   return (
-    <div className="bg-gray-300 h-full pt-16 w-full overflow-x-hidden">
+    <div className="bg-[#d4d8f0]  min-h-screen max-w-screen-2xl mx-auto pt-16 w-full overflow-x-hidden">
       <Navbar />
       <Header />
       <HeadTitle title={"add events"} />
@@ -291,11 +292,14 @@ const AddEvents = () => {
 
         <button
           type="submit"
-          className="bg-blue-900 p-3 font-semibold text-white rounded-lg mt-2"
+          className="bg-[#232946] p-3 font-semibold text-white rounded-lg mt-2"
         >
           ADD EVENT
         </button>
       </form>
+      <div className="mt-5">
+        <Footer />
+      </div>
     </div>
   );
 };

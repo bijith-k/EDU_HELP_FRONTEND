@@ -1,10 +1,23 @@
-import React from 'react'
-import AddEvents from '../../components/Tutor/Events/AddEvents'
+import { Skeleton, Stack } from "@chakra-ui/react";
+import React, { Suspense, lazy } from "react";
+const AddEvents  = lazy(()=>import("../../components/Tutor/Events/AddEvents"))
 
 const TutorAddEventsPage = () => {
   return (
-    <AddEvents />
-  )
-}
+    <>
+      <Suspense
+        fallback={
+          <Stack className="max-w-screen-2xl mx-auto min-h-screen">
+            <Skeleton height="80px" />
+            <Skeleton height="50px" />
+            <Skeleton className="h-screen" />
+          </Stack>
+        }
+      >
+        <AddEvents />
+      </Suspense>
+    </>
+  );
+};
 
-export default TutorAddEventsPage
+export default TutorAddEventsPage;

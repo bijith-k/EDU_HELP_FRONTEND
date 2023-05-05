@@ -12,7 +12,7 @@ import {
   BarElement,
   Title,
 } from "chart.js";
-import { Doughnut, Pie, Bar } from "react-chartjs-2";
+import { Doughnut, Pie, Bar,Line } from "react-chartjs-2";
 
 ChartJS.register(
   ArcElement,
@@ -38,6 +38,8 @@ const options = {
 };
 
 const Dashboard = () => {
+ 
+   
   const Token = localStorage.getItem("Adtoken");
   const [students, setStudents] = useState(0);
   const [tutors, setTutors] = useState(0);
@@ -52,6 +54,9 @@ const Dashboard = () => {
   const [videosCount, setVideosCount] = useState("");
   const [questionsCount, setQuestionsCount] = useState("");
 
+   const [planCount, setPlanCount] = useState([]);
+   
+
   useEffect(() => {
     const fetchBoards = async () => {
       const res = await axiosInstance("Adtoken").get(
@@ -60,6 +65,8 @@ const Dashboard = () => {
       setBoards(res.data);
     };
     fetchBoards();
+
+
   }, []);
 
   useEffect(() => {
@@ -92,20 +99,24 @@ const Dashboard = () => {
       .then((res) => {
         setQuestionsCount(res.data.length);
       });
+
+      axiosInstance("Adtoken")
+        .get(`admin/activePlans`)
+        .then((res) => {
+          setPlanCount(res.data.planCount)
+        });
+
+       
+
+       
   }, []);
 
-  const labels = ["January", "February", "March"];
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Dataset 1",
-        data: [10, 20, 100],
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-    ],
-  };
+   
+ 
+
+
+   
 
   const contentsCount = {
     labels: ["Notes", "Videos", "Question Papers"],
@@ -127,8 +138,23 @@ const Dashboard = () => {
       },
     ],
   };
+
+  const Dlabels = planCount?.map((data) => data._id);
+  const Dcounts = planCount?.map((data) => data.count);
+
+ const planCounts = {
+   labels: Dlabels,
+   datasets: [
+     {
+       data: Dcounts,
+       backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+     },
+   ],
+ };
+
+ 
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
       <div className="bg-dark-purple">
         <Sidebar />
       </div>
@@ -175,17 +201,7 @@ const Dashboard = () => {
               );
             })}
           </div>
-          {/* <div className="bg-white h-fit flex flex-col md:flex-row pb-10">
-            <div className="w-72 h-72 mx-auto mt-5">
-              <p className="font-bold text-lg text-center uppercase">
-                Total available contents
-              </p>
-              <div className=" mx-auto">
-                
-                <Bar options={options} data={data} />
-              </div>
-            </div>
-          </div> */}
+
           <div className="bg-white min-h-full flex flex-col md:flex-row pb-10">
             <div className="w-72 h-72 mx-auto mt-5">
               <p className="font-bold text-lg text-center uppercase">
@@ -195,18 +211,14 @@ const Dashboard = () => {
                 <Pie data={contentsCount} />
               </div>
             </div>
-            {/* <div className="w-72 h-72 mx-auto mt-5">
+            <div className="w-72 h-72 mx-auto mt-5">
               <p className="font-bold text-lg text-center uppercase">
-                Total available contents
+                Total Subscription
               </p>
               <div className="w-60 h-60 mx-auto">
-                <Doughnut data={contentsCount} />
+                <Doughnut data={planCounts} />
               </div>
-            </div> */}
-
-            {/* <div className="w-full md:w-1/3 h-1/3">
-              <Pie data={contentsCount} />
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

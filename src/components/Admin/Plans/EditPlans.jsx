@@ -99,14 +99,14 @@ const EditPlans = () => {
   };
 
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
-      <div>
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
+      <div className="bg-dark-purple">
         <Sidebar />
       </div>
 
       <div className="w-full  overflow-clip">
         <p className="bg-white w-full p-3 my-5 uppercase font-bold text-center">
-          edit note
+          edit plan
         </p>
         <div>
           <form action="" onSubmit={handleSubmit} className="m-3 w-3/4 mx-auto">

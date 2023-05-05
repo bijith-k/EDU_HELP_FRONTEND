@@ -112,7 +112,7 @@ const Navbar = () => {
 
   return (
     <Box
-      className="bg-blue-900 text-white"
+      className="bg-[#232946] text-white "
       // bg={bg}
       boxShadow="md"
       py={4}
@@ -158,7 +158,7 @@ const Navbar = () => {
                     rightIcon={<FiChevronDown />}
                     variant="unstyled"
                   >
-                    <span className="font-bold">{item.label}</span>
+                    <span className="font-bold ">{item.label}</span>
                   </MenuButton>
                   <MenuList className="bg-white text-dark-purple">
                     <MenuGroup title={item.label}>
@@ -186,7 +186,7 @@ const Navbar = () => {
           <Text
             fontSize="sm"
             fontWeight="bold"
-            className="bg-red-500 cursor-pointer text-white p-2 rounded-md"
+            className="bg-[#eebbc3] cursor-pointer text-[#232946] p-2 rounded-md"
             onClick={() => {
               localStorage.removeItem("Stoken");
               navigate("/signin");
@@ -216,9 +216,7 @@ const Navbar = () => {
                     <MenuList>
                       <MenuGroup title={item.label}>
                         {item.subMenu.map((subItem) => (
-                          <MenuItem
-                            onClick={() =>navigate(subItem.href)}
-                          >
+                          <MenuItem onClick={() => navigate(subItem.href)}>
                             {subItem.label}
                           </MenuItem>
                         ))}
@@ -226,10 +224,7 @@ const Navbar = () => {
                     </MenuList>
                   </Menu>
                 ) : (
-                  <Button
-                    onClick={() => navigate(item.href)}
-                    variant="ghost"
-                  >
+                  <Button onClick={() => navigate(item.href)} variant="ghost">
                     {item.label}
                   </Button>
                 )

@@ -177,7 +177,7 @@ const ManageNotes = () => {
   };
 
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
       <div className="bg-dark-purple">
         <Sidebar />
       </div>
@@ -248,8 +248,8 @@ const ManageNotes = () => {
                   <Td className="border">{note.subject.name}</Td>
                   <Td className="border">{note.branch.name}</Td>
                   <Td className="border">{note.board.name}</Td>
-                  <Td className="border flex justify-center">
-                    <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
+                  <Td className="border flex justify-start">
+                    <button className="bg-sky-900 font-semibold text-white m-2 w-22 p-2 rounded-xl">
                       {" "}
                       <a
                         href={`${import.meta.env.VITE_BASE_PATH}${
@@ -264,14 +264,14 @@ const ManageNotes = () => {
                       <>
                         {note.listed ? (
                           <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                            className="bg-gray-600 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                             onClick={() => handleListUnlist(note._id)}
                           >
                             UNLIST
                           </button>
                         ) : (
                           <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                            className="bg-blue-400 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                             onClick={() => handleListUnlist(note._id)}
                           >
                             LIST
@@ -282,7 +282,7 @@ const ManageNotes = () => {
 
                     {!note.approved && !note.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-green-500 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                         onClick={() => handleApprove(note._id)}
                       >
                         APPROVE
@@ -290,14 +290,14 @@ const ManageNotes = () => {
                     ) : null}
                     {!note.approved && !note.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-red-500 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                         onClick={() => handleOpen(note._id)}
                       >
                         REJECT
                       </button>
                     ) : null}
                     {/* <button
-                      className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                      className="bg-sky-900 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                       onClick={() => handleEdit(note)}
                     >
                       EDIT

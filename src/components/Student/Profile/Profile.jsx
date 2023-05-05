@@ -5,12 +5,14 @@ import UpdateProfile from './UpdateProfile';
 import { useSelector } from 'react-redux';
 import { BiRupee } from "react-icons/bi";
 import axiosInstance from "../../../axios";
-import { Button } from '@chakra-ui/react';
+import { Button, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../Footer/Footer';
 
 
 
 const Profile = () => {
+  const toast = useToast()
   const {student} = useSelector((state) => state.student);
   const token = localStorage.getItem("Stoken");
   const [notesCount, setNotesCount] = useState('')
@@ -37,13 +39,32 @@ const Profile = () => {
     axiosInstance("Stoken")
       .get(`get-upload-counts?id=${student._id}`)
       .then((response) => {
-        
-        setNotesCount(response.data.noteCounts);
-        setVideosCount(response.data.videoCounts);
-        setQuestionsCount(response.data.questionCounts);
+        if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+           setNotesCount(response.data.noteCounts);
+           setVideosCount(response.data.videoCounts);
+           setQuestionsCount(response.data.questionCounts);
+        }
+    
       })
       .catch((error) => {
         console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -62,6 +83,16 @@ const Profile = () => {
             duration: res.data.plan.duration,
           });
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -71,10 +102,10 @@ const Profile = () => {
 
    
   return (
-    <div className="h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
+    <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
       <Navbar />
-      <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20 uppercase">
+      <div className=" h-72">
+        <h1 className="text-center font-extrabold text-[#232946] shadow-inner font-sans text-4xl md:pt-32 pt-20 uppercase">
           HAPPY LEARNING {student.name}
         </h1>
       </div>
@@ -137,7 +168,7 @@ const Profile = () => {
             </div>{" "}
             <div className="space-x-8 flex justify-center mt-32 md:mt-0 md:justify-center">
               {plan.name ? (
-                <div className="text-white p-5 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+                <div className="text-white p-5 uppercase rounded bg-[#d4939d] shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
                   <p className="text-center">subscribed to </p>
                   <p className="text-center">{plan.name} plan</p>
                   <p className="text-center">
@@ -157,7 +188,11 @@ const Profile = () => {
                   <p className="text-center">
                     you are not subscribed to any plan
                   </p>
-                  <Button colorScheme="linkedin" className="mx-auto mt-3 uppercase" onClick={()=>navigate('/plans')}>
+                  <Button
+                    // colorScheme="linkedin"
+                    className="mx-auto bg-[#eebbc3] text-[#232946] mt-3 uppercase"
+                    onClick={() => navigate("/plans")}
+                  >
                     Buy One
                   </Button>
                 </div>
@@ -184,6 +219,9 @@ const Profile = () => {
             <UpdateProfile />
           </div>
         </div>
+      </div>
+      <div>
+        <Footer />
       </div>
     </div>
   );

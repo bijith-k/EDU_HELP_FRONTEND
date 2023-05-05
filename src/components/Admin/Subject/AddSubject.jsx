@@ -112,8 +112,8 @@ const AddSubject = () => {
       });
   };
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
-      <div className="">
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
+      <div className="bg-dark-purple">
         <Sidebar />
       </div>
       <div className="w-full mt-10">

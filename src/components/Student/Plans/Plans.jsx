@@ -7,6 +7,7 @@ import { Spinner, useToast } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
+import Footer from "../Footer/Footer";
 
 const Plans = () => {
   const { student } = useSelector((state) => state.student);
@@ -24,7 +25,29 @@ const Plans = () => {
     axiosInstance("Stoken")
       .get(`get-plans`)
       .then((res) => {
-        setPlans(res.data);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setPlans(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -35,6 +58,16 @@ const Plans = () => {
         if (res.data.subscribed) {
           setIsSubscribed(true);
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -64,7 +97,7 @@ const Plans = () => {
           if (data.verified) {
             setLoading(false);
             setSelectedPlan(null);
-            navigate("/tutors");
+            navigate("/");
           } else {
             alert("error during payment");
           }
@@ -102,17 +135,22 @@ const Plans = () => {
 
       initPayment(data.data, plan);
     } catch (error) {
-      console.log(error);
+     
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      
     }
   };
 
-  //  const isActive =
-  //    response.data.student.subscription &&
-  //    Date.now() < new Date(response.data.student.subscription.expiredAt);
-  //  console.log(isActive, "activvvvvvvvv");
+ 
 
   return (
-    <div className="min-h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
+    <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
       <Navbar />
       <Header />
       <HeadTitle title={"available plans"} />
@@ -130,23 +168,23 @@ const Plans = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 p-3 h-full">
         {plans.map((plan, index) => (
           <div
-            className="bg-dark-purple hover:opacity-90 text-white hover:scale-105 transition duration-300  w-full rounded-xl mt-5 p-10 h-fit text-center"
+            className="bg-[#fffffe] border-b-4 border-r-4 border-[#d4939d] hover:opacity-90 text-[#232946] hover:scale-105 transition duration-300  w-full rounded-xl mt-5 p-10 h-fit text-center"
             key={index}
           >
             <p className="font-black text-2xl uppercase border-b w-fit mx-auto">
               {plan.plan} plan
             </p>
-            <p className="font-serif text-lg mt-8">
+            <p className="font-sans font-bold text-lg mt-8">
               Chat with tutors and clear <br /> your doubts
             </p>
-            <p className="font-serif text-lg mt-4">
+            <p className="font-sans font-bold text-lg mt-4">
               Exclusive notes <br /> uploaded by tutors
             </p>
             {/* <p>exclusive notes from tutors</p> */}
-            <p className="font-serif text-lg mt-3">
+            <p className="font-sans font-medium text-lg mt-3">
               Plan validity : {plan.duration} Month
             </p>
-            <p className="font-serif text-lg mt-3">
+            <p className="font-sans font-medium text-lg mt-3">
               Price : <FaRupeeSign className="inline" /> {plan.price}{" "}
             </p>
             {loading ? (
@@ -158,13 +196,16 @@ const Plans = () => {
                   handlePayment(plan);
                 }}
               >
-                <p className="bg-gray-200 p-2 text-black rounded-3xl uppercase font-bold mt-5 w-2/3 hover:bg-slate-500 hover:text-white mx-auto cursor-pointer">
+                <p className="bg-[#232946] p-2 text-[#b8c1ec] rounded-3xl uppercase font-bold mt-5 w-2/3 hover:bg-slate-500 hover:text-white mx-auto cursor-pointer">
                   buy now
                 </p>
               </span>
             )}
           </div>
         ))}
+      </div>
+      <div className="mt-5">
+        <Footer />
       </div>
     </div>
   );

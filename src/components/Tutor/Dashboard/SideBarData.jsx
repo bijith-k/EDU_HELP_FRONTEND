@@ -1,53 +1,55 @@
 import React from "react";
-import * as FaIcons from "react-icons/fa";
-import * as AiIcons from "react-icons/ai";
-import * as IoIcons from "react-icons/io";
+import { FaChartLine, FaNewspaper, FaStickyNote, FaUserEdit } from "react-icons/fa";
+import {AiFillHome, AiFillSetting} from "react-icons/ai";
+import {MdDashboard, MdVideoLibrary} from "react-icons/md";
+import { IoMdCloudUpload, IoMdSettings } from "react-icons/io";
+import { BsCalendar2EventFill, BsChatLeftTextFill } from "react-icons/bs";
 
 export const SideBarData = [
   {
     title: "DASHBOARD",
     path: "/tutor/dashboard",
-    icon: <AiIcons.AiFillHome />,
+    icon: MdDashboard,
   },
   {
     title: "UPDATE PROFILE",
     path: "/tutor/edit-profile",
-    icon: <AiIcons.AiFillHome />,
+    icon: FaUserEdit,
   },
   {
     title: "YOUR UPLOADS",
     path: "/tutor/uploads",
-    icon: <AiIcons.AiFillHome />,
+    icon: IoMdCloudUpload,
   },
   {
     title: "CHAT",
     path: "/tutor/chat",
-    icon: <AiIcons.AiFillHome />,
+    icon: BsChatLeftTextFill,
   },
   {
     title: "UPLOAD NOTES",
     path: "/tutor/upload-notes",
-    icon: <AiIcons.AiFillHome />,
+    icon: FaStickyNote,
   },
   {
     title: "UPLOAD VIDEOS",
     path: "/tutor/upload-videos",
-    icon: <AiIcons.AiFillHome />,
+    icon: MdVideoLibrary,
   },
   {
     title: "UPLOAD QUESTIONS",
     path: "/tutor/upload-questions",
-    icon: <AiIcons.AiFillHome />,
+    icon: FaNewspaper,
   },
   {
     title: "ADD EVENTS",
     path: "/tutor/add-events",
-    icon: <AiIcons.AiFillHome />,
+    icon: BsCalendar2EventFill,
   },
   {
     title: "SETTINGS",
     path: "/tutor/settings",
-    icon: <AiIcons.AiFillHome />,
+    icon: AiFillSetting,
   },
   // {
   //   title: "FEE DETAILS",

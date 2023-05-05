@@ -1,10 +1,24 @@
-import React from 'react'
-import Plans from '../../components/Student/Plans/Plans'
+import { Skeleton, Stack } from "@chakra-ui/react";
+import React, { Suspense, lazy } from "react";
+const Plans = lazy(()=>import("../../components/Student/Plans/Plans"))
 
 const PlansPage = () => {
   return (
-    <Plans />
-  )
-}
+    <>
+      <Suspense
+        fallback={
+          <Stack className="max-w-screen-2xl mx-auto min-h-screen">
+            <Skeleton height="80px" />
+            <Skeleton height="288px" />
+            <Skeleton height="50px" />
+            <Skeleton className="h-screen" />
+          </Stack>
+        }
+      >
+        <Plans />
+      </Suspense>
+    </>
+  );
+};
 
-export default PlansPage
+export default PlansPage;

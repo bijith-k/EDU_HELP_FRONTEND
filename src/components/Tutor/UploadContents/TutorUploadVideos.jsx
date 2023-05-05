@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../Dashboard/Navbar";
 import { useToast } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
+import Footer from "../Footer/Footer";
 
 const TutorUploadVideos = () => {
   const navigate = useNavigate();
@@ -154,10 +155,10 @@ const TutorUploadVideos = () => {
       });
   };
   return (
-    <div className="bg-slate-400 min-h-screen w-full">
+    <div className="bg-gray-400 min-h-screen max-w-screen-2xl mx-auto w-full">
       <Navbar />
       <div className="overflow-hidden">
-        <div className="bg-gray-500">
+        <div className="bg-gray-600">
           <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
             upload video
           </h1>
@@ -284,11 +285,14 @@ const TutorUploadVideos = () => {
           </p>
           <button
             type="submit"
-            className="bg-blue-900 p-3 font-semibold text-white rounded-lg mt-2"
+            className="bg-gray-600 p-3 font-semibold text-white rounded-lg mt-2"
           >
             UPLOAD VIDEO
           </button>
         </form>
+      </div>
+      <div className="mt-5">
+        <Footer />
       </div>
     </div>
   );

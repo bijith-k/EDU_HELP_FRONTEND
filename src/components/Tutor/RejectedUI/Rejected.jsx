@@ -9,7 +9,7 @@ const Rejected = () => {
 
 
   return (
-    <div className="bg-green-200 h-screen flex flex-col">
+    <div className="bg-green-200 min-h-screen max-w-screen-2xl mx-auto flex flex-col">
       <div className="bg-red-600">
         <p className="text-center font-semibold uppercase text-xl p-10 text-white">
           request is rejected
@@ -19,7 +19,9 @@ const Rejected = () => {
         <p className="font-bold text-2xl text-center">
           Your request to register as a tutor at EDU-HELP is rejected due to
         </p>
-        <p className="font-bold text-2xl text-center text-white">{tutor.rejection_reason}</p>
+        <p className="font-bold text-2xl text-center text-white">
+          {tutor.rejection_reason}
+        </p>
         <button
           className="mt-10 bg-red-600 text-white p-3 rounded-md"
           onClick={() => {

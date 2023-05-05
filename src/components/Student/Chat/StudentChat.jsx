@@ -2,63 +2,33 @@ import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../Home/Navbar";
 import Conversation from "./Conversation";
 import Message from "./Message";
-import ChatOnline from "./ChatOnline";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios";
 import { io } from "socket.io-client";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
-
-// const ENDPOINT = "http://localhost:4000";
-// var socket,selectedChatCompare;
+import user from "../../../assets/user.png";
+import Footer from "../Footer/Footer";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
 
 const StudentChat = () => {
-  const {student} = useSelector((state) => state.student);
-
+  const { student } = useSelector((state) => state.student);
+  const navigate = useNavigate();
+  const toast = useToast();
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [tutor, setTutor] = useState([]);
 
   const socket = useRef();
   const scrollRef = useRef();
 
-  const token = localStorage.getItem("Stoken");
-
-  // const [socketConnected, setSocketConnected] = useState(false)
-
-  // useEffect(()=>{
-  //   socket = io(ENDPOINT)
-  //   socket.emit("setup",student)
-  //   socket.on("connection",()=>{
-  //       setSocketConnected(true)
-  //   })
-  // },[])
-   
   useEffect(() => {
-    socket.current = io("ws://localhost:4000");
-
-    socket.current.on("getMessage", data => {
-      setArrivalMessage({
-        sender: data.senderId,
-        text: data.text,
-        createdAt: Date.now(),
-      });
-    });
-  }, []);
-
-  useEffect(() => {
-    arrivalMessage &&
-      currentChat?.members.includes(arrivalMessage.sender) &&
-      setMessages((prev) => [...prev, arrivalMessage]);
-  }, [arrivalMessage, currentChat]);
-
-  useEffect(() => {
-    socket.current.emit("addUser", student._id);
-    socket.current.on("getUsers", (users) => {
-      console.log(users);
-    });
+    socket.current = io(`${import.meta.env.VITE_BASE_PATH}`);
+    socket.current.emit("add-user", student._id);
   }, [student]);
 
   useEffect(() => {
@@ -67,9 +37,28 @@ const StudentChat = () => {
         const res = await axiosInstance("Stoken").get(
           `get-conversation/${student._id}`
         );
-        setConversations(res.data);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setConversations(res.data);
+        }
       } catch (error) {
         console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       }
     };
     getConversations();
@@ -81,29 +70,25 @@ const StudentChat = () => {
         const res = await axiosInstance("Stoken").get(
           `get-message/${currentChat?._id}`
         );
-        setMessages(res.data);
-        // socket.emit("join chat",currentChat._id)
+        if (res.data.status == false) {
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setMessages(res.data);
+        }
       } catch (error) {
         console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       }
     };
     getMessages();
-    //  selectedChatCompare = currentChat
   }, [currentChat]);
-
-  // useEffect(()=>{
-  //   socket.on("message received", (newMessage) => {
-  //     console.log(newMessage);
-  //     if (
-  //       !selectedChatCompare ||
-  //       selectedChatCompare._id !== newMessage.sender
-  //     ) {
-  //       //give notification
-  //     } else {
-  //       setMessages({...messages,newMessage})
-  //     }
-  //   });
-  // })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,15 +101,16 @@ const StudentChat = () => {
     const receiverId = currentChat.members.find(
       (member) => member !== student._id
     );
-    socket.current.emit("sendMessage", {
-      senderId: student._id,
+
+    socket.current.emit("send-msg", {
       receiverId,
+      senderId: student._id,
       text: newMessage,
     });
 
     try {
       const res = await axiosInstance("Stoken").post(`new-message`, message);
-      // socket.emit('new message',res.data)
+
       setMessages([...messages, res.data]);
       setNewMessage("");
     } catch (error) {
@@ -133,57 +119,128 @@ const StudentChat = () => {
   };
 
   useEffect(() => {
+    if (socket.current) {
+      socket.current.on("msg-receive", (data) => {
+        setArrivalMessage({
+          sender: data.senderId,
+          text: data.text,
+          createdAt: Date.now(),
+        });
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const tutorId = currentChat?.members.find((m) => m !== student._id);
+
+    const getTutors = async () => {
+      try {
+        if (tutorId) {
+          const res = await axiosInstance("Stoken").get(
+            `get-tutors?id=${tutorId}`
+          );
+          if (res.data.status == false) {
+            localStorage.removeItem("Stoken");
+            navigate("/signin");
+          } else {
+            setTutor(res.data);
+          }
+        }
+      } catch (error) {
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+    };
+    getTutors();
+  }, [currentChat]);
+
+  useEffect(() => {
+    arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.sender) &&
+      setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat]);
+
+  useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <div className="min-h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
+    <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
       <Navbar />
       <Header />
       <HeadTitle title={"chats"} />
-      <div className=" pb-16 flex w-full">
-        <div className="w-3/12 ">
-          <div className="chatMenuWrapper p-3  min-h-full">
-            <input
-              placeholder="Search tutors"
-              className="w-full bg-transparent py-3 border-slate-900 border-b-2"
-            />
-            <p className="font-bold my-3 text-center text-lg">
-              Recent conversations
-            </p>
-            {conversations.map((c) => (
-              <div onClick={() => setCurrentChat(c)}>
-                <Conversation conversation={c} currentUser={student} />
-              </div>
-            ))}
-          </div>
+      <div className="flex-grow  md:h-96 flex flex-col md:flex-row">
+        <div className="flex p-3 flex-col  bg-slate-300 overflow-y-auto scrollbar-track-transparent scrollbar-thin scrollbar-thumb-slate-700 ">
+          <p className="font-bold p-3 border-b-2 text-center text-lg">
+            Recent conversations
+          </p>
+          {conversations.map((c, index) => (
+            <div onClick={() => setCurrentChat(c)} key={index}>
+              <Conversation conversation={c} currentUser={student} />
+            </div>
+          ))}
         </div>
-        <div className="flex-1">
-          <div className="flex flex-col justify-between" id="chatBoxWrapper">
+
+        <div className="flex-grow ">
+          <div
+            className="flex flex-col h-full  border-l-0 md:border-l-4 border-0"
+            id="chatBoxWrapper"
+          >
             {currentChat ? (
               <>
-                <div id="chatbox top" className="p-3 h-96 overflow-y-scroll">
+                <div className="w-full h-16 bg-[#19376D] flex flex-row items-center justify-start">
+                  <div className="mx-4  border-white border-2 rounded-full">
+                    <img
+                      src={
+                        tutor[0]?.profilePicture
+                          ? `${import.meta.env.VITE_BASE_PATH}${
+                              tutor[0].profilePicture
+                            }`
+                          : user
+                      }
+                      className="rounded-full w-10 h-10 "
+                      alt="img"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-lg text-white">
+                      {tutor[0]?.name}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  id="chatbox top"
+                  className="p-3 overflow-x-hidden h-96 flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
+                >
                   {messages.map((message, index) => (
                     <div key={index} ref={scrollRef}>
                       <Message
                         message={message}
+                        sendBy={
+                          message.sender != student._id ? message.sender : null
+                        }
                         own={message.sender === student._id}
                       />
                     </div>
                   ))}
                 </div>
                 <div
-                  className="mt-1 flex items-center justify-between"
+                  className="mt-1 w-full flex items-center justify-center"
                   id="chatboxbottom"
                 >
                   <textarea
                     placeholder="Write something"
-                    className="w-4/5 h-24 p-3"
+                    className="w-10/12 h-12 p-3 scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300"
                     onChange={(e) => setNewMessage(e.target.value)}
                     value={newMessage}
                   ></textarea>
                   <button
-                    className="w-16 h-10 border-none rounded-md cursor-pointer bg-teal-800 text-white"
+                    className="w-2/12 h-12 border-none cursor-pointer bg-teal-800 text-white"
                     onClick={handleSubmit}
                   >
                     Send
@@ -191,15 +248,15 @@ const StudentChat = () => {
                 </div>
               </>
             ) : (
-              <span className="">Open a conversation to chat a chat</span>
+              <span className="text-center font-bold text-xl my-20">
+                Open a conversation to start a chat
+              </span>
             )}
           </div>
         </div>
-        <div className="w-3/12">
-          <div className=" p-3  min-h-full">
-            <ChatOnline />
-          </div>
-        </div>
+      </div>
+      <div className="mt-1">
+        <Footer />
       </div>
     </div>
   );

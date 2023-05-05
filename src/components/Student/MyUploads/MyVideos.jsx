@@ -101,14 +101,27 @@ const handleSelectedSubject = (data) => {
     axiosInstance("Stoken")
       .put(`videos-private-public?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+           toast({
+             title: res.data.message,
+             status: "success",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
+           setChange(res.data.message);
+        }
+       
       })
       .catch((err) => {
         console.log(err);
@@ -127,14 +140,27 @@ const handleSelectedSubject = (data) => {
     axiosInstance("Stoken")
       .delete(`delete-videos?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+         if (res.data.status == false) {
+           toast({
+             title: res.data.message,
+             status: "error",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
+           localStorage.removeItem("Stoken");
+           navigate("/signin");
+         } else {
+           toast({
+             title: res.data.message,
+             status: "success",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
+           setChange(res.data.message);
+         }
+        
       })
       .catch((err) => {
         console.log(err);
@@ -282,7 +308,7 @@ const handleSelectedSubject = (data) => {
             )}
           </div>
         ) : (
-          <div>
+          <div className="h-40">
             <p className="text-center font-bold text-lg">
               You haven't uploaded any videos
             </p>

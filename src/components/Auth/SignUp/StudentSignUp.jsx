@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import ragam from "../../../assets/ragam.jpeg";
-import { useToast } from "@chakra-ui/react";
+import logo from "../../../assets/logoWhite.png";
+import { Button, useToast } from "@chakra-ui/react";
 
 const initialValues = {
   name: "",
@@ -128,8 +128,8 @@ const StudentSignUp = () => {
   }, []);
 
   return (
-    <div className="grid sm:grid-cols-6">
-      <div className="sm:col-span-2 bg-gray-700 md:min-h-screen flex flex-col justify-evenly   items-center text-white font-sans uppercase">
+    <div className="bg-[#232946] max-w-screen-2xl mx-auto min-h-screen flex flex-col">
+      {/* <div className="sm:col-span-2 bg-gray-700 md:min-h-screen flex flex-col justify-evenly   items-center text-white font-sans uppercase">
         <div>
           <img src={ragam} className="w-32 object-cover md:-mt-14" alt="logo" />
         </div>
@@ -143,190 +143,355 @@ const StudentSignUp = () => {
             REGISTER TO EXPLORE
           </p>
         </div>
+      </div> */}
+      <div className="text-white mt-5 max-w-sm mx-auto p-3 rounded-2xl">
+        <img src={logo} className="w-20 h-20 mx-auto mb-4" alt="logo" />
+        <p className="font-bold text-3xl">WELCOME TO EDU-HELP</p>
+        <p className="uppercase text-center font-medium">register to explore</p>
       </div>
-      <div className="sm:col-span-4   bg-blue-300 min-h-screen flex justify-center items-center flex-col">
-        <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
-          <div className="bg-white px-6 py-8 mt-10 rounded-2xl shadow-md text-black w-full">
-            <form action="" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-                name="name"
-                placeholder="Name"
-                // onChange={handleChange}
-                value={values.name}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.name && touched.name ? (
-                <p className="form-error text-red-600">{errors.name}</p>
-              ) : null}
-              <input
-                type="email"
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-                name="email"
-                placeholder="Email"
-                // onChange={handleChange}
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.email && touched.email ? (
-                <p className="form-error text-red-600">{errors.email}</p>
-              ) : null}
-
-              <input
-                type="number"
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-                name="phone"
-                placeholder="Mobile Number"
-                // onChange={handleChange}
-                value={values.phone}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.phone && touched.phone ? (
-                <p className="form-error text-red-600">{errors.phone}</p>
-              ) : null}
-
-              <select
-                name="board"
-                value={selectedBoard}
-                onChange={(e) => {
-                  setSelectedBoard(e.target.value);
-                  setBoardError(null);
-                }}
-                // onBlur={handleBlur}
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-              >
-                <option
-                  value=""
+      {/* <div className="sm:col-span-4   bg-blue-300 min-h-screen flex justify-center items-center flex-col"> */}
+      <div className="container max-w-2xl mx-auto flex flex-col items-center justify-center px-2">
+        <div className="bg-white px-6 py-8 mt-6 rounded-2xl shadow-md text-black w-full">
+          <form action="" onSubmit={handleSubmit}>
+            <div className="md:flex md:justify-between md:mb-4">
+              <div className="md:w-1/2 md:pr-2">
+                <input
+                  type="text"
                   className="block border border-grey-light w-full p-3 rounded mb-4"
-                  disabled
-                >
-                  Select Board/University
-                </option>
-                {boards.map((board) => (
-                  <option
-                    key={board._id}
-                    className="block border border-grey-light w-full p-3 rounded mb-4"
-                    value={board._id}
-                  >
-                    {board.name}
-                  </option>
-                ))}
-              </select>
-
-              {boardError ? (
-                <p className="form-error text-red-600">{boardError}</p>
-              ) : null}
-
-              <select
-                name="branch"
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-                value={selectedBranch}
-                onChange={(e) => {
-                  setSelectedBranch(e.target.value);
-                  setBranchError(null);
-                }}
-                // onBlur={handleBlur}
-              >
-                <option
-                  value=""
+                  name="name"
+                  placeholder="Name"
+                  // onChange={handleChange}
+                  value={values.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.name && touched.name ? (
+                  <p className="form-error text-red-600">{errors.name}</p>
+                ) : null}
+              </div>
+              <div className="md:w-1/2 md:pr-2">
+                <input
+                  type="email"
                   className="block border border-grey-light w-full p-3 rounded mb-4"
-                  disabled
+                  name="email"
+                  placeholder="Email"
+                  // onChange={handleChange}
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.email && touched.email ? (
+                  <p className="form-error text-red-600">{errors.email}</p>
+                ) : null}
+              </div>
+            </div>
+            <div className="md:flex md:justify-between md:mb-4">
+              <div className="md:w-1/2 md:pr-2">
+                <input
+                  type="number"
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
+                  name="phone"
+                  placeholder="Mobile Number"
+                  // onChange={handleChange}
+                  value={values.phone}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.phone && touched.phone ? (
+                  <p className="form-error text-red-600">{errors.phone}</p>
+                ) : null}
+              </div>
+              <div className="md:w-1/2 md:pr-2">
+                <input
+                  type="text"
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
+                  name="school"
+                  placeholder="School or College"
+                  // onChange={handleChange}
+                  value={values.school}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.school && touched.school ? (
+                  <p className="form-error text-red-600">{errors.school}</p>
+                ) : null}
+              </div>
+            </div>
+            <div className="md:flex md:justify-between md:mb-4">
+              <div className="md:w-1/2 md:pr-2">
+                <select
+                  name="board"
+                  value={selectedBoard}
+                  onChange={(e) => {
+                    setSelectedBoard(e.target.value);
+                    setBoardError(null);
+                  }}
+                  // onBlur={handleBlur}
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
                 >
-                  Select Class/Branch
-                </option>
-                {branches.map((branch) => (
                   <option
-                    value={branch._id}
-                    key={branch._id}
+                    value=""
                     className="block border border-grey-light w-full p-3 rounded mb-4"
+                    disabled
                   >
-                    {branch.name}
+                    Select Board/University
                   </option>
-                ))}
-              </select>
-              {branchError ? (
-                <p className="form-error text-red-600">{branchError}</p>
-              ) : null}
+                  {boards.map((board) => (
+                    <option
+                      key={board._id}
+                      className="block border border-grey-light w-full p-3 rounded mb-4"
+                      value={board._id}
+                    >
+                      {board.name}
+                    </option>
+                  ))}
+                </select>
 
-              <input
-                type="text"
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-                name="school"
-                placeholder="School or College"
-                // onChange={handleChange}
-                value={values.school}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.school && touched.school ? (
-                <p className="form-error text-red-600">{errors.school}</p>
-              ) : null}
-
-              <input
-                type="text"
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-                name="place"
-                placeholder="Place"
-                // onChange={handleChange}
-                value={values.place}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.place && touched.place ? (
-                <p className="form-error text-red-600">{errors.place}</p>
-              ) : null}
-
-              <input
-                type="password"
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-                name="password"
-                placeholder="Password"
-                // onChange={handleChange}
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.password && touched.password ? (
-                <p className="form-error text-red-600">{errors.password}</p>
-              ) : null}
-              {isLoading ? (
-                <p>Loading...</p>
-              ) : (
-                <button
-                  type="submit"
-                  className="w-full text-center py-3 rounded bg-green-500 text-white hover:bg-green-300 focus:outline-none my-1"
+                {boardError ? (
+                  <p className="form-error text-red-600">{boardError}</p>
+                ) : null}
+              </div>
+              <div className="md:w-1/2 md:pr-2">
+                <select
+                  name="branch"
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
+                  value={selectedBranch}
+                  onChange={(e) => {
+                    setSelectedBranch(e.target.value);
+                    setBranchError(null);
+                  }}
+                  // onBlur={handleBlur}
                 >
-                  Create Account
-                </button>
-              )}
-            </form>
-          </div>
+                  <option
+                    value=""
+                    className="block border border-grey-light w-full p-3 rounded mb-4"
+                    disabled
+                  >
+                    Select Class/Branch
+                  </option>
+                  {branches.map((branch) => (
+                    <option
+                      value={branch._id}
+                      key={branch._id}
+                      className="block border border-grey-light w-full p-3 rounded mb-4"
+                    >
+                      {branch.name}
+                    </option>
+                  ))}
+                </select>
+                {branchError ? (
+                  <p className="form-error text-red-600">{branchError}</p>
+                ) : null}
+              </div>
+            </div>
+            <div className="md:flex md:justify-between md:mb-4">
+              <div className="md:w-1/2 md:pr-2">
+                <input
+                  type="text"
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
+                  name="place"
+                  placeholder="Place"
+                  // onChange={handleChange}
+                  value={values.place}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.place && touched.place ? (
+                  <p className="form-error text-red-600">{errors.place}</p>
+                ) : null}
+              </div>
+              <div className="md:w-1/2 md:pr-2">
+                <input
+                  type="password"
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
+                  name="password"
+                  placeholder="Password"
+                  // onChange={handleChange}
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.password && touched.password ? (
+                  <p className="form-error text-red-600">{errors.password}</p>
+                ) : null}
+              </div>
+            </div>
+            {/* <input
+              type="text"
+              className="block border border-grey-light w-full p-3 rounded mb-4"
+              name="name"
+              placeholder="Name"
+              // onChange={handleChange}
+              value={values.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            /> */}
+            {/* {errors.name && touched.name ? (
+              <p className="form-error text-red-600">{errors.name}</p>
+            ) : null} */}
+            {/* <input
+              type="email"
+              className="block border border-grey-light w-full p-3 rounded mb-4"
+              name="email"
+              placeholder="Email"
+              // onChange={handleChange}
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            /> */}
+            {/* {errors.email && touched.email ? (
+              <p className="form-error text-red-600">{errors.email}</p>
+            ) : null} */}
 
-          <div className="text-grey-dark mt-6">
-            Already have an account?
-            <a
-              className="no-underline border-b border-white text-yellow"
-              href="/signin"
+            {/* <input
+              type="number"
+              className="block border border-grey-light w-full p-3 rounded mb-4"
+              name="phone"
+              placeholder="Mobile Number"
+              // onChange={handleChange}
+              value={values.phone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.phone && touched.phone ? (
+              <p className="form-error text-red-600">{errors.phone}</p>
+            ) : null} */}
+
+            {/* <select
+              name="board"
+              value={selectedBoard}
+              onChange={(e) => {
+                setSelectedBoard(e.target.value);
+                setBoardError(null);
+              }}
+              // onBlur={handleBlur}
+              className="block border border-grey-light w-full p-3 rounded mb-4"
             >
-              Log in
-            </a>
-          </div>
-          <div className="text-grey-dark mb-5">
-            Register as a tutor?
-            <a
-              className="no-underline border-b border-white text-yellow"
-              href="/tutor/signup"
+              <option
+                value=""
+                className="block border border-grey-light w-full p-3 rounded mb-4"
+                disabled
+              >
+                Select Board/University
+              </option>
+              {boards.map((board) => (
+                <option
+                  key={board._id}
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
+                  value={board._id}
+                >
+                  {board.name}
+                </option>
+              ))}
+            </select>
+
+            {boardError ? (
+              <p className="form-error text-red-600">{boardError}</p>
+            ) : null} */}
+
+            {/* <select
+              name="branch"
+              className="block border border-grey-light w-full p-3 rounded mb-4"
+              value={selectedBranch}
+              onChange={(e) => {
+                setSelectedBranch(e.target.value);
+                setBranchError(null);
+              }}
+              // onBlur={handleBlur}
             >
-              Register
-            </a>
-          </div>
+              <option
+                value=""
+                className="block border border-grey-light w-full p-3 rounded mb-4"
+                disabled
+              >
+                Select Class/Branch
+              </option>
+              {branches.map((branch) => (
+                <option
+                  value={branch._id}
+                  key={branch._id}
+                  className="block border border-grey-light w-full p-3 rounded mb-4"
+                >
+                  {branch.name}
+                </option>
+              ))}
+            </select>
+            {branchError ? (
+              <p className="form-error text-red-600">{branchError}</p>
+            ) : null} */}
+
+            {/* <input
+              type="text"
+              className="block border border-grey-light w-full p-3 rounded mb-4"
+              name="school"
+              placeholder="School or College"
+              // onChange={handleChange}
+              value={values.school}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.school && touched.school ? (
+              <p className="form-error text-red-600">{errors.school}</p>
+            ) : null} */}
+
+            {/* <input
+              type="text"
+              className="block border border-grey-light w-full p-3 rounded mb-4"
+              name="place"
+              placeholder="Place"
+              // onChange={handleChange}
+              value={values.place}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.place && touched.place ? (
+              <p className="form-error text-red-600">{errors.place}</p>
+            ) : null}
+
+            <input
+              type="password"
+              className="block border border-grey-light w-full p-3 rounded mb-4"
+              name="password"
+              placeholder="Password"
+              // onChange={handleChange}
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.password && touched.password ? (
+              <p className="form-error text-red-600">{errors.password}</p>
+            ) : null} */}
+
+            <Button
+              isLoading={isLoading}
+              type="submit"
+              className="w-full text-center py-3 rounded bg-green-500 text-white hover:bg-green-300 focus:outline-none my-1"
+            >
+              CREATE ACCOUNT
+            </Button>
+          </form>
+        </div>
+
+        <div className="text-white mt-6">
+          Already have an account?
+          <a
+            className="no-underline border-b ml-2 border-white text-yellow"
+            href="/signin"
+          >
+            Log in
+          </a>
+        </div>
+        <div className="text-white mb-5">
+          Register as a tutor?
+          <a
+            className="no-underline border-b ml-2 border-white text-yellow"
+            href="/tutor/signup"
+          >
+            Register
+          </a>
         </div>
       </div>
-       
+      {/* </div> */}
     </div>
   );
 };

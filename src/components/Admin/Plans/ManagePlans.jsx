@@ -58,16 +58,11 @@ const ManagePlans = () => {
 
   const handleEdit = (plan) => {
     localStorage.setItem("planId", plan._id);
-    // dispatch(
-    //   setNoteData({
-    //     note: note,
-    //   })
-    // );
     navigate("/admin/edit-plans");
   };
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
-      <div>
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
+      <div className="bg-dark-purple">
         <Sidebar />
       </div>
       <div className="w-full overflow-clip">
@@ -94,9 +89,9 @@ const ManagePlans = () => {
           </div>
         </div> */}
 
-          <div className="bg-white p-2 rounded-2xl flex">
+          <div className="bg-green-600 text-white p-2 rounded-2xl flex">
             <button
-              className="font-bold text-sky-900"
+              className="font-bold "
               onClick={() => navigate("/admin/add-plans")}
             >
               ADD PLAN
@@ -112,7 +107,7 @@ const ManagePlans = () => {
                 <Th className="p-3 border">Duration(Month)</Th>
                 <Th className="p-3 border">Price</Th>
                 <Th className="p-3 border">Total Users</Th>
-                <Th className="p-3 border">Actions</Th>
+                <Th className="p-3 border text-center">Actions</Th>
               </Tr>
             </Thead>
             <Tbody className="text-center">
@@ -124,28 +119,27 @@ const ManagePlans = () => {
                   <Td className="border">{plan.price}</Td>
                   <Td className="border">{plan.used_by.length}</Td>
                   <Td className="border flex justify-center">
+                    <button
+                      className="bg-yellow-600 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                      onClick={() => handleEdit(plan)}
+                    >
+                      EDIT
+                    </button>
                     {plan.listed ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-gray-600 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                         onClick={() => handleListUnlist(plan._id)}
                       >
                         UNLIST
                       </button>
                     ) : (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-blue-400 font-semibold text-white m-2 w-20 p-2 rounded-xl"
                         onClick={() => handleListUnlist(plan._id)}
                       >
                         LIST
                       </button>
                     )}
-
-                    <button
-                      className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
-                      onClick={() => handleEdit(plan)}
-                    >
-                      EDIT
-                    </button>
                   </Td>
                 </Tr>
               ))}

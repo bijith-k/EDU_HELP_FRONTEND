@@ -1,10 +1,24 @@
-import React from 'react'
-import StudentChat from '../../components/Student/Chat/StudentChat'
+import { Skeleton, Stack } from "@chakra-ui/react";
+import React, { Suspense, lazy } from "react";
+const StudentChat = lazy(()=>import("../../components/Student/Chat/StudentChat"))
 
 const StudentChatPage = () => {
   return (
-    <StudentChat />
-  )
-}
+    <>
+      <Suspense
+        fallback={
+          <Stack className="max-w-screen-2xl mx-auto min-h-screen">
+            <Skeleton height="80px" />
+            <Skeleton height="288px" />
+            <Skeleton height="50px" />
+            <Skeleton className="h-screen" />
+          </Stack>
+        }
+      >
+        <StudentChat />
+      </Suspense>
+    </>
+  );
+};
 
-export default StudentChatPage
+export default StudentChatPage;

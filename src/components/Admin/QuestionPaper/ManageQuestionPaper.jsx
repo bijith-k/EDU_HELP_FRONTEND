@@ -191,8 +191,8 @@ const ManageQuestionPaper = () => {
   // };
 
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
-      <div>
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
+      <div className="bg-dark-purple">
         <Sidebar />
       </div>
 
@@ -251,7 +251,7 @@ const ManageQuestionPaper = () => {
                 >
                   Name of Board
                 </Th>
-                <Th className="p-3 border text-center">Actions</Th>
+                <Th className="p-3 border">Actions</Th>
               </Tr>
             </Thead>
             <Tbody className="text-center">
@@ -262,8 +262,8 @@ const ManageQuestionPaper = () => {
                   <Td className="border">{question.subject.name}</Td>
                   <Td className="border">{question.branch.name}</Td>
                   <Td className="border">{question.board.name}</Td>
-                  <Td className="border flex justify-center">
-                    <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
+                  <Td className="border flex justify-start">
+                    <button className="bg-sky-900 font-semibold text-white m-2 w-22 p-2 rounded-xl">
                       {" "}
                       <a
                         href={`${import.meta.env.VITE_BASE_PATH}${
@@ -278,14 +278,14 @@ const ManageQuestionPaper = () => {
                       <>
                         {question.listed ? (
                           <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                            className="bg-gray-600 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                             onClick={() => handleListUnlist(question._id)}
                           >
                             UNLIST
                           </button>
                         ) : (
                           <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                            className="bg-sky-400 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                             onClick={() => handleListUnlist(question._id)}
                           >
                             LIST
@@ -295,7 +295,7 @@ const ManageQuestionPaper = () => {
                     ) : null}
                     {!question.approved && !question.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-green-500 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                         onClick={() => handleApprove(question._id)}
                       >
                         APPROVE
@@ -304,14 +304,14 @@ const ManageQuestionPaper = () => {
 
                     {!question.approved && !question.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-red-500 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                         onClick={() => handleOpen(question._id)}
                       >
                         REJECT
                       </button>
                     ) : null}
                     {/* <button
-                      className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                      className="bg-sky-900 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                       onClick={() => handleEdit(question)}
                     >
                       EDIT

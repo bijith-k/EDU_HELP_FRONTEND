@@ -17,10 +17,12 @@ import exclusive from "../../../assets/exclusive (1).png";
 import { useSelector } from "react-redux";
 import Pagination from "../../Pagination/Pagination";
 import Search from "../Search/Search";
+import { useNavigate } from "react-router-dom";
 
 const QuestionContent = () => {
   const { student } = useSelector((state) => state.student);
   const toast = useToast();
+  const navigate = useNavigate()
 
   const [questions, setQuestions] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -82,7 +84,14 @@ const QuestionContent = () => {
     axiosInstance("Stoken")
       .get(`get-question-papers?studentId=${student._id}`)
       .then((response) => {
-        setQuestions(response.data);
+        if (response.data.status == false) {
+           
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setQuestions(response.data);
+           
+        }
       });
   }, []);
 
@@ -117,6 +126,16 @@ const QuestionContent = () => {
             isClosable: true,
             position: "top",
           });
+        } else if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
         }
       })
       .catch((error) => {
@@ -217,7 +236,7 @@ const QuestionContent = () => {
             )}
           </div>
         ) : (
-          <div>
+          <div className="h-40">
             {" "}
             <p className="text-center font-bold text-lg">
               No question papers are there to display

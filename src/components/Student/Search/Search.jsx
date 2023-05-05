@@ -37,7 +37,7 @@ const Search = ({searchQueryData,selectedSubjectData}) => {
           />
            
         </div>
-        <div>
+        <div className=" md:-mt-5">
           {/* filter */}
           <FormControl className="w-56">
             <FormLabel id="demo-simple-select-label">Subject</FormLabel>

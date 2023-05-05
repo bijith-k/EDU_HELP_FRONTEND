@@ -47,9 +47,23 @@ const UpdateProfile = () => {
     axiosInstance("Stoken")
       .get(`boards`)
       .then((res) => {
-        setBoards(res.data.boards);
+        if (res.data.status == false) {
+          
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+         setBoards(res.data.boards);
+        }
+        
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {console.error(err)
+      toast({
+        title: err.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });});
   }, []);
 
   useEffect(() => {

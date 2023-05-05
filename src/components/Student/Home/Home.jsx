@@ -4,13 +4,16 @@ import Navbar from "./Navbar";
 import school from "../../../assets/school.png";
 import ragam from "../../../assets/ragam.jpeg";
 import news from "../../../assets/news.jpg";
-import Footer from "./Footer";
+
 import { useDispatch, useSelector } from "react-redux";
 import { setStudent } from "../../../features/studentSlice";
 import axiosInstance from "../../../axios";
 import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
+import { useToast } from "@chakra-ui/react";
 
 const Home = () => {
+  const toast = useToast()
   const { student } = useSelector((state) => state.student);
   const [event, setEvent] = useState([])
 
@@ -29,27 +32,50 @@ console.log(event)
     axiosInstance("Stoken")
       .get(`get-events`)
       .then((response) => {
-        setEvent(response.data[1])
+        if(response.data.status==false){
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem('Stoken')
+          navigate('/signin')
+        }else{
+            setEvent(response.data[1]);
+        }
+        
       })
       .catch((err) => {
         console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
   
 
   return (
-    <div className="h-screen w-full bg-slate-300 pt-16 overflow-x-hidden">
+    <div className="h-screen max-w-screen-2xl bg-[#d4d8f0] pt-16 overflow-x-hidden mx-auto">
       {/* <Navbar /> */}
       <Header />
       {student.branch.name === "1-10" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
-          <div className="md:h-60 h-48 bg-slate-400 w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
+          <div className="md:h-60 h-48 bg-[#fffffe] w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
             <div className="text-black font-bold text-center flex flex-col items-center justify-center">
               <p className="md:text-4xl sm:text-xl">
                 FOR CLASS 1 TO 10 <br /> NOTES & VIDEOS
               </p>
-              <button className="rounded-md bg-black text-white font-normal p-1 mt-2 md:h-11 md:w-28">
+              <button
+                className="rounded-md bg-black text-white font-normal p-1 mt-2 md:h-11 md:w-28"
+                onClick={() => navigate("/notes")}
+              >
                 CLICK HERE
               </button>
             </div>
@@ -66,12 +92,15 @@ console.log(event)
 
       {student.branch.name === "11-12" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
-          <div className="md:h-60 h-48 bg-slate-400 w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
+          <div className="md:h-60 h-48 bg-[#fffffe] w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
             <div className="text-black font-bold text-center flex flex-col items-center justify-center">
               <p className="md:text-4xl sm:text-xl">
                 FOR CLASS 11 & 12 <br /> NOTES & VIDEOS
               </p>
-              <button className="rounded-md bg-black text-white font-normal p-1 mt-2 md:h-11 md:w-28">
+              <button
+                className="rounded-md bg-black text-white font-normal p-1 mt-2 md:h-11 md:w-28"
+                onClick={() => navigate("/notes")}
+              >
                 CLICK HERE
               </button>
             </div>
@@ -88,7 +117,7 @@ console.log(event)
 
       {student.board.name === "cu/mgu/ku" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
-          <div className="md:h-60 h-48 bg-slate-400 w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
+          <div className="md:h-60 h-48 bg-[#fffffe] w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
             <div className="text-black font-bold text-center flex flex-col items-center justify-center">
               <p className="md:text-4xl sm:text-xl">
                 FOR CU/MGU/KU <br /> NOTES & VIDEOS
@@ -112,8 +141,8 @@ console.log(event)
       ) : null}
 
       {student.board.name === "ktu" ? (
-        <div className=" md:h-64 h-56 flex justify-center items-center my-1">
-          <div className="md:h-60 h-48 bg-slate-400 w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
+        <div className=" md:h-64 h-56 flex justify-center items-center my-1 ">
+          <div className="md:h-60 h-48 bg-[#fffffe] w-full md:mx-8 mx-3 rounded-3xl grid-cols-2 grid ">
             <div className="text-black font-bold text-center flex flex-col items-center justify-center">
               <p className="md:text-4xl sm:text-xl">
                 FOR KTU <br /> NOTES & VIDEOS
@@ -137,24 +166,13 @@ console.log(event)
       ) : null}
 
       {/* <div className=" md:h-72 h-56 flex justify-center items-center"> */}
-      <div className="md:h-80 h-80 bg-slate-400  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid ">
-        <div className=" bg-blue-900 md:h-20 h-16 rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
-          <h1 className="uppercase text-white font-bold md:text-2xl">
+      <div className="md:h-80 h-80 bg-[#fffffe]  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid ">
+        <div className=" bg-[#fffffe] md:h-20 h-16 rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
+          <h1 className="uppercase text-[#232946] underline font-bold md:text-2xl">
             events happening across kerala
           </h1>
         </div>
         <div className="row-span-3 flex flex-row justify-center md:justify-evenly items-center mb-4">
-          {/* <div className="ml-4">
-            <img src={ragam} alt="" className="object-cover  w-44 rounded-xl" />
-          </div>
-          <div className="md:ml-10 md:text-xl sm:text-base font-medium">
-            <span>RAGAM 2023</span> <br />
-            <span>ORGANIZED BY : NIT CALICUT</span> <br />
-            <span>LOCATION : CALICUT</span> <br />
-            <span>FROM : 20-03-2023</span> <br />
-            <span>TO : 25-03-2023</span> <br />
-            <span>WEBSITE : ragam.co.in</span> <br />
-          </div> */}
           <div className="mx-3">
             <img
               src={`${import.meta.env.VITE_BASE_PATH}${event.poster}`}
@@ -169,20 +187,19 @@ console.log(event)
               <span>LOCATION : {event.location}</span> <br />
             </div>
             <div className="md:text-xl text-sm">
-              {
-              event.startingDate ? (<>
-               <span>FROM : {formatDate(event.startingDate)}</span> <br />
-              <span>TO : {formatDate(event.endingDate)}</span> <br />
-              </>) : null 
-              }
-            
+              {event.startingDate ? (
+                <>
+                  <span>FROM : {formatDate(event.startingDate)}</span> <br />
+                  <span>TO : {formatDate(event.endingDate)}</span> <br />
+                </>
+              ) : null}
               <span>WEBSITE : {event.link}</span> <br />
             </div>
           </div>
         </div>
-        <div className=" bg-blue-900 rounded-bl-3xl rounded-br-3xl flex items-center justify-center row-span-1">
+        <div className=" bg-[#232946] rounded-bl-3xl rounded-br-3xl flex items-center justify-center row-span-1">
           <h1
-            className="uppercase text-yellow-200 font-semibold md:text-2xl p-2 cursor-pointer"
+            className="uppercase text-[#fffffe] font-semibold md:text-lg p-2 cursor-pointer"
             onClick={() => navigate("/events")}
           >
             view more events
@@ -192,9 +209,9 @@ console.log(event)
       {/* </div> */}
 
       {/* <div className=" md:h-64 h-56 flex justify-center items-center"> */}
-      <div className="md:h-64 h-64 bg-slate-400  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid  mt-4 ">
-        <div className=" bg-blue-900 rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
-          <h1 className="uppercase text-white font-bold md:text-2xl">
+      <div className="md:h-64 h-64 bg-[#fffffe]  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid  mt-4 ">
+        <div className=" bg-[#fffffe] rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
+          <h1 className="uppercase text-[#232946] underline font-bold md:text-2xl">
             educational news
           </h1>
         </div>
@@ -215,14 +232,19 @@ console.log(event)
             <span className="text-blue-700">read more</span> <br />
           </div>
         </div>
-        <div className=" bg-blue-900 rounded-bl-3xl rounded-br-3xl flex items-center justify-center row-span-1">
-          <h1 className="uppercase text-yellow-200 font-semibold md:text-2xl p-2">
+        <div className=" bg-[#232946] rounded-bl-3xl rounded-br-3xl flex items-center justify-center row-span-1">
+          <h1
+            className="uppercase text-[#fffffe] font-semibold md:text-lg p-2 cursor-pointer"
+            onClick={() => navigate("/news")}
+          >
             view more news
           </h1>
         </div>
         {/* </div> */}
       </div>
-      <Footer />
+      <div className="mt-5">
+        <Footer />
+      </div>
     </div>
   );
 };

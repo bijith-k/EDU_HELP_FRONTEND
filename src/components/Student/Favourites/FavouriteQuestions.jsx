@@ -223,7 +223,7 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
             )}
           </div>
         ) : (
-          <div>
+          <div className="h-40">
             <p className="text-center font-bold text-lg">
               Nothing in favourite question papers
             </p>

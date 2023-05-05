@@ -158,8 +158,8 @@ const ManageEvents = () => {
   };
 
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
-      <div>
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
+      <div className="bg-dark-purple">
         <Sidebar />
       </div>
 
@@ -257,14 +257,14 @@ const ManageEvents = () => {
                   <Td className="border">{formatDate(event.startingDate)}</Td>
                   <Td className="border">{formatDate(event.endingDate)}</Td>
                   <Td className="lowercase border">
-                    <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
+                    <button className="bg-sky-900 font-semibold text-white m-2 w-22 p-2 rounded-xl">
                       <a href={event.link} target="_blank">
                         Click
                       </a>
                     </button>
                   </Td>
                   <Td>{event.contact}</Td>
-                  <Td className="border flex justify-center">
+                  <Td className="border flex justify-start">
                     <button className="bg-sky-900 font-semibold text-white m-2 w-28 p-2 rounded-xl">
                       <a
                         href={`${import.meta.env.VITE_BASE_PATH}${
@@ -279,14 +279,14 @@ const ManageEvents = () => {
                       <>
                         {event.listed ? (
                           <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                            className="bg-gray-600 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                             onClick={() => handleListUnlist(event._id)}
                           >
                             UNLIST
                           </button>
                         ) : (
                           <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                            className="bg-blue-400 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                             onClick={() => handleListUnlist(event._id)}
                           >
                             LIST
@@ -297,7 +297,7 @@ const ManageEvents = () => {
 
                     {!event.approved && !event.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-green-500 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                         onClick={() => handleApprove(event._id)}
                       >
                         APPROVE
@@ -306,7 +306,7 @@ const ManageEvents = () => {
 
                     {!event.approved && !event.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-red-500 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                         onClick={() => handleReject(event._id)}
                       >
                         REJECT
@@ -314,7 +314,7 @@ const ManageEvents = () => {
                     ) : null}
 
                     {/* <button
-                      className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                      className="bg-sky-900 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                       onClick={() => handleEdit(event)}
                     >
                       EDIT

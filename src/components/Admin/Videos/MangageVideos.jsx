@@ -178,8 +178,8 @@ const MangageVideos = () => {
   };
 
   return (
-    <div className="bg-sky-900 flex overflow-x-hidden">
-      <div>
+    <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
+      <div className="bg-dark-purple">
         <Sidebar />
       </div>
 
@@ -239,7 +239,7 @@ const MangageVideos = () => {
                 >
                   Name of Board
                 </Th>
-                <Th className="p-3 border text-center">Actions</Th>
+                <Th className="p-3 border">Actions</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -250,8 +250,8 @@ const MangageVideos = () => {
                   <Td className="border">{video.subject.name}</Td>
                   <Td className="border">{video.branch.name}</Td>
                   <Td className="border">{video.board.name}</Td>
-                  <Td className="border flex justify-center">
-                    <button className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl">
+                  <Td className="border flex justify-start">
+                    <button className="bg-sky-900 font-semibold text-white m-2 w-22 p-2 rounded-xl">
                       {" "}
                       <a href={video.video_link} target="_blank">
                         VIEW
@@ -261,14 +261,14 @@ const MangageVideos = () => {
                       <>
                         {video.listed ? (
                           <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                            className="bg-gray-600 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                             onClick={() => handleListUnlist(video._id)}
                           >
                             UNLIST
                           </button>
                         ) : (
                           <button
-                            className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                            className="bg-blue-400 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                             onClick={() => handleListUnlist(video._id)}
                           >
                             LIST
@@ -278,7 +278,7 @@ const MangageVideos = () => {
                     ) : null}
                     {!video.approved && !video.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-green-500 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                         onClick={() => handleApprove(video._id)}
                       >
                         APPROVE
@@ -286,14 +286,14 @@ const MangageVideos = () => {
                     ) : null}
                     {!video.approved && !video.rejected ? (
                       <button
-                        className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                        className="bg-red-500 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                         onClick={() => handleOpen(video._id)}
                       >
                         REJECT
                       </button>
                     ) : null}
                     {/* <button
-                      className="bg-sky-900 font-semibold text-white m-2 w-20 p-2 rounded-xl"
+                      className="bg-sky-900 font-semibold text-white m-2 w-22 p-2 rounded-xl"
                       onClick={() => handleEdit(video)}
                     >
                       EDIT

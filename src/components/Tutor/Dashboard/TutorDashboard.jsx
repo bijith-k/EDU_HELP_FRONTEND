@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
 import { useToast } from "@chakra-ui/react";
+import Footer from "../Footer/Footer";
 
 const TutorDashboard = () => {
   const { tutor } = useSelector((state) => state.tutor);
@@ -60,40 +61,28 @@ const TutorDashboard = () => {
   }, []);
 
   return (
-    <div className="bg-slate-400 min-h-screen w-full overflow-x-hidden">
+    <div className="bg-slate-400 min-h-screen max-w-screen-2xl mx-auto w-full overflow-x-hidden">
       <Navbar />
 
       <div className=" w-full">
-        <div className="bg-gray-500 h-72 flex flex-col justify-center items-center text-center md:justify-center uppercase ">
-          <span className="text-2xl font-bold text-white">
+        <div className="bg-gray-200 h-72 flex flex-col justify-center items-center text-center md:justify-center uppercase ">
+          <span className="text-2xl font-bold text-[#0B2447]">
             It's the teacher that makes the difference, not the classroom
           </span>
           <span className="text-xl font-semibold border-b-2 mt-3">
-            <span className="text-slate-100">happy</span> teaching{" "}
-            <span className="text-slate-100">{tutor.name}</span>
+            <span className="text-[#576CBC]">happy</span> teaching{" "}
+            <span className="text-[#576CBC]">{tutor.name}</span>
           </span>
         </div>
 
         <div>
-          <div className="p-8 bg-white shadow">
+          <div className="p-8 bg-gray-50 shadow">
             {" "}
             <div className="grid grid-cols-1 ">
               <div className="relative">
                 {" "}
                 <div className="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500">
-                  {/* <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-24 w-24"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    {" "}
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>{" "} */}
+                 
 
                   <img
                     src={
@@ -164,6 +153,9 @@ const TutorDashboard = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <Footer />
       </div>
     </div>
   );

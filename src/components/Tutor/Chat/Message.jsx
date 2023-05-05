@@ -1,13 +1,33 @@
-import React from "react";
-import user from "../../../assets/bij.jpg";
+import React, { useEffect, useState } from "react";
+import user from "../../../assets/user.png";
 import { format } from "timeago.js";
+import axiosInstance from "../../../axios";
 
-const Message = ({ message, own }) => {
+const Message = ({ message, own,sendBy }) => {
+  const [student, setStudent] = useState([]);
+ 
+
+  useEffect(() => {
+     if(sendBy){
+const getStudent = async () => {
+  try {
+    const res = await axiosInstance("Ttoken").get(
+      `tutor/get-students?id=${sendBy}`
+    );
+    setStudent(res.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+getStudent();
+     }
+    
+  }, []);
   return (
     <div className={`flex flex-col mt-5 ${own ? "items-end" : null}`}>
-      <div className="messageTop flex">
+      <div className=" flex">
         <img
-          src={user}
+          src={student[0]?.profilePicture ? `${import.meta.env.VITE_BASE_PATH}${student[0].profilePicture}` : user}
           alt=""
           className={`w-8 h-8 rounded-full object-cover mr-3 ${own ? 'hidden' : null}`} 
         />

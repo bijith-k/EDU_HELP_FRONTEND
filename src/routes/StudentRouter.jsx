@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import StudentLoginPage from "../pages/student/StudentLoginPage";
 import StudentSignUpPage from "../pages/student/StudentSignUpPage";
 import OtpPageStudent from "../pages/student/OtpPageStudent";
-import ErrorPage from "../pages/student/ErrorPage";
 import HomePage from "../pages/student/HomePage";
 import PrivateRoutes from "../middleware/PrivateRoutes";
 import NotesPage from "../pages/student/NotesPage";
@@ -20,6 +19,7 @@ import ProfilePage from "../pages/student/ProfilePage";
 import SettingsPage from "../pages/student/SettingsPage";
 import StudentChatPage from "../pages/student/StudentChatPage";
 import FavouritesPage from "../pages/student/FavouritesPage";
+import Student404 from "../components/Error/Student404";
 
 const StudentRouter = () => {
   return (
@@ -48,7 +48,7 @@ const StudentRouter = () => {
       <Route path="/signin" element={<StudentLoginPage />} />
       <Route path="/signup" element={<StudentSignUpPage />} />
       <Route path="/otp" element={<OtpPageStudent />} />
-      <Route path="/*" element={<ErrorPage />} />
+      <Route path="/*" element={<Student404 />} />
     </Routes>
   );
 };

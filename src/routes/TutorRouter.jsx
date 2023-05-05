@@ -4,7 +4,6 @@ import TutorLoginPage from "../pages/Tutor/TutorLoginPage";
 import TutorSignUpPage from "../pages/Tutor/TutorSignUpPage";
 import OtpPageTutor from "../pages/Tutor/OtpPageTutor";
 import PrivateRoutes from "../middleware/PrivateRoutes";
-import ErrorPage from "../pages/student/ErrorPage";
 import ApprovalPending from "../pages/Tutor/ApprovalPending";
 import ApprovalRejected from "../pages/Tutor/ApprovalRejected";
 import TutorDashboardPage from "../pages/Tutor/TutorDashboardPage";
@@ -16,6 +15,7 @@ import TutorUploadVideosPage from "../pages/Tutor/TutorUploadVideosPage";
 import TutorAddEventsPage from "../pages/Tutor/TutorAddEventsPage";
 import TutorChatPage from "../pages/Tutor/TutorChatPage";
 import TutorEditProfilePage from "../pages/Tutor/TutorEditProfilePage";
+import Tutor404 from "../components/Error/Tutor404";
 
 const TutorRouter = () => {
   return (
@@ -41,7 +41,7 @@ const TutorRouter = () => {
       <Route path="/signup" element={<TutorSignUpPage />} />
       <Route path="/otp" element={<OtpPageTutor />} />
 
-      <Route path="/*" element={<ErrorPage />} />
+      <Route path="/*" element={<Tutor404 />} />
     </Routes>
   );
 };

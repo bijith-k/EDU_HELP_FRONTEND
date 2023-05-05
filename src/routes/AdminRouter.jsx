@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import PrivateRoutes from "../middleware/PrivateRoutes";
 import AdminLoginPage from "../pages/admin/AdminLoginPage";
-import ErrorPage from "../pages/student/ErrorPage";
 import StudentsListPage from "../pages/admin/StudentsListPage";
 import ManageVideosPage from "../pages/admin/ManageVideosPage";
 import ManageQuestionPapersPage from "../pages/admin/ManageQuestionPapersPage";
@@ -22,6 +21,7 @@ import AddPlanPage from "../pages/admin/AddPlanPage";
 import EditPlansPage from "../pages/admin/EditPlansPage";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import BoardListPage from "../pages/admin/BoardListPage";
+import Admin404 from "../components/Error/Admin404";
 
 const AdminRouter = () => {
   return (
@@ -50,7 +50,7 @@ const AdminRouter = () => {
       </Route>
 
       <Route path="/" element={<AdminLoginPage />} />
-      <Route path="/*" element={<ErrorPage />} />
+      <Route path="/*" element={<Admin404 />} />
     </Routes>
   );
 };

@@ -12,6 +12,7 @@ import MyVideos from "./MyVideos";
 import MyQuestionPapers from "./MyQuestionPapers";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
+import Footer from "../Footer/Footer";
 
 const MyUploads = () => {
   const [value, setValue] = React.useState("1");
@@ -25,13 +26,13 @@ const MyUploads = () => {
   };
 
   return (
-    <div className="min-h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
+    <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
       <Navbar />
       <Header />
       <HeadTitle title={"my uploads"} />
 
       <Tabs variant="line" colorScheme="green">
-        <TabList className="bg-slate-100 text-black">
+        <TabList className="bg-[#fffffe] text-black">
           <Tab className="w-1/3">NOTES</Tab>
           <Tab className="w-1/3">VIDEOS</Tab>
           <Tab className="w-1/3">QUESTION PAPERS</Tab>
@@ -48,6 +49,9 @@ const MyUploads = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <div className="mt-5">
+        <Footer />
+      </div>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import axios from "axios";
 import news from "../../../assets/news.jpg";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
+import Footer from "../Footer/Footer";
 
 const News = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,36 +30,27 @@ const News = () => {
   //   fetchNews();
   // }, []);
   return (
-    <div className="min-h-screen w-full pt-16 bg-slate-300 overflow-x-hidden">
+    <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
       <Navbar />
       <Header />
       <HeadTitle title={"news"} />
-      {/* <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
-          "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
-        </h1>
-      </div>
-      <div className="bg-blue-500">
-        <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
-          news
-        </h1>
-      </div> */}
+      
       <div>
         <div className="h-4/6">
           {currentNews.map((news, index) => (
             <div className="p-2 flex justify-center ">
-              <div className="bg-dark-purple hover:shadow-xl flex flex-col justify-evenly md:flex-row hover:opacity-90  text-white  w-3/4 rounded-xl mt-5 p-5 h-fit text-center">
+              <div className="bg-[#fffffe] hover:shadow-xl flex flex-col justify-evenly md:flex-row hover:opacity-90  text-[#232946]  w-3/4 rounded-xl mt-5 p-5 h-fit text-center">
                 <div className=" w-40 flex flex-col mx-auto md:mx-0">
                   {news.image_url ? (
                     <img
                       src={news.image_url}
-                      className="w-40  h-40 object-cover shadow-sm shadow-white"
+                      className="w-40  h-40 object-cover shadow-sm shadow-black"
                       alt=""
                     />
                   ) : (
                     <img
                       src={news}
-                      className="w-40 rounded-bl-3xl rounded-tr-3xl shadow-sm shadow-white"
+                      className="w-40 rounded-bl-3xl rounded-tr-3xl shadow-sm shadow-black"
                       alt=""
                     />
                   )}
@@ -79,7 +71,7 @@ const News = () => {
                   <span>
                     <a
                       href={news.link}
-                      className="bg-gray-200 p-2 text-black rounded-3xl uppercase font-bold mt-5 w-full hover:bg-slate-500 hover:text-white mx-auto"
+                      className="bg-[#232946] p-2 text-[#fffffe] rounded-3xl uppercase font-bold mt-5 w-full hover:bg-slate-500 hover:text-white mx-auto"
                     >
                       View
                     </a>{" "}
@@ -96,6 +88,9 @@ const News = () => {
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}
         />
+      </div>
+      <div className="mt-5">
+        <Footer />
       </div>
     </div>
   );

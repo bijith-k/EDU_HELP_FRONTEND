@@ -27,6 +27,7 @@ import { setStudent } from "../../../features/studentSlice";
 
 import Navbar from "../Dashboard/Navbar";
 import { setTutor } from "../../../features/tutorSlice";
+import Footer from "../Footer/Footer";
 
 const EditProfile = () => {
   const { tutor } = useSelector((state) => state.tutor);
@@ -201,9 +202,9 @@ const EditProfile = () => {
       });
   };
   return (
-    <div className="bg-white h-screen">
+    <div className="bg-gray-50 min-h-screen max-w-screen-2xl mx-auto">
       <Navbar />
-      <div className="bg-gray-500 uppercase h-14 text-center text-white font-bold text-xl pt-3">
+      <div className="bg-gray-600 uppercase h-14 text-center text-white font-bold text-xl pt-3">
         UPDATE DETAILS
       </div>
       <Stack spacing={4} className="mt-5 w-2/3 mx-auto">
@@ -408,6 +409,9 @@ const EditProfile = () => {
           UPDATE PROFILE
         </Button>
       </Stack>
+      <div className="mt-5">
+        <Footer />
+      </div>
     </div>
   );
 };

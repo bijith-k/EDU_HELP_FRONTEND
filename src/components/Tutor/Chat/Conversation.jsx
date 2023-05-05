@@ -1,42 +1,60 @@
 import React, { useEffect, useState } from "react";
 import user from "../../../assets/bij.jpg";
-import axios from "../../../axios";
+import axiosInstance from "../../../axios";
 
 const Conversation = ({ conversation, currentUser }) => {
   const [student, setStudent] = useState([]);
-  console.log(student);
-  const token = localStorage.getItem("Ttoken");
+ const [selected, setSelected] = useState(null)
 
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
-  console.log(conversation,"convorsationnnnnn")
-  console.log(currentUser, "currr");
+   
   useEffect(() => {
     const studentId = conversation.members.find((m) => m !== currentUser._id);
-console.log(studentId,"studentid")
-    const getTutors = async () => {
+ 
+    const getStudents = async () => {
       try {
-        const res = await axios.get(`tutor/get-students?id=${studentId}`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axiosInstance("Ttoken").get(
+          `tutor/get-students?id=${studentId}`
+        );
         setStudent(res.data);
       } catch (error) {
         console.log(error);
       }
     };
-    getTutors();
+    getStudents();
   }, [currentUser, conversation]);
 
+ const handleOptionClick = (id) => {
+  console.log("first")
+   setSelected((prevState) => {
+    console.log(prevState,"pp")
+     if (prevState === id) {
+      console.log(prevState,id,"pre")
+       // If the clicked option is already selected, unselect it
+       return null;
+     } else {
+       // Otherwise, select the clicked option
+       return id;
+     }
+   });
+ };
   return (
     <>
       {student.map((student, index) => (
         <div
           key={index}
-          className="flex items-center p-3 cursor-pointer hover:bg-gray-400 mt-5"
+          onClick={() => handleOptionClick(student._id)}
+          className={`flex items-center p-3 cursor-pointer hover:bg-gray-200  mt-5`}
+          // ${
+          //   selected === student._id ? "bg-slate-200" : "bg-transparent"
+          // }
         >
           <img
-            src={student.pic ? student.pic : PF + "user.png"}
+            src={
+              student.profilePicture
+                ? `${import.meta.env.VITE_BASE_PATH}${student.profilePicture}`
+                : PF + "user.png"
+            }
             alt=""
             className="w-10 h-10 rounded-full object-cover mr-5"
           />

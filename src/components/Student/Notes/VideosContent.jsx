@@ -17,6 +17,7 @@ import {
 import Pagination from "../../Pagination/Pagination";
 import exclusive from "../../../assets/exclusive (1).png";
 import Search from "../Search/Search";
+import { useNavigate } from "react-router-dom";
 
 
 const VideosContent = () => {
@@ -24,7 +25,7 @@ const VideosContent = () => {
   const toast = useToast();
   const [videos, setVideos] = useState([]);
   const [subjects, setSubjects] = useState([]);
-
+const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,7 +81,14 @@ const VideosContent = () => {
     axiosInstance("Stoken")
       .get(`get-videos?studentId=${student._id}`)
       .then((response) => {
-        setVideos(response.data);
+        if (response.data.status == false) {
+           
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setVideos(response.data);
+           
+        }
       });
   }, []);
 
@@ -115,6 +123,16 @@ const VideosContent = () => {
             isClosable: true,
             position: "top",
           });
+        } else if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
         }
       })
       .catch((error) => {
@@ -213,7 +231,7 @@ const VideosContent = () => {
             )}
           </div>
         ) : (
-          <div>
+          <div className="h-40">
             {" "}
             <p className="text-center font-bold text-lg">
               No videos are there to display

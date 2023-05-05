@@ -83,7 +83,29 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
     axiosInstance("Stoken")
       .get(`get-question-papers?id=${student._id}`)
       .then((response) => {
-        setQuestions(response.data);
+         if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setQuestions(response.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, [change]);
 
@@ -102,14 +124,27 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
     axiosInstance("Stoken")
       .put(`questions-private-public?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          setChange(res.data.message);
+        }
+        
       })
       .catch((err) => {
         console.log(err);
@@ -128,14 +163,27 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
     axiosInstance("Stoken")
       .delete(`delete-questions?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+         if (res.data.status == false) {
+           toast({
+             title: res.data.message,
+             status: "error",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
+           localStorage.removeItem("Stoken");
+           navigate("/signin");
+         } else {
+           toast({
+             title: res.data.message,
+             status: "success",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
+           setChange(res.data.message);
+         }
+       
       })
       .catch((err) => {
         console.log(err);
@@ -282,7 +330,7 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
             )}
           </div>
         ) : (
-          <div>
+          <div className="h-40">
             <p className="text-center font-bold text-lg">
               You haven't uploaded any question papers
             </p>

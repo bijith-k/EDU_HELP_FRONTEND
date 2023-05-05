@@ -19,11 +19,12 @@ import Pagination from "../../Pagination/Pagination";
 import axiosInstance from "../../../axios";
 import { MdWorkspacePremium } from "react-icons/md";
 import Search from "../Search/Search";
+import { useNavigate } from "react-router-dom";
 
 const NotesContent = () => {
   const { student } = useSelector((state) => state.student);
   const toast = useToast();
-
+const navigate = useNavigate()
   const [notes, setNotes] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -80,7 +81,29 @@ const NotesContent = () => {
     axiosInstance("Stoken")
       .get(`get-notes?studentId=${student._id}`)
       .then((response) => {
-        setNotes(response.data);
+        if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setNotes(response.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -92,6 +115,13 @@ const NotesContent = () => {
       })
       .catch((error) => {
         console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -115,6 +145,17 @@ const NotesContent = () => {
             isClosable: true,
             position: "top",
           });
+        }
+        else if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
         }
       })
       .catch((error) => {
@@ -214,7 +255,7 @@ const NotesContent = () => {
             )}
           </div>
         ) : (
-          <div>
+          <div className="h-40">
             <p className="text-center font-bold text-lg">
               No notes are there to display
             </p>{" "}
