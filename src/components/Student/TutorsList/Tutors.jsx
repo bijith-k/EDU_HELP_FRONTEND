@@ -18,7 +18,7 @@ const Tutors = () => {
   const [tutors, setTutors] = useState([]);
   const [isSubscribed, setIsSubscribed] = useState(null);
   const [infoLoading, setInfoLoading] = useState(null)
-  const [tutorLoading, setTutorLoading] = useState(null)
+ 
 
   const [currentPage, setCurrentPage] = useState(1);
   const [tutorsPerPage, settutorsPerPage] = useState(1);
@@ -74,11 +74,11 @@ const Tutors = () => {
           isClosable: true,
           position: "top",
         });
-        setInfoLoading(false)
+        
         localStorage.removeItem("Stoken");
         navigate("/signin");
       } else {
-        setInfoLoading(false)
+        
         setIsSubscribed(data.subscribed);
       }
     };
@@ -87,15 +87,15 @@ const Tutors = () => {
 
   useEffect(() => {
     if (isSubscribed) {
-      setTutorLoading(true)
+      
       axiosInstance("Stoken")
         .get(`get-tutors`)
         .then((res) => {
           setTutors(res.data);
-          setTutorLoading(false);
+         setInfoLoading(false);
         }).catch((err)=>{
           console.log(err)
-          setTutorLoading(false)
+          setInfoLoading(false);
         })
     }
   }, [isSubscribed]);
