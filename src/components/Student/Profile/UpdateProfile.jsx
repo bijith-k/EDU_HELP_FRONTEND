@@ -21,7 +21,7 @@ import { setStudent } from "../../../features/studentSlice";
 
 const UpdateProfile = () => {
   const { student } = useSelector((state) => state.student);
-  const token = localStorage.getItem("Stoken");
+
   const [boards, setBoards] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState(student.board._id);
@@ -48,22 +48,22 @@ const UpdateProfile = () => {
       .get(`boards`)
       .then((res) => {
         if (res.data.status == false) {
-          
           localStorage.removeItem("Stoken");
           navigate("/signin");
         } else {
-         setBoards(res.data.boards);
+          setBoards(res.data.boards);
         }
-        
       })
-      .catch((err) => {console.error(err)
-      toast({
-        title: err.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });});
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
   }, []);
 
   useEffect(() => {
@@ -71,10 +71,22 @@ const UpdateProfile = () => {
       axiosInstance("Stoken")
         .get(`${import.meta.env.VITE_BASE_PATH}branches?board=${selectedBoard}`)
         .then((res) => {
-          setBranches(res.data.branches);
+          if (res.data.status == false) {
+            localStorage.removeItem("Stoken");
+            navigate("/signin");
+          } else {
+            setBranches(res.data.branches);
+          }
         })
         .catch((error) => {
           console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setBranches([]);

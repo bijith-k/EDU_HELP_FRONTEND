@@ -17,16 +17,14 @@ import exclusive from "../../../assets/exclusive (1).png";
 import { useSelector } from "react-redux";
 import Pagination from "../../Pagination/Pagination";
 import axiosInstance from "../../../axios";
-import { MdWorkspacePremium } from "react-icons/md";
 import Search from "../Search/Search";
 import { useNavigate } from "react-router-dom";
 
 const NotesContent = () => {
   const { student } = useSelector((state) => state.student);
   const toast = useToast();
-const navigate = useNavigate()
+  const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
-  const [subjects, setSubjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,12 +40,7 @@ const navigate = useNavigate()
     setSelectedSubject(data);
   };
 
-  
-  const note = notes.filter(
-    (note) => note.branch._id === student.branch._id
-  );
-
-
+  const note = notes.filter((note) => note.branch._id === student.branch._id);
 
   const filteredData =
     searchQuery.trim() !== "" || selectedSubject !== ""
@@ -69,17 +62,16 @@ const navigate = useNavigate()
         })
       : note;
 
-      let currentNotes;
-      if (searchQuery != "" || selectedSubject != "") {
-        currentNotes = filteredData;
-      } else {
-        currentNotes = filteredData.slice(firstNoteIndex, lastNoteIndex);
-      }
-
+  let currentNotes;
+  if (searchQuery != "" || selectedSubject != "") {
+    currentNotes = filteredData;
+  } else {
+    currentNotes = filteredData.slice(firstNoteIndex, lastNoteIndex);
+  }
 
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`get-notes?studentId=${student._id}`)
+      .get(`get-notes?studentId=${true}`)
       .then((response) => {
         if (response.data.status == false) {
           toast({
@@ -99,24 +91,6 @@ const navigate = useNavigate()
         console.log(err);
         toast({
           title: err.message,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-      });
-  }, []);
-
-  useEffect(() => {
-    axiosInstance("Stoken")
-      .get(`subjects?branch=${student.branch._id}`)
-      .then((res) => {
-        setSubjects(res.data.subjects);
-      })
-      .catch((error) => {
-        console.log(error);
-        toast({
-          title: error.message,
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -145,8 +119,7 @@ const navigate = useNavigate()
             isClosable: true,
             position: "top",
           });
-        }
-        else if (res.data.status == false) {
+        } else if (res.data.status == false) {
           toast({
             title: res.data.message,
             status: "error",
@@ -213,18 +186,11 @@ const navigate = useNavigate()
                         Class : {note.branch.name} <br />
                         Subject : {note.subject.name}
                       </Text>
-
-                      {/* <Text color="blue.600" fontSize="2xl">
-                      $450
-                    </Text> */}
                     </Stack>
                   </CardBody>
                   <Divider />
                   <CardFooter>
                     <ButtonGroup spacing="2">
-                      {/* <Button variant="solid" colorScheme="blue">
-                      Buy now
-                    </Button> */}
                       <Button className="bg-red-100 p-3 rounded-lg">
                         <a
                           href={`${import.meta.env.VITE_BASE_PATH}${
@@ -235,9 +201,7 @@ const navigate = useNavigate()
                           DOWNLOAD
                         </a>
                       </Button>
-                      {/* <Button variant="ghost" colorScheme="blue">
-                      Add to cart
-                    </Button> */}
+
                       <Button
                         className="bg-rose-100 p-3 rounded-lg"
                         onClick={() => handleFavourite(note._id)}

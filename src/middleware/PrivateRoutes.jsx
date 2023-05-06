@@ -20,13 +20,7 @@ if (role === "student") {
         localStorage.removeItem("Stoken");
         dispatch(setStudent({ student: null }));
         setAuth(res.data.status);
-        // toast({
-        //   title: res.data.message,
-        //   status: "error",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "top",
-        // });
+        
       } else {
         dispatch(setStudent({ student: res.data.student }));
         setAuth(res.data.status);
@@ -51,13 +45,7 @@ if (role === "student") {
         localStorage.removeItem("Ttoken");
         dispatch(setTutor({ tutor: null }));
         setAuth(res.data.status);
-        // toast({
-        //   title: res.data.message,
-        //   status: "error",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "top",
-        // });
+         
       } else {
         dispatch(setTutor({ tutor: res.data.tutor }));
         setAuth(res.data.status);
@@ -82,13 +70,7 @@ if (role === "student") {
         localStorage.removeItem("Adtoken");
          
         setAuth(res.data.status);
-        // toast({
-        //   title: res.data.message,
-        //   status: "error",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "top",
-        // });
+         
       } else {
          
         setAuth(res.data.status);

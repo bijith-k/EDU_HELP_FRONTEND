@@ -13,7 +13,7 @@ const Plans = () => {
   const { student } = useSelector((state) => state.student);
 
   const [plans, setPlans] = useState([]);
-  const token = localStorage.getItem("Stoken");
+  
   const [selectedPlan, setSelectedPlan] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -57,6 +57,10 @@ const Plans = () => {
       .then((res) => {
         if (res.data.subscribed) {
           setIsSubscribed(true);
+        }else if (res.data.status == false) {
+          
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
         }
       })
       .catch((err) => {
@@ -105,6 +109,13 @@ const Plans = () => {
           console.log(error);
           setLoading(false);
           setSelectedPlan(null);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         }
       },
       theme: {
@@ -154,16 +165,7 @@ const Plans = () => {
       <Navbar />
       <Header />
       <HeadTitle title={"available plans"} />
-      {/* <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
-          "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
-        </h1>
-      </div>
-      <div className="bg-blue-500">
-        <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
-          available plans
-        </h1>
-      </div> */}
+     
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 p-3 h-full">
         {plans.map((plan, index) => (
@@ -180,7 +182,7 @@ const Plans = () => {
             <p className="font-sans font-bold text-lg mt-4">
               Exclusive notes <br /> uploaded by tutors
             </p>
-            {/* <p>exclusive notes from tutors</p> */}
+           
             <p className="font-sans font-medium text-lg mt-3">
               Plan validity : {plan.duration} Month
             </p>

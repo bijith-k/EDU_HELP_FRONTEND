@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios";
 
 import {
@@ -25,32 +23,34 @@ import {
 } from "@chakra-ui/react";
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const FavouriteNotes = () => {
-  const { student } = useSelector((state) => state.student);
+   
   const toast = useToast();
+  const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
 
   const [favouriteNotes, setFavouriteNotes] = useState([]);
-  const [subjects, setSubjects] = useState([]);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [change, setChange] = useState("");
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [notesPerPage, setNotesPerPage] = useState(4);
-    const lastNoteIndex = currentPage * notesPerPage;
-    const firstNoteIndex = lastNoteIndex - notesPerPage;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [notesPerPage, setNotesPerPage] = useState(4);
+  const lastNoteIndex = currentPage * notesPerPage;
+  const firstNoteIndex = lastNoteIndex - notesPerPage;
 
-    const handleSearchQuery = (data) => {
-      setSearchQuery(data);
-    };
+  const handleSearchQuery = (data) => {
+    setSearchQuery(data);
+  };
 
-    const handleSelectedSubject = (data) => {
-      setSelectedSubject(data);
-    };
+  const handleSelectedSubject = (data) => {
+    setSelectedSubject(data);
+  };
 
   const note = favouriteNotes.filter((notes) => notes.note.listed == true);
 
@@ -70,45 +70,68 @@ const FavouriteNotes = () => {
         })
       : note;
 
-      let currentNotes;
-      if (searchQuery != "" || selectedSubject != "") {
-        currentNotes = filteredData;
-      } else {
-        currentNotes = filteredData.slice(firstNoteIndex, lastNoteIndex);
-      }
+  let currentNotes;
+  if (searchQuery != "" || selectedSubject != "") {
+    currentNotes = filteredData;
+  } else {
+    currentNotes = filteredData.slice(firstNoteIndex, lastNoteIndex);
+  }
 
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`favourite-notes?id=${student._id}`)
+      .get(`favourite-notes`)
       .then((response) => {
-        setFavouriteNotes(response.data);
+        if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setFavouriteNotes(response.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, [change]);
-
-  useEffect(() => {
-    axiosInstance("Stoken")
-      .get(`subjects?branch=${student.branch._id}`)
-      .then((res) => {
-        setSubjects(res.data.subjects);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   const handleRemove = (id) => {
     onClose();
     axiosInstance("Stoken")
       .put(`remove-favourite-note/${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          setChange(res.data.message);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -171,7 +194,6 @@ const FavouriteNotes = () => {
                       </Button>
 
                       <Button
-                        // size="medium"
                         className="bg-red-500 text-white p-3 rounded-lg"
                         onClick={onOpen}
                       >

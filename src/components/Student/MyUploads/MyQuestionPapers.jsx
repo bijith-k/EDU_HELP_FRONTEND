@@ -20,15 +20,16 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axiosInstance from "../../../axios";
-import { useSelector } from "react-redux";
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const MyQuestionPapers = () => {
-  const { student } = useSelector((state) => state.student);
+ 
   const toast = useToast();
+  const navigate = useNavigate()
   const [questions, setQuestions] = useState([]);
-  const [subjects, setSubjects] = useState([]);
+  
   const [change, setChange] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
@@ -40,9 +41,7 @@ const [questionsPerPage, setQuestionsPerPage] = useState(4);
 const lastQuestionIndex = currentPage * questionsPerPage;
 const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
 
-  // const QuestionPapers = questions.filter(
-  //   (question) => question.branch._id === student.branch._id
-  // );
+   
 
   const handleSearchQuery = (data) => {
     setSearchQuery(data);
@@ -81,7 +80,7 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
 
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`get-question-papers?id=${student._id}`)
+      .get(`get-question-papers?id=${true}`)
       .then((response) => {
          if (response.data.status == false) {
           toast({
@@ -109,16 +108,7 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
       });
   }, [change]);
 
-  useEffect(() => {
-    axiosInstance("Stoken")
-      .get(`subjects?branch=${student.branch._id}`)
-      .then((res) => {
-        setSubjects(res.data.subjects);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  
 
   const handlePrivate = (id) => {
     axiosInstance("Stoken")
@@ -247,9 +237,7 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
                   <Divider />
                   <CardFooter>
                     <ButtonGroup spacing="2">
-                      {/* <Button variant="solid" colorScheme="blue">
-                      Buy now
-                    </Button> */}
+                      
                       <Button className="bg-red-100 p-3 rounded-lg">
                         <a
                           href={`${import.meta.env.VITE_BASE_PATH}${
@@ -260,12 +248,10 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
                           VIEW
                         </a>
                       </Button>
-                      {/* <Button variant="ghost" colorScheme="blue">
-                      Add to cart
-                    </Button> */}
+                     
                       {question.private ? (
                         <Button
-                          // size="medium"
+                           
                           className="bg-red-100 p-3 rounded-lg"
                           onClick={() => handlePrivate(question._id)}
                         >
@@ -273,7 +259,7 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
                         </Button>
                       ) : (
                         <Button
-                          // size="medium"
+                           
                           className="bg-red-100 p-3 rounded-lg"
                           onClick={() => handlePrivate(question._id)}
                         >

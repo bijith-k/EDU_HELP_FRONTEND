@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
-import ragam from "../../../assets/ragam.jpeg";
+
 import { FaSearch } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
@@ -21,8 +21,8 @@ const BranchList = () => {
   const [branches, setBranches] = useState([]);
 
   const navigate = useNavigate();
-  const [data, setData] = useState("data hereeeeee");
-  const [order, setOrder] = useState("ASC");
+  
+  
   const [toastMessage, setToastMessage] = useState("");
   const toast = useToast();
 
@@ -30,57 +30,65 @@ const BranchList = () => {
     axiosInstance("Adtoken")
       .get(`admin/boards`)
       .then((res) => {
-        setBoards(res.data.boards);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setBoards(res.data.boards);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
 
     axiosInstance("Adtoken")
       .get(`admin/branches`)
       .then((res) => {
-        setBranches(res.data.branches);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setBranches(res.data.branches);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, [toastMessage]);
 
-  const sorting = (col) => {
-    if (order === "ASC") {
-      const sorted = [...boards].sort((a, b) =>
-        a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
-      );
-      setBoards(sorted);
-      setOrder("DSC");
-    }
-    if (order === "DSC") {
-      const sorted = [...boards].sort((a, b) =>
-        a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
-      );
-      setBoards(sorted);
-      setOrder("ASC");
-    }
-  };
-
-  const sortingBranch = (col) => {
-    if (order === "ASC") {
-      const sorted = [...branches].sort((a, b) =>
-        a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
-      );
-      setBranches(sorted);
-      setOrder("DSC");
-    }
-    if (order === "DSC") {
-      const sorted = [...branches].sort((a, b) =>
-        a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
-      );
-      setBranches(sorted);
-      setOrder("ASC");
-    }
-  };
+  
 
   const handleEdit = (branch) => {
     localStorage.setItem("branchId", branch._id);
-    // dispatch(
-    //   setBoardData({
-    //     board,
-    //   })
-    // );
+    
     navigate("/admin/edit-branch");
   };
 
@@ -88,18 +96,31 @@ const BranchList = () => {
     axiosInstance("Adtoken")
       .put(`admin/branch-list-unlist?id=${id}`)
       .then((res) => {
-        setToastMessage(id, res.data.message);
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setToastMessage(`Clicked at ${new Date().toISOString()}`);
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+        }
+        
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(id, err.message);
+         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
           status: "error",
@@ -120,24 +141,7 @@ const BranchList = () => {
           manage branches
         </p>
         <div className="flex justify-around">
-          {/* <div className="bg-white p-3 rounded-2xl inline-flex ">
-  <input type="text" name="" id="" placeholder='search' className='inline-block' />
-  <div className='bg-sky-900 p-3 text-white rounded-full inline-block'>
-    <FaSearch />
-  </div>
-</div> */}
-          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
-            <input
-              type="text"
-              name=""
-              id=""
-              placeholder="search"
-              className="mb-2 md:mb-0 md:mr-2 inline-block w-full md:w-auto"
-            />
-            <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
-              <FaSearch />
-            </div>
-          </div> */}
+          
 
           <div className="bg-green-600  p-2 rounded-2xl flex">
             <button
@@ -151,14 +155,14 @@ const BranchList = () => {
 
         <TableContainer className="rounded-2xl mt-3">
           <Table variant="simple">
-            <Thead>
+            <Thead className="cursor-pointer">
               <Tr className="bg-green-300 h-14">
                 <Th className="p-3 border">No</Th>
-                <Th onClick={() => sorting("name")} className="p-3 border">
+                <Th   className="p-3 border">
                   Name of Board/University
                 </Th>
                 <Th
-                  onClick={() => sortingBranch("name")}
+                  
                   className="p-3 border"
                 >
                   Branch

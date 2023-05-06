@@ -14,16 +14,6 @@ const Favourites = () => {
       <Navbar />
       <Header />
       <HeadTitle title={"favourites"} />
-      {/* <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
-          "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
-        </h1>
-      </div>
-      <div className="bg-blue-500">
-        <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
-          FAVOURITES
-        </h1>
-      </div> */}
       <Tabs variant="line" colorScheme="green">
         <TabList className="bg-[#fffffe] text-black">
           <Tab className="w-1/3">NOTES</Tab>

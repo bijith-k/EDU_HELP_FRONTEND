@@ -18,8 +18,31 @@ const AddBranch = () => {
     // Fetch boards from server on component mount
     axiosInstance("Adtoken")
       .get(`admin/boards`)
-      .then((res) => setBoards(res.data.boards))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setBoards(res.data.boards);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
   }, []);
 
   const handleBoardChange = (e) => {
@@ -61,16 +84,29 @@ const AddBranch = () => {
     axiosInstance("Adtoken")
       .post(`admin/add-branch`, { board: selectedBoard, branch: branch })
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setSelectedBoard("");
-        setBranch("");
-        navigate("/admin/branch");
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          setSelectedBoard("");
+          setBranch("");
+          navigate("/admin/branch");
+        }
+       
       })
       .catch((err) => {
         toast({
@@ -98,7 +134,7 @@ const AddBranch = () => {
           onSubmit={handleSubmit}
           className="flex flex-col mx-auto  w-3/4 mt-8"
         >
-          {/* <label htmlFor="board" className='text-white'>Board</label> */}
+         
           <select
             id="board"
             value={selectedBoard}
@@ -114,7 +150,7 @@ const AddBranch = () => {
               </option>
             ))}
           </select>
-          {/* <label htmlFor="branch" className='text-white'>Enter the name of branch</label> */}
+          
           <input
             type="text"
             placeholder="Enter name of branch.."

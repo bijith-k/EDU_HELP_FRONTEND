@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import user from "../../../assets/user.png";
 import { format } from "timeago.js";
 import axiosInstance from "../../../axios";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
 
 const Message = ({ message, own,sendBy }) => {
   const [student, setStudent] = useState([]);
- 
+ const navigate = useNavigate();
+ const toast = useToast();
 
   useEffect(() => {
      if(sendBy){
@@ -14,9 +17,23 @@ const getStudent = async () => {
     const res = await axiosInstance("Ttoken").get(
       `tutor/get-students?id=${sendBy}`
     );
-    setStudent(res.data);
+    if (res.data.status == false) {
+       
+     localStorage.removeItem("Ttoken");
+     navigate("/tutor");
+    } else {
+      setStudent(res.data);
+    }
+    
   } catch (error) {
     console.log(error);
+    toast({
+      title: error.message,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+      position: "top",
+    });
   }
 };
 getStudent();

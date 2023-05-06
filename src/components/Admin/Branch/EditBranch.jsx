@@ -20,8 +20,31 @@ const EditBranch = () => {
     // Fetch boards from server on component mount
     axiosInstance("Adtoken")
       .get(`admin/boards`)
-      .then((res) => setBoards(res.data.boards))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setBoards(res.data.boards);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
   }, []);
 
   const branchId = localStorage.getItem("branchId");
@@ -29,12 +52,31 @@ const EditBranch = () => {
     axiosInstance("Adtoken")
       .get(`admin/branches?id=${branchId}`)
       .then((res) => {
-        setBranchData(res.data.branches);
-        setSelectedBoard(res.data.branches.board._id);
-        setBranch(res.data.branches.name);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+           setBranchData(res.data.branches);
+           setSelectedBoard(res.data.branches.board._id);
+           setBranch(res.data.branches.name);
+        }
+       
       })
       .catch((error) => {
-        console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -42,12 +84,7 @@ const EditBranch = () => {
     setSelectedBoard(e.target.value);
   };
 
-  const config = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${token}`,
-    },
-  };
+   
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -80,17 +117,30 @@ const EditBranch = () => {
         branch: branch,
       })
       .then((res) => {
-        localStorage.removeItem("branchId");
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setSelectedBoard("");
-        setBranch("");
-        navigate("/admin/branch");
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+                  localStorage.removeItem("branchId");
+                  toast({
+                    title: res.data.message,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top",
+                  });
+                  setSelectedBoard("");
+                  setBranch("");
+                  navigate("/admin/branch");
+        }
+
       })
       .catch((err) => {
         toast({
@@ -117,7 +167,7 @@ const EditBranch = () => {
           onSubmit={handleSubmit}
           className="flex flex-col mx-auto  w-3/4 mt-8"
         >
-          {/* <label htmlFor="board" className='text-white'>Board</label> */}
+         
           <select
             id="board"
             value={selectedBoard}
@@ -133,7 +183,7 @@ const EditBranch = () => {
               </option>
             ))}
           </select>
-          {/* <label htmlFor="branch" className='text-white'>Enter the name of branch</label> */}
+           
           <input
             type="text"
             placeholder="Enter name of branch.."

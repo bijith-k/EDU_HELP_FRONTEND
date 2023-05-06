@@ -25,7 +25,6 @@ const QuestionContent = () => {
   const navigate = useNavigate()
 
   const [questions, setQuestions] = useState([]);
-  const [subjects, setSubjects] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -82,29 +81,35 @@ const QuestionContent = () => {
 
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`get-question-papers?studentId=${student._id}`)
+      .get(`get-question-papers?studentId=${true}`)
       .then((response) => {
         if (response.data.status == false) {
-           
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
           localStorage.removeItem("Stoken");
           navigate("/signin");
         } else {
           setQuestions(response.data);
-           
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
-  useEffect(() => {
-    axiosInstance("Stoken")
-      .get(`subjects?branch=${student.branch._id}`)
-      .then((res) => {
-        setSubjects(res.data.subjects);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+   
 
   const handleFavourite = (id) => {
     axiosInstance("Stoken")

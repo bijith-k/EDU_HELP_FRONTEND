@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import user from "../../../assets/bij.jpg";
 import axiosInstance from "../../../axios";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
 
 const Conversation = ({ conversation, currentUser }) => {
   const [student, setStudent] = useState([]);
  const [selected, setSelected] = useState(null)
-
+const navigate = useNavigate();
+const toast = useToast();
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
    
   useEffect(() => {
@@ -16,16 +18,30 @@ const Conversation = ({ conversation, currentUser }) => {
         const res = await axiosInstance("Ttoken").get(
           `tutor/get-students?id=${studentId}`
         );
-        setStudent(res.data);
+        if (res.data.status == false) {
+           
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          setStudent(res.data);
+        }
+        
       } catch (error) {
         console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       }
     };
     getStudents();
   }, [currentUser, conversation]);
 
  const handleOptionClick = (id) => {
-  console.log("first")
+  
    setSelected((prevState) => {
     console.log(prevState,"pp")
      if (prevState === id) {

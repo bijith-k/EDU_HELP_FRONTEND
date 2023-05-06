@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import axiosInstance from "../../../axios";
-import { useSelector } from "react-redux";
 
 import {
   Card,
@@ -25,12 +24,13 @@ import {
 } from "@chakra-ui/react";
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const FavouriteVideos = () => {
-  const { student } = useSelector((state) => state.student);
   const toast = useToast();
+  const navigate = useNavigate();
+
   const [favouriteVideos, setFavouriteVideos] = useState([]);
-  const [subjects, setSubjects] = useState([]);
 
   const [change, setChange] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -52,7 +52,6 @@ const FavouriteVideos = () => {
     setSelectedSubject(data);
   };
 
-
   const videos = favouriteVideos.filter(
     (videos) => videos.video.listed == true
   );
@@ -73,44 +72,67 @@ const FavouriteVideos = () => {
         })
       : videos;
 
-      let currentVideos;
-      if (searchQuery != "" || selectedSubject != "") {
-        currentVideos = filteredData;
-      } else {
-        currentVideos = filteredData.slice(firstVideoIndex, lastVideoIndex);
-      }
+  let currentVideos;
+  if (searchQuery != "" || selectedSubject != "") {
+    currentVideos = filteredData;
+  } else {
+    currentVideos = filteredData.slice(firstVideoIndex, lastVideoIndex);
+  }
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`favourite-videos?id=${student._id}`)
+      .get(`favourite-videos`)
       .then((response) => {
-        setFavouriteVideos(response.data);
+        if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setFavouriteVideos(response.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, [change]);
-
-  useEffect(() => {
-    axiosInstance("Stoken")
-      .get(`subjects?branch=${student.branch._id}`)
-      .then((res) => {
-        setSubjects(res.data.subjects);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   const handleRemove = (id) => {
     onClose();
     axiosInstance("Stoken")
       .put(`remove-favourite-video/${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          setChange(res.data.message);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -134,8 +156,8 @@ const FavouriteVideos = () => {
       <div className="flex justify-center">
         {videos.length > 0 ? (
           <div className="grid md:grid-cols-4 gap-1">
-            {filteredData.length > 0 ? (
-              filteredData.map((videos, index) => (
+            {currentVideos.length > 0 ? (
+              currentVideos.map((videos, index) => (
                 <Card maxW="sm" key={index}>
                   <CardBody>
                     <iframe
@@ -160,7 +182,6 @@ const FavouriteVideos = () => {
                   <CardFooter>
                     <ButtonGroup spacing="2" className="mx-auto">
                       <Button
-                        // size="medium"
                         className="bg-red-500 text-white p-3 rounded-lg"
                         onClick={onOpen}
                       >

@@ -1,8 +1,3 @@
-// import React, { useState } from "react";
-// import { Link } from "react-router-dom";
-// import { HiMenuAlt1 } from "react-icons/hi";
-// import { MdClose } from "react-icons/md";
-
 import * as React from "react";
 
 import {
@@ -27,7 +22,6 @@ import {
   MenuGroup,
   MenuDivider,
 } from "@chakra-ui/react";
-// import { HamburgerIcon, FiChevronDown } from "react-icons";
 import { FiMenu, FiChevronDown } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -173,11 +167,11 @@ const Navbar = () => {
                   </MenuList>
                 </Menu>
               ) : (
-                // <Button as={Link} href={item.href} variant="ghost">
+                 
                 <span className="font-bold" onClick={() => navigate(item.href)}>
                   {item.label}
                 </span>
-                // </Button>
+                
               )
             )}
           </Stack>

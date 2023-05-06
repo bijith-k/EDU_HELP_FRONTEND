@@ -20,7 +20,7 @@ const Pending = () => {
           LOGOUT
         </button>
       </div>
-      <div className="flex flex-col  justify-center items-center bg-slate-400 h-full">
+      <div className="flex flex-col  justify-center items-center bg-slate-400 h-screen">
         <p className="font-bold text-2xl text-center">Hi</p>
         <p className="font-bold text-2xl text-center">
           Your request to register as a tutor is reviewing by admin

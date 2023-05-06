@@ -3,13 +3,11 @@ import { configureStore } from '@reduxjs/toolkit'
 import studentReducer from '../features/studentSlice'
 import tutorReducer from '../features/tutorSlice'
 import sidebarReducer from '../features/sidebarSlice'
-import contentReducer from '../features/contentSlice'
 
 const store = configureStore({
   reducer: {
     student: studentReducer,
     sidebar: sidebarReducer,
-    contents: contentReducer,
     tutor: tutorReducer,
   }
 })

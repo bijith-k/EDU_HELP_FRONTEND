@@ -76,6 +76,16 @@ const AddEvents = () => {
               });
 
               navigate("/");
+            } else if (response.data.status == false) {
+              toast({
+                title: response.data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
+              localStorage.removeItem("Stoken");
+              navigate("/signin");
             } else {
               toast({
                 title: response.data.message,
@@ -103,19 +113,7 @@ const AddEvents = () => {
       <Navbar />
       <Header />
       <HeadTitle title={"add events"} />
-      {/* <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
-          "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
-        </h1>
-      </div>
-      <div className="bg-blue-500">
-        <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
-          add events
-        </h1>
-      </div> */}
       <form action="" onSubmit={handleSubmit} className="p-3 w-3/4 mx-auto">
-        {/* {errors ? <p className=" text-red-500 font-normal bg-white border-2 border-red-500  my-2 w-fit rounded-xl p-2 mx-auto">{errors}</p> : null } */}
-
         <label htmlFor="eventName" className=" font-medium">
           Enter the name of event
         </label>
@@ -172,17 +170,7 @@ const AddEvents = () => {
         <label htmlFor="description" className=" font-medium">
           Write a short description about the event
         </label>
-        {/* <input
-        type="text"
-        name="description"
-        className="w-full p-3 h-40 mb-2"
-        placeholder="Type here..............."
-        // value={notesData.noteName}
-        // onChange={(e) =>
-        //  { setNotesData({ ...notesData, noteName: e.target.value })
-        //  setErrors(null)}
-        // }
-      />   */}
+
         <textarea
           name="description"
           id=""

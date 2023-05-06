@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "../../../axios";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { setStudent } from "../../../features/studentSlice";
 
 import Navbar from "../Dashboard/Navbar";
 import { setTutor } from "../../../features/tutorSlice";
@@ -42,24 +41,24 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (tutor.accepted == false && tutor.rejected == false) {
-      navigate("/tutor/approval-pending");
-    } else if (tutor.rejected) {
-      navigate("/tutor/approval-rejected");
-    } else if (tutor.blocked) {
-      localStorage.removeItem("Ttoken");
-      navigate("/tutor");
-      toast({
-        title: "Blocked",
-        description: "Your account is blocked by the admin",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
-    }
-  }, []);
+ useEffect(() => {
+   if (tutor.approved == false && tutor.rejected == false) {
+     navigate("/tutor/approval-pending");
+   } else if (tutor.rejected) {
+     navigate("/tutor/approval-rejected");
+   } else if (tutor.blocked) {
+     localStorage.removeItem("Ttoken");
+     navigate("/tutor");
+     toast({
+       title: "Blocked",
+       description: "Your account is blocked by the admin",
+       status: "error",
+       duration: 5000,
+       isClosable: true,
+       position: "top",
+     });
+   }
+ }, []);
 
   const [userData, setUserData] = useState({
     name: tutor.name,
@@ -75,7 +74,7 @@ const EditProfile = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [errors, setErrors] = useState(null);
+   
 
   useEffect(() => {
     // Fetch boards from server on component mount
@@ -86,9 +85,29 @@ const EditProfile = () => {
         },
       })
       .then((res) => {
-        setBoards(res.data.boards);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+           setBoards(res.data.boards);
+        }
+       
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {console.error(err)
+      toast({
+        title: err.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });});
   }, []);
 
   useEffect(() => {
@@ -96,10 +115,24 @@ const EditProfile = () => {
       axiosInstance("Ttoken")
         .get(`tutor/branches?board=${selectedBoard}`)
         .then((res) => {
-          setBranches(res.data.branches);
+          if (res.data.status == false) {
+             
+            localStorage.removeItem("Ttoken");
+            navigate("/tutor");
+          } else {
+            setBranches(res.data.branches);
+          }
+          
         })
         .catch((error) => {
           console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setBranches([]);
@@ -110,7 +143,18 @@ const EditProfile = () => {
     let nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ-']+(\s+[a-zA-ZÀ-ÖØ-öø-ÿ-']+)*$/;
     let emailRegex = /^\S+@\S+\.\S+$/;
     let phoneRegex = /^[789]\d{9}$/;
-
+console.log(
+  userData.name,
+  userData.email,
+  userData.phone,
+  userData.subjects,
+  userData.timeFrom,
+  userData.timeTo,
+  userData.place,
+  userData.profession,
+  selectedBoard,
+  selectedBranch
+);
     if (
       !userData.name ||
       !userData.email ||
@@ -262,7 +306,7 @@ const EditProfile = () => {
             value={selectedBoard}
             onChange={(e) => {
               setSelectedBoard(e.target.value);
-              setErrors(null);
+               
             }}
             className="pl-10 uppercase"
           >
@@ -288,8 +332,7 @@ const EditProfile = () => {
             value={selectedBranch}
             onChange={(e) => {
               setSelectedBranch(e.target.value);
-
-              setErrors(null);
+ 
             }}
             className="pl-10 uppercase"
           >

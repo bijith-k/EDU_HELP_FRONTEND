@@ -18,8 +18,30 @@ const AddSubject = () => {
     // Fetch boards from server on component mount
     axiosInstance("Adtoken")
       .get(`admin/boards`)
-      .then((res) => setBoards(res.data.boards))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+           setBoards(res.data.boards);
+        }
+       })
+      .catch((err) => {console.error(err)
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
   }, []);
 
   useEffect(() => {
@@ -27,6 +49,7 @@ const AddSubject = () => {
       axiosInstance("Adtoken")
         .get(`admin/branches?board=${selectedBoard}`)
         .then((res) => {
+
           setBranches(res.data.branches);
         })
         .catch((error) => {
@@ -37,14 +60,7 @@ const AddSubject = () => {
     }
   }, [selectedBoard]);
 
-  const token = localStorage.getItem("Adtoken");
-
-  const config = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -87,17 +103,30 @@ const AddSubject = () => {
         subject: subjectName,
       })
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setSelectedBoard("");
-        setSelectedBranch("");
-        setSubjectName("");
-        navigate("/admin/subject");
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          setSelectedBoard("");
+          setSelectedBranch("");
+          setSubjectName("");
+          navigate("/admin/subject");
+        }
+        
       })
       .catch((err) => {
         toast({

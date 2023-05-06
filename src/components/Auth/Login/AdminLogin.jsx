@@ -79,21 +79,7 @@ const AdminLogin = () => {
 
   return (
     <div className="bg-dark-purple max-w-screen-2xl mx-auto min-h-screen flex flex-col">
-      {/* <div className="sm:col-span-2 bg-gray-700 md:min-h-screen flex flex-col justify-evenly   items-center text-white font-sans uppercase">
-        <div>
-          <img src={ragam} className="w-32 object-cover" alt="logo" />
-        </div>
-        <div className="text-center md:text-5xl text-3xl mt-3 md:mt-0">
-          <p className="font-bold leading-snug">
-            WELCOME <br /> TO <br /> EDU-HELP
-          </p>
-        </div>
-        <div>
-          <p className="font-bold md:text-3xl text-xl my-5 md:my-0">
-            LOGIN TO EXPLORE
-          </p>
-        </div>
-      </div> */}
+      
       <div className="text-white mt-10 max-w-sm mx-auto p-3 rounded-2xl">
         <img src={logo} className="w-20 h-20 mx-auto mb-4" alt="logo" />
         <p className="font-bold text-3xl">WELCOME ADMIN</p>

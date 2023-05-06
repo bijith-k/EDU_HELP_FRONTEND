@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import Navbar from "./Navbar";
+import { useNavigate } from "react-router-dom";
 import school from "../../../assets/school.png";
-import ragam from "../../../assets/ragam.jpeg";
 import news from "../../../assets/news.jpg";
 
-import { useDispatch, useSelector } from "react-redux";
-import { setStudent } from "../../../features/studentSlice";
+import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
@@ -16,10 +13,7 @@ const Home = () => {
   const toast = useToast()
   const { student } = useSelector((state) => state.student);
   const [event, setEvent] = useState([])
-
-  
   const navigate = useNavigate();
-console.log(event)
   function formatDate(dateString) {
     console.log(dateString)
     const [date, time] = dateString.split("T");
@@ -63,7 +57,7 @@ console.log(event)
 
   return (
     <div className="h-screen max-w-screen-2xl bg-[#d4d8f0] pt-16 overflow-x-hidden mx-auto">
-      {/* <Navbar /> */}
+      
       <Header />
       {student.branch.name === "1-10" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
@@ -165,7 +159,7 @@ console.log(event)
         </div>
       ) : null}
 
-      {/* <div className=" md:h-72 h-56 flex justify-center items-center"> */}
+     
       <div className="md:h-80 h-80 bg-[#fffffe]  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid ">
         <div className=" bg-[#fffffe] md:h-20 h-16 rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
           <h1 className="uppercase text-[#232946] underline font-bold md:text-2xl">
@@ -206,9 +200,7 @@ console.log(event)
           </h1>
         </div>
       </div>
-      {/* </div> */}
-
-      {/* <div className=" md:h-64 h-56 flex justify-center items-center"> */}
+      
       <div className="md:h-64 h-64 bg-[#fffffe]  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid  mt-4 ">
         <div className=" bg-[#fffffe] rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
           <h1 className="uppercase text-[#232946] underline font-bold md:text-2xl">
@@ -240,7 +232,7 @@ console.log(event)
             view more news
           </h1>
         </div>
-        {/* </div> */}
+       
       </div>
       <div className="mt-5">
         <Footer />
@@ -250,32 +242,4 @@ console.log(event)
 };
 
 export default Home;
-
-// import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-// import React from 'react'
-
-// const Home = () => {
-//   return (
-//     <Tabs>
-//       <TabList className="bg-green-500">
-//         <Tab className="bg-red-300 w-1/3">One</Tab>
-//         <Tab className="bg-yellow-300 w-1/3">Two</Tab>
-//         <Tab className="bg-blue-300 w-1/3">Three</Tab>
-//       </TabList>
-
-//       <TabPanels>
-//         <TabPanel>
-//           <p>one!</p>
-//         </TabPanel>
-//         <TabPanel>
-//           <p>two!</p>
-//         </TabPanel>
-//         <TabPanel>
-//           <p>three!</p>
-//         </TabPanel>
-//       </TabPanels>
-//     </Tabs>
-//   );
-// }
-
-// export default Home
+ 

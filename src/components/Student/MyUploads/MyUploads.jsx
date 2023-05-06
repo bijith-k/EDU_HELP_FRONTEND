@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Navbar from "../Home/Navbar";
 
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 
-import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from "../../../axios";
-import { useNavigate } from "react-router-dom";
-import { setStudent } from "../../../features/studentSlice";
 import MyNotes from "./MyNotes";
 import MyVideos from "./MyVideos";
 import MyQuestionPapers from "./MyQuestionPapers";
@@ -15,15 +11,7 @@ import HeadTitle from "../Header/HeadTitle";
 import Footer from "../Footer/Footer";
 
 const MyUploads = () => {
-  const [value, setValue] = React.useState("1");
-
-  const { student } = useSelector((state) => state.student);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+   
 
   return (
     <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">

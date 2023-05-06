@@ -31,15 +31,28 @@ const AddBoard = () => {
     axiosInstance("Adtoken")
       .post(`admin/add-board`, board)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setBoard("");
-        navigate("/admin/board");
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+         toast({
+           title: res.data.message,
+           status: "success",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
+         setBoard("");
+         navigate("/admin/board");
+        }
+        
       })
       .catch((err) => {
         toast({
@@ -67,7 +80,7 @@ const AddBoard = () => {
           onSubmit={handleSubmit}
           className="flex flex-col mx-auto w-3/4 mt-8"
         >
-          {/* <label htmlFor="board" className='text-white'>Enter the name of board or university</label> */}
+           
           <input
             type="text"
             name="board"

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
-import { useDispatch, useSelector } from "react-redux";
-import { setNoteData } from "../../../features/contentSlice";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
 import { useToast } from "@chakra-ui/react";
@@ -25,14 +23,34 @@ const EditPlans = () => {
     axiosInstance("Adtoken")
       .get(`admin/plans?id=${planId}`)
       .then((res) => {
-        setUpdateData({
-          plan: res.data.plan,
-          duration: res.data.duration,
-          price: res.data.price,
-        });
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+           setUpdateData({
+             plan: res.data.plan,
+             duration: res.data.duration,
+             price: res.data.price,
+           });
+        }
+       
       })
       .catch((error) => {
         console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -71,12 +89,7 @@ const EditPlans = () => {
       });
     }
 
-    const config = {
-      headers: {
-        // "Content-Type": "",
-        Authorization: `Bearer ${token}`,
-      },
-    };
+     
 
     await axiosInstance("Adtoken")
       .post(`admin/edit-plans?plan=${planId}`, {
@@ -87,14 +100,24 @@ const EditPlans = () => {
           localStorage.removeItem("planId");
           navigate("/admin/plans");
         } else {
-          toast.error(res.data.message, {
-            position: "top-center",
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
           });
         }
       })
       .catch((error) => {
         console.log(error);
-        toast.error("Server error");
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   };
 

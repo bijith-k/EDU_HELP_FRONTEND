@@ -19,13 +19,13 @@ import {
 } from "@chakra-ui/react";
 import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const UploadedQuestions = () => {
-  const { tutor } = useSelector((state) => state.tutor);
-
+   const navigate = useNavigate()
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
@@ -53,12 +53,34 @@ const UploadedQuestions = () => {
 
 
   useEffect(() => {
-    const Tid = localStorage.getItem("Tid");
+    
 
     axiosInstance("Ttoken")
-      .get(`tutor/uploaded-questions?id=${Tid}`)
+      .get(`tutor/uploaded-questions?id=${true}`)
       .then((response) => {
-        setQuestions(response.data);
+        if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          setQuestions(response.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, [change]);
 
@@ -92,18 +114,30 @@ const UploadedQuestions = () => {
     axiosInstance("Ttoken")
       .put(`tutor/questions-private-public?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+       if (res.data.status == false) {
+         toast({
+           title: res.data.message,
+           status: "error",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
+         localStorage.removeItem("Ttoken");
+         navigate("/tutor");
+       } else {
+         toast({
+           title: res.data.message,
+           status: "success",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
+         setChange(res.data.message);
+       }
       })
       .catch((err) => {
         console.log(err);
-        // setToastMessage(res.data.message);
+        
         toast({
           title: err.message,
           status: "error",
@@ -119,18 +153,30 @@ const UploadedQuestions = () => {
     axiosInstance("Ttoken")
       .delete(`tutor/delete-questions?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+       if (res.data.status == false) {
+         toast({
+           title: res.data.message,
+           status: "error",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
+         localStorage.removeItem("Ttoken");
+         navigate("/tutor");
+       } else {
+         toast({
+           title: res.data.message,
+           status: "success",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
+         setChange(res.data.message);
+       }
       })
       .catch((err) => {
         console.log(err);
-        // setToastMessage(res.data.message);
+        
         toast({
           title: err.message,
           status: "error",
@@ -154,116 +200,7 @@ const UploadedQuestions = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
             {currentQuestions.length > 0 ? (
               currentQuestions.map((question, index) => (
-                //           <div className="py-5 max-w-xs" key={index}>
-                //             <div className="rounded-xl bg-gray-200 hover:shadow-xl hover:shadow-gray-500 overflow-hidden shadow-lg  p-2">
-                //               {/* <img
-                //   src="https://www.pexels.com/photo/black-nikon-dslr-camera-on-white-book-9222655/"
-                //   alt="img"
-                //   className=""
-                // /> */}
-                //               <iframe
-                //                 title="PDF Viewer"
-                //                 src={`${import.meta.env.VITE_BASE_PATH}${
-                //                   question.file_path
-                //                 }`}
-                //                 height="240"
-                //                 scrolling="no"
-                //                 className="rounded-xl border border-yellow-600"
-                //               />
-                //               <div className="px-6 py-4">
-                //                 <div className="font-bold text-xl mb-2 uppercase">
-                //                   {question.exam_name}
-                //                 </div>
-                //                 <p className="text-gray-500 uppercase ">
-                //                   CLASS : {question.branch.name}
-                //                 </p>
-                //                 <p className="text-gray-500 uppercase">
-                //                   Subject : {question.subject.name}
-                //                 </p>
-                //                 {question.approved ? (
-                //                   <p className="text-gray-500 uppercase">
-                //                     Status : Approved
-                //                   </p>
-                //                 ) : (
-                //                   <p className="text-gray-500 uppercase">
-                //                     Status : Pending Admin approval
-                //                   </p>
-                //                 )}
-                //                 {question.rejected ? (
-                //                   <p className="text-gray-500 uppercase">
-                //                     Status : Rejected
-                //                   </p>
-                //                 ) : null}
-                //               </div>
-                //               <div className="grid grid-flow-col gap-5 pb-2 px-6">
-                //                 <span className="bg-gray-600 text-white  rounded-full px-3 py-1 text-sm font-base mb-2 text-center">
-                //                   <a
-                //                     href={`${import.meta.env.VITE_BASE_PATH}${
-                //                       question.file_path
-                //                     }`}
-                //                     target="_blank"
-                //                   >
-                //                     VIEW
-                //                   </a>
-                //                 </span>
-                //                 {question.private ? (
-                //                   <span
-                //                     className="bg-gray-600 text-white  rounded-full px-3 py-1 text-sm font-base mb-2 text-center"
-                //                     onClick={() => handlePrivate(question._id)}
-                //                   >
-                //                     MAKE PUBLIC
-                //                   </span>
-                //                 ) : (
-                //                   <span
-                //                     className="bg-gray-600 text-white  rounded-full px-3 py-1 text-sm font-base mb-2 text-center"
-                //                     onClick={() => handlePrivate(question._id)}
-                //                   >
-                //                     MAKE PRIVATE
-                //                   </span>
-                //                 )}
-                //                 <span
-                //                   className="bg-gray-600 text-white  rounded-full px-3 py-1 text-sm font-base mb-2 text-center"
-                //                   onClick={onOpen}
-                //                 >
-                //                   DELETE
-                //                 </span>
-                //                 <AlertDialog
-                //                   isOpen={isOpen}
-                //                   leastDestructiveRef={cancelRef}
-                //                   onClose={onClose}
-                //                 >
-                //                   <AlertDialogOverlay>
-                //                     <AlertDialogContent>
-                //                       <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                //                         Delete Question Paper
-                //                       </AlertDialogHeader>
-
-                //                       <AlertDialogBody>
-                //                         Are you sure? You can't undo this action
-                //                         afterwards.
-                //                       </AlertDialogBody>
-
-                //                       <AlertDialogFooter>
-                //                         <Button ref={cancelRef} onClick={onClose}>
-                //                           Cancel
-                //                         </Button>
-                //                         <Button
-                //                           colorScheme="red"
-                //                           onClick={() => handleDelete(question._id)}
-                //                           ml={3}
-                //                         >
-                //                           Delete
-                //                         </Button>
-                //                       </AlertDialogFooter>
-                //                     </AlertDialogContent>
-                //                   </AlertDialogOverlay>
-                //                 </AlertDialog>
-                //                 {/* <span className="bg-gray-200 rounded-full px-3 py-1 text-sm font-base mb-2 text-center">
-                //     download
-                //   </span> */}
-                //               </div>
-                //             </div>
-                //           </div>
+                
                 <Card maxW="sm" key={index}>
                   <CardBody>
                     <iframe
@@ -358,7 +295,7 @@ const UploadedQuestions = () => {
                               </Button>
                               <Button
                                 colorScheme="red"
-                                onClick={() => handleRemove(question._id)}
+                                onClick={() => handleDelete(question._id)}
                                 ml={3}
                               >
                                 Delete

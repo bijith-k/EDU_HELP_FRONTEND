@@ -2,27 +2,19 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../Home/Navbar";
 import { ImLocation2 } from "react-icons/im";
 import { FiPhoneCall } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
-import { setStudent } from "../../../features/studentSlice";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
 import Footer from "../Footer/Footer";
 import { useToast } from "@chakra-ui/react";
 
 const Events = () => {
-  const [value, setValue] = React.useState("1");
-const toast = useToast()
-  const { student } = useSelector((state) => state.student);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const token = localStorage.getItem("Stoken");
-  const [events, setEvents] = useState([]);
+  const toast = useToast();
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const navigate = useNavigate();
+
+  const [events, setEvents] = useState([]);
 
   function formatDate(dateString) {
     const [date, time] = dateString.split("T");
@@ -48,7 +40,6 @@ const toast = useToast()
         } else {
           setEvents(response.data);
         }
-        
       })
       .catch((err) => {
         console.log(err);
@@ -92,14 +83,6 @@ const toast = useToast()
                     />
                   </div>
 
-                  {/* <iframe
-                title="PDF Viewer"
-                src={` ${event.poster}`}
-                height="240"
-                scrolling="no"
-                
-                className="w-full object-contain rounded-xl border border-yellow-600"
-              /> */}
                   <div className="px-6 py-4 flex flex-col items-center">
                     <div className="font-semibold text-lg mb-2 uppercase">
                       Organized by {event.organizer}
@@ -126,7 +109,9 @@ const toast = useToast()
           </div>
         ) : (
           <div className="h-40">
-            <p className="text-center font-bold text-lg">There is no events to show</p>
+            <p className="text-center font-bold text-lg">
+              There is no events to show
+            </p>
           </div>
         )}
       </div>

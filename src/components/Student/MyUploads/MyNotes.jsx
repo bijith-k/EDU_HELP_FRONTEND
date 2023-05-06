@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useSelector } from "react-redux";
+
 import axiosInstance from "../../../axios";
 import {
   Card,
@@ -28,14 +28,12 @@ import { useNavigate } from "react-router-dom";
 
 const MyNotes = () => {
   const navigate = useNavigate()
-  const { student } = useSelector((state) => state.student);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
   const toast = useToast();
 
   const [notes, setNotes] = useState([]);
-  const [subjects, setSubjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [change, setChange] = useState("");
@@ -86,7 +84,7 @@ const MyNotes = () => {
 
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`get-notes?id=${student._id}`)
+      .get(`get-notes?id=${true}`)
       .then((response) => {
         if (response.data.status==false) {
            
@@ -114,25 +112,7 @@ const MyNotes = () => {
       })
   }, [change]);
 
-  useEffect(() => {
-    axiosInstance("Stoken")
-      .get(`subjects?branch=${student.branch._id}`)
-      .then((res) => {
-         
-          setSubjects(res.data.subjects);
-        
-      })
-      .catch((err) => {
-        console.log(err);
-        toast({
-          title: err.message,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-      });
-  }, []);
+  
 
   const handlePrivate = (id) => {
     axiosInstance("Stoken")

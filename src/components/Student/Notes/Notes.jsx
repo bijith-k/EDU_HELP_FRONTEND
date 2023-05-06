@@ -1,31 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Navbar from "../Home/Navbar";
  
 import NotesContent from "./NotesContent";
 import VideosContent from "./VideosContent";
 import QuestionContent from "./QuestionContent";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
-// import axios from "../../../axios";
-import { useNavigate } from "react-router-dom";
-import { setStudent } from "../../../features/studentSlice";
+import { useSelector } from "react-redux";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 
 const Notes = () => {
-  const [value, setValue] = React.useState("1");
-
+ 
   const {student} = useSelector((state) => state.student);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  
-  
-  
+   
 
   return (
     <div className="max-w-screen-2xl mx-auto min-h-screen w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
@@ -56,37 +43,6 @@ const Notes = () => {
           </h1>
         )}
       </div>
-
-      {/* <TabContext value={value} className="bg-black">
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList
-              onChange={handleChange}
-              aria-label="lab API tabs example"
-              className="bg-blue-900 text-white grid"
-              centered
-            >
-              <Tab
-                label="NOTES"
-                value="1"
-                className="text-white font-semibold w-1/3"
-              />
-              <Tab
-                label="VIDEOS"
-                value="2"
-                className="text-white font-semibold w-1/3"
-              />
-              <Tab
-                label="QUESTION PAPERS"
-                value="3"
-                className="text-white font-semibold w-1/3"
-              />
-            </TabList>
-          </Box>
-
-          {/* {value === "1" && <NotesContent />}
-          {value === "2" && <VideosContent />}
-          {value === "3" && <QuestionContent />} */}
-      {/* </TabContext> */}
 
       <Tabs variant="line" colorScheme="green">
         <TabList className="bg-[#fffffe] text-black">

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
-import { FaSearch } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
-import { useDispatch } from "react-redux";
-import { setEventsData, setNoteData } from "../../../features/contentSlice";
+
 import {
   Table,
   TableContainer,
@@ -20,40 +18,46 @@ import {
 const ManageEvents = () => {
   const [events, setEvents] = useState([]);
 
-  const [boards, setBoards] = useState([]);
-  const [branches, setBranches] = useState([]);
-
+ 
   const navigate = useNavigate();
   const [toastMessage, setToastMessage] = useState("");
-  const [order, setOrder] = useState("ASC");
+   
 
-  const dispatch = useDispatch();
+  
   const toast = useToast();
 
   useEffect(() => {
     axiosInstance("Adtoken")
       .get(`admin/events`)
       .then((res) => {
-        setEvents(res.data);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setEvents(res.data);
+        }
+        
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, [toastMessage]);
 
-  const sorting = (col) => {
-    if (order === "ASC") {
-      const sorted = [...boards].sort((a, b) =>
-        a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
-      );
-      setBoards(sorted);
-      setOrder("DSC");
-    }
-    if (order === "DSC") {
-      const sorted = [...boards].sort((a, b) =>
-        a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
-      );
-      setBoards(sorted);
-      setOrder("ASC");
-    }
-  };
+  
 
   function formatDate(dateString) {
     const [date, time] = dateString.split("T");
@@ -62,39 +66,37 @@ const ManageEvents = () => {
     return formattedDate;
   }
 
-  const sortingBranch = (col) => {
-    if (order === "ASC") {
-      const sorted = [...branches].sort((a, b) =>
-        a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
-      );
-      setBranches(sorted);
-      setOrder("DSC");
-    }
-    if (order === "DSC") {
-      const sorted = [...branches].sort((a, b) =>
-        a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
-      );
-      setBranches(sorted);
-      setOrder("ASC");
-    }
-  };
+   
 
   const handleApprove = (id) => {
     axiosInstance("Adtoken")
       .get(`admin/approve-events?event=${id}`)
       .then((res) => {
-        setToastMessage(res.data.message);
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setToastMessage(`Clicked at ${new Date().toISOString()}`);
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+        }
+        
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(res.data.message);
+        setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
           status: "error",
@@ -109,18 +111,31 @@ const ManageEvents = () => {
     axiosInstance("Adtoken")
       .get(`admin/reject-events?event=${id}`)
       .then((res) => {
-        setToastMessage(res.data.message);
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+         setToastMessage(`Clicked at ${new Date().toISOString()}`);
+         toast({
+           title: res.data.message,
+           status: "success",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
+        }
+        
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(res.data.message);
+        setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
           status: "error",
@@ -135,18 +150,31 @@ const ManageEvents = () => {
     axiosInstance("Adtoken")
       .get(`admin/event-list-unlist?event=${id}`)
       .then((res) => {
-        setToastMessage(res.data.message);
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setToastMessage(`Clicked at ${new Date().toISOString()}`);
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+        }
+        
       })
       .catch((err) => {
         console.log(err);
-        setToastMessage(res.data.message);
+        setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
           status: "error",
@@ -167,78 +195,55 @@ const ManageEvents = () => {
         <p className="bg-white w-full p-3 my-5 uppercase font-bold text-center">
           manage events
         </p>
-        <div className="flex justify-around">
-          {/* <div className="bg-white p-3 rounded-2xl inline-flex ">
-<input type="text" name="" id="" placeholder='search' className='inline-block' />
-<div className='bg-sky-900 p-3 text-white rounded-full inline-block'>
-  <FaSearch />
-</div>
-</div> */}
-          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
-            <input
-              type="text"
-              name=""
-              id=""
-              placeholder="search"
-              className="mb-2 md:mb-0 md:mr-2 inline-block w-full md:w-auto"
-            />
-            <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
-              <FaSearch />
-            </div>
-          </div> */}
-
-          {/* <div className='bg-white p-2 rounded-2xl flex'>
-        <button className='font-bold text-sky-900' onClick={()=>navigate('/admin-add-branch')}>ADD NOTES</button>
-      </div> */}
-        </div>
+        
 
         <TableContainer className="rounded-2xl mt-3">
           <Table variant="simple">
             <Thead>
               <Tr className="bg-green-300 h-14">
                 <Th className="p-3 border">No</Th>
-                <Th onClick={() => sorting("name")} className="p-3 border">
+                <Th  className="p-3 border">
                   Name of event
                 </Th>
                 <Th
-                  onClick={() => sortingBranch("name")}
+                   
                   className="p-3 border"
                 >
                   Organizer
                 </Th>
                 <Th
-                  onClick={() => sortingBranch("name")}
+                   
                   className="p-3 border"
                 >
                   Location
                 </Th>
                 <Th
-                  onClick={() => sortingBranch("name")}
+                  
                   className="p-3 border"
                   // width="20"
                 >
                   Description
                 </Th>
                 <Th
-                  onClick={() => sortingBranch("name")}
+                   
                   className="p-3 border"
                 >
                   Starting Date
                 </Th>
                 <Th
-                  onClick={() => sortingBranch("name")}
+                   
                   className="p-3 border"
                 >
                   Ending Date
                 </Th>
                 <Th
-                  onClick={() => sortingBranch("name")}
+                   
                   className="p-3 border"
                 >
                   Link
                 </Th>
                 <Th
-                  onClick={() => sortingBranch("name")}
+                   
                   className="p-3 border"
                 >
                   Contact
@@ -312,13 +317,7 @@ const ManageEvents = () => {
                         REJECT
                       </button>
                     ) : null}
-
-                    {/* <button
-                      className="bg-sky-900 font-semibold text-white m-2 w-22 p-2 rounded-xl"
-                      onClick={() => handleEdit(event)}
-                    >
-                      EDIT
-                    </button> */}
+ 
                   </Td>
                 </Tr>
               ))}

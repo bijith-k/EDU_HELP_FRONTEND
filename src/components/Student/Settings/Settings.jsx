@@ -18,7 +18,7 @@ import Footer from "../Footer/Footer";
 
 const Settings = () => {
   const { student } = useSelector((state) => state.student);
-  const token = localStorage.getItem("Stoken");
+  
   const navigate = useNavigate();
 
   const [showp, setShowp] = useState(false);
@@ -111,12 +111,7 @@ const Settings = () => {
             position: "bottom-right",
           });
           setLoading(false);
-          // setPasswords({
-          //   currentPassword: "",
-          //   newPassword: "",
-          // });
-          // setEmail("");
-          // setOtp("");
+          
         }
       })
       .catch((error) => {
@@ -276,11 +271,7 @@ const Settings = () => {
           UPDATE PASSWORD
         </Button>
       </div>
-
-      {/* <hr className="my-10 mx-5" />
-      <div className="mt-5 w-2/3 mx-auto">
-
-      </div> */}
+ 
       <div className="mt-5">
         <Footer />
       </div>

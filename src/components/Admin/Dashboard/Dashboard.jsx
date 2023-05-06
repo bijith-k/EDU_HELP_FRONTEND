@@ -12,7 +12,9 @@ import {
   BarElement,
   Title,
 } from "chart.js";
-import { Doughnut, Pie, Bar,Line } from "react-chartjs-2";
+import { Doughnut, Pie } from "react-chartjs-2";
+import { useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   ArcElement,
@@ -24,23 +26,13 @@ ChartJS.register(
   Title
 );
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top",
-    },
-    title: {
-      display: true,
-      text: "Chart.js Bar Chart",
-    },
-  },
-};
+ 
 
 const Dashboard = () => {
- 
+ const toast = useToast()
+ const navigate = useNavigate()
    
-  const Token = localStorage.getItem("Adtoken");
+  
   const [students, setStudents] = useState(0);
   const [tutors, setTutors] = useState(0);
 
@@ -58,11 +50,25 @@ const Dashboard = () => {
    
 
   useEffect(() => {
+    
     const fetchBoards = async () => {
       const res = await axiosInstance("Adtoken").get(
         "admin/board-content-count"
       );
-      setBoards(res.data);
+      if (res.data.status == false) {
+        toast({
+          title: res.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        localStorage.removeItem("Adtoken");
+        navigate("/admin");
+      } else {
+        setBoards(res.data);
+      }
+      
     };
     fetchBoards();
 
@@ -73,42 +79,133 @@ const Dashboard = () => {
     axiosInstance("Adtoken")
       .get(`admin/students`)
       .then((res) => {
-        setStudents(res.data.length);
+        if (res.data.status == false) {
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setStudents(res.data.length);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
 
     axiosInstance("Adtoken")
       .get(`admin/tutors`)
       .then((res) => {
-        setTutors(res.data.length);
+        if (res.data.status == false) {
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+         setTutors(res.data.length);
+        }
+        
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
 
     axiosInstance("Adtoken")
       .get(`admin/notes`)
       .then((res) => {
-        setNotesCount(res.data.length);
+        if (res.data.status == false) {
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+           setNotesCount(res.data.length);
+        }
+       
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
 
     axiosInstance("Adtoken")
       .get(`admin/videos`)
       .then((res) => {
-        setVideosCount(res.data.length);
+        if (res.data.status == false) {
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setVideosCount(res.data.length);
+        }
+        
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
 
     axiosInstance("Adtoken")
       .get(`admin/question-papers`)
       .then((res) => {
-        setQuestionsCount(res.data.length);
+        if (res.data.status == false) {
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+         setQuestionsCount(res.data.length);
+        }
+       
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
 
       axiosInstance("Adtoken")
         .get(`admin/activePlans`)
         .then((res) => {
-          setPlanCount(res.data.planCount)
+          if (res.data.status == false) {
+            localStorage.removeItem("Adtoken");
+            navigate("/admin");
+          } else {
+             setPlanCount(res.data.planCount);
+          }
+         
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            title: err.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
-
-       
-
-       
   }, []);
 
 
@@ -168,12 +265,12 @@ const Dashboard = () => {
             <div className="bg-dark-purple text-white w-72 h-28 md:w-72 md:h-32 rounded-xl p-5 my-3 text-center flex flex-col justify-center">
               <div className="text-xl font-bold">total students</div>
               <div className="font-semibold"> {students} </div>
-              {/* <div className="font-semibold">pending approval : 10</div> */}
+              
             </div>
             <div className="bg-dark-purple text-white w-72 h-28 md:w-72 md:h-32 rounded-xl p-5 my-3 text-center flex flex-col justify-center">
               <div className="text-xl font-bold">total tutors</div>
               <div className="font-semibold">{tutors} </div>
-              {/* <div className="font-semibold">pending approval : 10</div> */}
+              
             </div>
           </div>
           <div className=" flex flex-col md:flex-row justify-center md:justify-around items-center pt-5 uppercase">
@@ -196,7 +293,7 @@ const Dashboard = () => {
                     {" "}
                     Total question papers : {board.questionPaperCount}{" "}
                   </p>
-                  {/* <div className="font-semibold">pending approval : 10</div> */}
+                   
                 </div>
               );
             })}

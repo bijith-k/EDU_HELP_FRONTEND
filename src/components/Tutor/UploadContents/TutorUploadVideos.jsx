@@ -2,7 +2,7 @@ import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Dashboard/Navbar";
-import { useToast } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import Footer from "../Footer/Footer";
 
@@ -20,35 +20,59 @@ const TutorUploadVideos = () => {
     videoLink: "",
   });
 
-  const [errors, setErrors] = useState(null);
+  const [isLoading, setIsLoading] = useState(null);
+   
 
   const { tutor } = useSelector((state) => state.tutor);
 
-  useEffect(() => {
-    if (tutor.accepted == false && tutor.rejected == false) {
-      navigate("/tutor/approval-pending");
-    } else if (tutor.rejected) {
-      navigate("/tutor/approval-rejected");
-    } else if (tutor.blocked) {
-      localStorage.removeItem("Ttoken");
-      navigate("/tutor");
-      toast({
-        title: "Blocked",
-        description: "Your account is blocked by the admin",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
-    }
-  }, []);
+ useEffect(() => {
+   if (tutor.approved == false && tutor.rejected == false) {
+     navigate("/tutor/approval-pending");
+   } else if (tutor.rejected) {
+     navigate("/tutor/approval-rejected");
+   } else if (tutor.blocked) {
+     localStorage.removeItem("Ttoken");
+     navigate("/tutor");
+     toast({
+       title: "Blocked",
+       description: "Your account is blocked by the admin",
+       status: "error",
+       duration: 5000,
+       isClosable: true,
+       position: "top",
+     });
+   }
+ }, []);
 
   useEffect(() => {
     // Fetch boards from server on component mount
     axiosInstance("Ttoken")
       .get(`tutor/boards`)
-      .then((res) => setBoards(res.data.boards))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          setBoards(res.data.boards);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
   }, []);
 
   useEffect(() => {
@@ -56,10 +80,22 @@ const TutorUploadVideos = () => {
       axiosInstance("Ttoken")
         .get(`tutor/branches?board=${selectedBoard}`)
         .then((res) => {
-          setBranches(res.data.branches);
+          if (res.data.status == false) {
+            localStorage.removeItem("Ttoken");
+            navigate("/tutor");
+          } else {
+            setBranches(res.data.branches);
+          }
         })
         .catch((error) => {
           console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setBranches([]);
@@ -71,18 +107,28 @@ const TutorUploadVideos = () => {
       axiosInstance("Ttoken")
         .get(`tutor/subjects?branch=${selectedBranch}`)
         .then((res) => {
-          setSubjects(res.data.subjects);
+         if (res.data.status == false) {
+           localStorage.removeItem("Ttoken");
+           navigate("/tutor");
+         } else {
+           setSubjects(res.data.subjects);
+         }
         })
         .catch((error) => {
           console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setSubjects([]);
     }
   }, [selectedBranch, selectedBoard]);
-  // toast.error(errors, {
-  //   position: "top-center",
-  // },{toastId: 'success1'},);
+  
 
   const errorToast = (message) => {
     toast({
@@ -115,8 +161,14 @@ const TutorUploadVideos = () => {
       errorToast("Enter the name of the video");
       return;
     }
-
-    const token = localStorage.getItem("Ttoken");
+const videoLinkRegex =
+  /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be|be\.com)\/(?:embed\/|v\/|watch\?v=)?([a-zA-Z0-9\-_]+)/;
+if (!videoData.videoLink || !videoLinkRegex.test(videoData.videoLink)) {
+  errorToast("Add youtube link of the video");
+  return;
+}
+    
+ setIsLoading(true);
      
 
     await axiosInstance("Ttoken")
@@ -131,6 +183,7 @@ const TutorUploadVideos = () => {
         }
       )
       .then((res) => {
+         setIsLoading(false);
         if (res.data.uploaded) {
           navigate("/tutor/uploads");
         } else {
@@ -144,6 +197,7 @@ const TutorUploadVideos = () => {
         }
       })
       .catch((error) => {
+         setIsLoading(false);
         console.log(error);
         toast({
           title: err.message,
@@ -164,17 +218,13 @@ const TutorUploadVideos = () => {
           </h1>
         </div>
         <form action="" onSubmit={handleSubmit} className="m-3 w-3/4 mx-auto">
-          {errors ? (
-            <p className=" text-red-500 font-normal bg-white border-2 border-red-500  my-2 w-fit rounded-xl p-2 mx-auto">
-              {errors}
-            </p>
-          ) : null}
+           
           <select
             name="board"
             value={selectedBoard}
             onChange={(e) => {
               setSelectedBoard(e.target.value);
-              setErrors(null);
+              
             }}
             className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
           >
@@ -201,7 +251,7 @@ const TutorUploadVideos = () => {
             value={selectedBranch}
             onChange={(e) => {
               setSelectedBranch(e.target.value);
-              setErrors(null);
+              
             }}
           >
             <option
@@ -227,7 +277,7 @@ const TutorUploadVideos = () => {
             value={selectedSubject}
             onChange={(e) => {
               setSelectedSubject(e.target.value);
-              setErrors(null);
+              
             }}
             className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
           >
@@ -260,7 +310,7 @@ const TutorUploadVideos = () => {
             value={videoData.videoName}
             onChange={(e) => {
               setVideoData({ ...videoData, videoName: e.target.value });
-              setErrors(null);
+              
             }}
           />{" "}
           <br />
@@ -276,19 +326,20 @@ const TutorUploadVideos = () => {
             value={videoData.videoLink}
             onChange={(e) => {
               setVideoData({ ...videoData, videoLink: e.target.value });
-              setErrors(null);
+              
             }}
           />
           <p>
             {" "}
             *These videos will be published only <br /> after admin verification
           </p>
-          <button
+          <Button
+          isLoading={isLoading}
             type="submit"
             className="bg-gray-600 p-3 font-semibold text-white rounded-lg mt-2"
           >
             UPLOAD VIDEO
-          </button>
+          </Button>
         </form>
       </div>
       <div className="mt-5">

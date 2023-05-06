@@ -15,7 +15,7 @@ const Rejected = () => {
           request is rejected
         </p>
       </div>
-      <div className="flex flex-col  justify-center items-center bg-slate-400 h-full">
+      <div className="flex flex-col  justify-center items-center bg-slate-400 h-screen">
         <p className="font-bold text-2xl text-center">
           Your request to register as a tutor at EDU-HELP is rejected due to
         </p>

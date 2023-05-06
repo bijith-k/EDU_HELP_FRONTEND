@@ -7,10 +7,9 @@ import Message from "./Message";
 import Conversation from "./Conversation";
 import user from "../../../assets/user.png";
 import Footer from "../Footer/Footer";
-
-
-// const ENDPOINT = "http://localhost:4000";
-// var socket,selectedChatCompare;
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
+ 
 
 const TutorChat = () => {
   const {tutor} = useSelector((state) => state.tutor);
@@ -21,25 +20,15 @@ const TutorChat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [student, setStudent] = useState([])
- 
+ const navigate = useNavigate();
+ const toast = useToast();
   
   const socket = useRef();
   const scrollRef = useRef();
-
-  const token = localStorage.getItem("Ttoken");
  
-  // const [socketConnected, setSocketConnected] = useState(false)
-
-  // useEffect(()=>{
-  //   socket = io(ENDPOINT)
-  //   socket.emit("setup",tutor)
-  //   socket.on("connection",()=>{
-  //       setSocketConnected(true)
-  //   })
-  // },[])
 
   useEffect(() => {
-    if (tutor.accepted == false && tutor.rejected == false) {
+    if (tutor.approved == false && tutor.rejected == false) {
       navigate("/tutor/approval-pending");
     } else if (tutor.rejected) {
       navigate("/tutor/approval-rejected");
@@ -58,43 +47,41 @@ const TutorChat = () => {
   }, []);
 
   
-
-  // useEffect(() => {
-  //   socket.current = io("ws://localhost:4000");
-
-  //   socket.current.on("getMessage", (data) => {
-  //     console.log(data,"tut")
-  //     setArrivalMessage({
-  //       sender: data.senderId,
-  //       text: data.text,
-  //       createdAt: Date.now(),
-  //     });
-  //   });
-  // }, []);
-
   useEffect(() => {
     socket.current = io(`${import.meta.env.VITE_BASE_PATH}`);
     socket.current.emit("add-user", tutor._id);
   }, [tutor]);
 
   
-
-  // useEffect(() => {
-  //   socket.current.emit("addUser", tutor._id);
-  //   socket.current.on("getUsers", (users) => {
-  //     console.log(users);
-  //   });
-  // }, [tutor]);
-
+ 
   useEffect(() => {
     const getConversations = async () => {
       try {
         const res = await axiosInstance("Ttoken").get(
           `tutor/get-conversation/${tutor._id}`
         );
-        setConversations(res.data);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+         setConversations(res.data);
+        }
+        
       } catch (error) {
-        console.log(error);
+         toast({
+           title: error.message,
+           status: "error",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
       }
     };
     getConversations();
@@ -107,10 +94,23 @@ const TutorChat = () => {
         const res = await axiosInstance("Ttoken").get(
           `tutor/get-message/${currentChat?._id}`
         );
-        setMessages(res.data);
-        // socket.emit("join chat",currentChat._id)
+        if (res.data.status == false) {
+           
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          setMessages(res.data);
+        }
+        
+         
       } catch (error) {
-        console.log(error);
+         toast({
+           title: error.message,
+           status: "error",
+           duration: 5000,
+           isClosable: true,
+           position: "top",
+         });
       }
     };
     getMessages();
@@ -118,19 +118,7 @@ const TutorChat = () => {
   }, [currentChat]);
 
 
-  // useEffect(()=>{
-  //   socket.on("message received", (newMessage) => {
-  //     console.log(newMessage);
-  //     if (
-  //       !selectedChatCompare ||
-  //       selectedChatCompare._id !== newMessage.sender
-  //     ) {
-  //       //give notification
-  //     } else {
-  //       setMessages({...messages,newMessage})
-  //     }
-  //   });
-  // })
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -146,11 +134,7 @@ const TutorChat = () => {
     const receiverId = currentChat.members.find(
       (member) => member !== tutor._id
     );
-    // socket.current.emit("sendTutorMessage", {
-    //   senderId: tutor._id,
-    //   receiverId,
-    //   text: newMessage,
-    // });
+    
 
     socket.current.emit("send-msg", {
       senderId: tutor._id,
@@ -163,7 +147,7 @@ const TutorChat = () => {
         `tutor/new-message`,
         message
       );
-      // socket.emit('new message',res.data)
+      
       setMessages([...messages, res.data]);
       setNewMessage("");
     } catch (error) {
@@ -181,9 +165,23 @@ const TutorChat = () => {
             `tutor/get-students?id=${studentId}`
           );
 
-          setStudent(res.data);
+          if (res.data.status == false) {
+             
+            localStorage.removeItem("Ttoken");
+            navigate("/tutor");
+          } else {
+           setStudent(res.data);
+          }
+
+          
         } catch (error) {
-          console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         }
       };
       getStudents();
@@ -235,8 +233,8 @@ const TutorChat = () => {
           <div className="flex flex-col h-full  border-l-0 md:border-l-4 border-0">
             {currentChat ? (
               <>
-                <div className="w-full h-16 bg-gray-700 flex flex-row items-center justify-start">
-                  <div className="mx-4  border-white border-2 rounded-full">
+                <div className="w-full h-20 bg-gray-700 flex flex-row items-center justify-start">
+                  <div className="mx-4  border-white border-2  rounded-full">
                     <img
                       src={
                         student[0]?.profilePicture

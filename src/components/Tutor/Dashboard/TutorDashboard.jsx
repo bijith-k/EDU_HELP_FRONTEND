@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import user from "../../../assets/user.png";
 
-import SideBar from "./SideBarData";
+ 
 import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -16,11 +16,11 @@ const TutorDashboard = () => {
   const [notesCount, setNotesCount] = useState(0);
   const [questionsCount, setQuestionsCount] = useState(0);
   const [videosCount, setVideosCount] = useState(0);
-  const token = localStorage.getItem("Ttoken");
+  
   const toast = useToast();
 
   useEffect(() => {
-    if (tutor.accepted == false && tutor.rejected == false) {
+    if (tutor.approved == false && tutor.rejected == false) {
       navigate("/tutor/approval-pending");
     } else if (tutor.rejected) {
       navigate("/tutor/approval-rejected");
@@ -39,24 +39,79 @@ const TutorDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const Tid = localStorage.getItem("Tid");
+     
 
     axiosInstance("Ttoken")
-      .get(`tutor/uploaded-notes?id=${Tid}`)
+      .get(`tutor/uploaded-notes?id=${true}`)
       .then((response) => {
-        setNotesCount(response.data.length);
+        if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          setNotesCount(response.data.length);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
 
     axiosInstance("Ttoken")
-      .get(`tutor/uploaded-questions?id=${Tid}`)
+      .get(`tutor/uploaded-questions?id=${true}`)
       .then((response) => {
-        setQuestionsCount(response.data.length);
+        if (response.data.status == false) {
+           
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          setQuestionsCount(response.data.length);
+        }
+        
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
 
     axiosInstance("Ttoken")
-      .get(`tutor/uploaded-videos?id=${Tid}`)
+      .get(`tutor/uploaded-videos?id=${true}`)
       .then((response) => {
-        setVideosCount(response.data.length);
+        if (response.data.status == false) {
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+           setVideosCount(response.data.length);
+        }
+       
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
@@ -103,15 +158,7 @@ const TutorDashboard = () => {
               <h1 className="text-4xl font-medium text-gray-700">
                 {tutor.name}
               </h1>{" "}
-              {/* <p className="font-light text-gray-600 mt-3">
-                Bucharest, Romania
-              </p>{" "}
-              <p className="mt-8 text-gray-500">
-                Solution Manager - Creative Tim Officer
-              </p>{" "}
-              <p className="mt-2 text-gray-500">
-                University of Computer Science
-              </p>{" "} */}
+              
               <button
                 className="text-indigo-500 py-2 px-4  font-medium mt-4 uppercase"
                 onClick={() => navigate("/tutor/edit-profile")}
@@ -124,23 +171,19 @@ const TutorDashboard = () => {
               <div className="bg-gray-200 w-72 h-28 md:w-72 md:h-32 rounded-xl p-5 my-3 text-center flex flex-col justify-center">
                 <div className="text-xl font-bold">your notes</div>
                 <div className="font-semibold">uploaded : {notesCount}</div>
-                {/* <div className="font-semibold">pending approval : 10</div> */}
+                 
               </div>
               <div className="bg-gray-200 w-72 h-28 md:w-72 md:h-32 rounded-xl p-5 my-3 text-center flex flex-col justify-center">
                 <div className="text-xl font-bold">your question papers</div>
                 <div className="font-semibold">uploaded : {questionsCount}</div>
-                {/* <div className="font-semibold">pending approval : 10</div> */}
+                 
               </div>
               <div className="bg-gray-200 w-72 h-28 md:w-72 md:h-32 rounded-xl p-5 my-3 text-center flex flex-col justify-center">
                 <div className="text-xl font-bold">your videos</div>
                 <div className="font-semibold">uploaded : {videosCount}</div>
-                {/* <div className="font-semibold">pending approval : 10</div> */}
+                
               </div>
-              {/* <div className="bg-gray-200 w-72 h-28 md:w-72 md:h-32 rounded-xl p-5 my-3 text-center flex flex-col justify-center">
-                <div className="text-xl font-bold">your events</div>
-                <div className="font-semibold">uploaded : 10</div>
-                <div className="font-semibold">pending approval : 10</div>
-              </div> */}
+               
             </div>
             <div className=" flex flex-col justify-center">
               <button

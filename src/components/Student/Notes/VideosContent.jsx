@@ -24,7 +24,7 @@ const VideosContent = () => {
   const { student } = useSelector((state) => state.student);
   const toast = useToast();
   const [videos, setVideos] = useState([]);
-  const [subjects, setSubjects] = useState([]);
+   
 const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -79,29 +79,35 @@ const navigate = useNavigate()
 
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`get-videos?studentId=${student._id}`)
+      .get(`get-videos?studentId=${true}`)
       .then((response) => {
         if (response.data.status == false) {
-           
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
           localStorage.removeItem("Stoken");
           navigate("/signin");
         } else {
           setVideos(response.data);
-           
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 
-  useEffect(() => {
-    axiosInstance("Stoken")
-      .get(`subjects?branch=${student.branch._id}`)
-      .then((res) => {
-        setSubjects(res.data.subjects);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+   
 
   const handleFavourite = (id) => {
     axiosInstance("Stoken")
@@ -190,30 +196,13 @@ const navigate = useNavigate()
                         Class : {video.branch.name} <br />
                         Subject : {video.subject.name}
                       </Text>
-                      {/* <Text color="blue.600" fontSize="2xl">
-                      $450
-                    </Text> */}
+                       
                     </Stack>
                   </CardBody>
                   <Divider />
                   <CardFooter>
                     <ButtonGroup spacing="2" className="mx-auto">
-                      {/* <Button variant="solid" colorScheme="blue">
-                      Buy now
-                    </Button> */}
-                      {/* <Button className="bg-red-100 p-3 rounded-lg">
-                      <a
-                        href={`${import.meta.env.VITE_BASE_PATH}${
-                          note.file_path
-                        }`}
-                        target="_blank"
-                      >
-                        DOWNLOAD
-                      </a>
-                    </Button> */}
-                      {/* <Button variant="ghost" colorScheme="blue">
-                      Add to cart
-                    </Button> */}
+                       
                       <Button
                         className="bg-rose-100 p-3 rounded-lg"
                         onClick={() => handleFavourite(video._id)}

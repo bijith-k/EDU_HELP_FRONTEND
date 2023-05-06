@@ -98,20 +98,7 @@ const OtpTutor = () => {
             CHECK THE INBOX OF GIVEN MOBILE NUMBER FOR OTP
           </p>
           <form action="" onSubmit={handleSubmit}>
-            {/* <input
-                type="text"
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-                name="otpEmail"
-                placeholder="OTP VIA EMAIL"
-                value={values.otpEmail}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.otpEmail && touched.otpEmail ? (
-                <p className="form-error text-red-600 mb-2">
-                  {errors.otpEmail}
-                </p>
-              ) : null} */}
+            
 
             <input
               type="text"

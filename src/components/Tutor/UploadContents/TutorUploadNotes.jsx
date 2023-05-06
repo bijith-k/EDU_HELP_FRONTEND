@@ -3,7 +3,7 @@ import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
 
 import Navbar from "../Dashboard/Navbar";
-import { useToast } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import Footer from "../Footer/Footer";
 
@@ -17,7 +17,7 @@ const TutorUploadNotes = () => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [isLoading, setIsLoading] = useState(null);
-  const [errors, setErrors] = useState(null);
+  
 
   const [notesData, setNotesData] = useState({
     note: null,
@@ -27,7 +27,7 @@ const TutorUploadNotes = () => {
   const { tutor } = useSelector((state) => state.tutor);
 
   useEffect(() => {
-    if (tutor.accepted == false && tutor.rejected == false) {
+    if (tutor.approved == false && tutor.rejected == false) {
       navigate("/tutor/approval-pending");
     } else if (tutor.rejected) {
       navigate("/tutor/approval-rejected");
@@ -49,8 +49,31 @@ const TutorUploadNotes = () => {
     // Fetch boards from server on component mount
     axiosInstance("Ttoken")
       .get(`tutor/boards`)
-      .then((res) => setBoards(res.data.boards))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          setBoards(res.data.boards);
+        }
+        }
+       )
+      .catch((err) =>{ console.error(err)
+       toast({
+         title: err.message,
+         status: "error",
+         duration: 5000,
+         isClosable: true,
+         position: "top",
+       })
+      });
   }, []);
 
   useEffect(() => {
@@ -58,10 +81,23 @@ const TutorUploadNotes = () => {
       axiosInstance("Ttoken")
         .get(`tutor/branches?board=${selectedBoard}`)
         .then((res) => {
-          setBranches(res.data.branches);
+          if (res.data.status == false) {
+             
+            localStorage.removeItem("Ttoken");
+            navigate("/tutor");
+          } else {
+            setBranches(res.data.branches);
+          }
         })
         .catch((error) => {
           console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setBranches([]);
@@ -73,10 +109,23 @@ const TutorUploadNotes = () => {
       axiosInstance("Ttoken")
         .get(`tutor/subjects?branch=${selectedBranch}`)
         .then((res) => {
-          setSubjects(res.data.subjects);
+           if (res.data.status == false) {
+             localStorage.removeItem("Ttoken");
+             navigate("/tutor");
+           } else {
+            setSubjects(res.data.subjects);
+           }
+          
         })
         .catch((error) => {
           console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setSubjects([]);
@@ -121,14 +170,8 @@ const TutorUploadNotes = () => {
       return;
     }
 
-    const token = localStorage.getItem("Ttoken");
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
+     
+ setIsLoading(true);
     await axiosInstance("Ttoken")
       .post(
         `tutor/upload-notes`,
@@ -142,6 +185,7 @@ const TutorUploadNotes = () => {
         { headers: { "Content-Type": "multipart/form-data" } }
       )
       .then((res) => {
+         setIsLoading(false);
         if (res.data.uploaded) {
           navigate("/tutor/uploads");
         } else {
@@ -155,6 +199,7 @@ const TutorUploadNotes = () => {
         }
       })
       .catch((error) => {
+         setIsLoading(false);
         console.log(error);
         toast({
           title: err.message,
@@ -175,17 +220,13 @@ const TutorUploadNotes = () => {
           </h1>
         </div>
         <form action="" onSubmit={handleSubmit} className="m-3 w-3/4 mx-auto">
-          {/* {errors ? (
-            <p className=" text-red-500 font-normal bg-white border-2 border-red-500  my-2 w-fit rounded-xl p-2 mx-auto">
-              {errors}
-            </p>
-          ) : null} */}
+           
           <select
             name="board"
             value={selectedBoard}
             onChange={(e) => {
               setSelectedBoard(e.target.value);
-              setErrors(null);
+               
             }}
             className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
           >
@@ -212,7 +253,7 @@ const TutorUploadNotes = () => {
             value={selectedBranch}
             onChange={(e) => {
               setSelectedBranch(e.target.value);
-              setErrors(null);
+              
             }}
           >
             <option
@@ -238,7 +279,7 @@ const TutorUploadNotes = () => {
             value={selectedSubject}
             onChange={(e) => {
               setSelectedSubject(e.target.value);
-              setErrors(null);
+              
             }}
             className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
           >
@@ -271,7 +312,7 @@ const TutorUploadNotes = () => {
             value={notesData.noteName}
             onChange={(e) => {
               setNotesData({ ...notesData, noteName: e.target.value });
-              setErrors(null);
+               
             }}
           />{" "}
           <br />
@@ -284,19 +325,20 @@ const TutorUploadNotes = () => {
             className="w-full bg-white p-2"
             onChange={(e) => {
               setNotesData({ ...notesData, note: e.target.files[0] });
-              setErrors(null);
+              
             }}
           />
           <p>
             {" "}
             *These notes will be published only <br /> after admin verification
           </p>
-          <button
+          <Button
+          isLoading={isLoading}
             type="submit"
             className="bg-gray-600 p-3 font-semibold text-white rounded-lg mt-2"
           >
             UPLOAD NOTE
-          </button>
+          </Button>
         </form>
       </div>
       <div className="mt-5">

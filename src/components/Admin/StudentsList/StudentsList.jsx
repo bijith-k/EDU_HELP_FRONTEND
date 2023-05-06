@@ -18,15 +18,28 @@ const StudentsList = () => {
   const toast = useToast();
 
   const navigate = useNavigate();
-  const Token = localStorage.getItem("Adtoken");
   const [students, setStudents] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
+  
 
   useEffect(() => {
     axiosInstance("Adtoken")
       .get(`admin/students`)
       .then((res) => {
-        setStudents(res.data);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+         setStudents(res.data);
+        }
+        
       });
   }, [toastMessage]);
 
@@ -34,14 +47,27 @@ const StudentsList = () => {
     axiosInstance("Adtoken")
       .put(`admin/block-unblock-student?student=${id}`)
       .then((res) => {
-        setToastMessage(id);
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          setToastMessage(`Clicked at ${new Date().toISOString()}`);
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+        }
+        
       })
       .catch((err) => {
         console.log(err);
@@ -56,6 +82,9 @@ const StudentsList = () => {
       });
   };
 
+
+  
+
   return (
     <div className="bg-sky-900 min-h-screen max-w-screen-2xl mx-auto flex overflow-x-hidden">
       <div className="bg-dark-purple">
@@ -65,37 +94,30 @@ const StudentsList = () => {
         <p className="bg-white w-full p-3 my-5 uppercase font-bold text-center">
           manage students
         </p>
-        <div className="flex justify-around">
-          {/* <div className="bg-white p-3 rounded-2xl inline-flex ">
-<input type="text" name="" id="" placeholder='search' className='inline-block' />
-<div className='bg-sky-900 p-3 text-white rounded-full inline-block'>
-  <FaSearch />
-</div>
-</div> */}
-          {/* <div className="bg-white p-3 rounded-2xl inline-flex flex-col md:flex-row md:w-auto mr-2">
-            <input
-              type="text"
-              name=""
-              id=""
-              placeholder="search"
-              className="mb-2 md:mb-0 md:mr-2 inline-block w-full md:w-auto"
-            />
-            <div className="bg-sky-900 p-3 text-white rounded-full  flex justify-center">
-              <FaSearch />
-            </div>
-          </div> */}
-        </div>
+
         <TableContainer className="rounded-2xl mt-3">
           <Table variant="simple">
             <Thead>
-              <Tr className="bg-green-300 h-14 ">
+              <Tr className="bg-green-300 h-14 cursor-pointer ">
                 <Th className="p-3 border">No</Th>
-                <Th className="p-3 border">Name</Th>
-                <Th className="p-3 border">Email</Th>
-                <Th className="p-3 border">Phone</Th>
-                <Th className="p-3 border">Board</Th>
-                <Th className="p-3 border">Class/Branch</Th>
-                <Th className="p-3 border">School/College</Th>
+                <Th className="p-3 border" >
+                  Name
+                </Th>
+                <Th className="p-3 border" >
+                  Email
+                </Th>
+                <Th className="p-3 border" >
+                  Phone
+                </Th>
+                <Th className="p-3 border" >
+                  Board
+                </Th>
+                <Th className="p-3 border" >
+                  Class/Branch
+                </Th>
+                <Th className="p-3 border" >
+                  School/College
+                </Th>
                 <Th className="p-3 border">Actions</Th>
               </Tr>
             </Thead>

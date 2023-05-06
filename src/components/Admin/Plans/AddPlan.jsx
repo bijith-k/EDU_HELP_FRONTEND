@@ -2,7 +2,7 @@ import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import { useState } from "react";
 import axiosInstance from "../../../axios";
-import { useEffect } from "react";
+
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
@@ -16,14 +16,7 @@ const AddPlan = () => {
     price: "",
   });
 
-  const token = localStorage.getItem("Adtoken");
-
-  const config = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${token}`,
-    },
-  };
+ 
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -63,14 +56,27 @@ const AddPlan = () => {
     axiosInstance("Adtoken")
       .post(`admin/add-plan`, { ...values })
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        navigate("/admin/plans");
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Adtoken");
+          navigate("/admin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          navigate("/admin/plans");
+        }
+        
       })
       .catch((err) => {
         toast({

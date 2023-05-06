@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import axiosInstance from "../../../axios";
-import { useSelector } from "react-redux";
 import {
   Card,
   CardHeader,
@@ -24,12 +23,13 @@ import {
 } from "@chakra-ui/react";
 import Pagination from "../../Pagination/Pagination";
 import Search from "../Search/Search";
+import { useNavigate } from "react-router-dom";
 
 const MyVideos = () => {
-  const { student } = useSelector((state) => state.student);
+   
   const toast = useToast();
   const [videos, setVideos] = useState([]);
-  const [subjects, setSubjects] = useState([]);
+   const navigate = useNavigate()
 
   const [change, setChange] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -80,22 +80,35 @@ const handleSelectedSubject = (data) => {
 
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`get-videos?id=${student._id}`)
+      .get(`get-videos?id=${true}`)
       .then((response) => {
-        setVideos(response.data);
+        if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setVideos(response.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, [change]);
 
-  useEffect(() => {
-    axiosInstance("Stoken")
-      .get(`subjects?branch=${student.branch._id}`)
-      .then((res) => {
-        setSubjects(res.data.subjects);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+   
 
   const handlePrivate = (id) => {
     axiosInstance("Stoken")
@@ -189,11 +202,7 @@ const handleSelectedSubject = (data) => {
               currentVideos.map((video, index) => (
                 <Card maxW="sm" key={index}>
                   <CardBody className="flex flex-col">
-                    {/* <Image
-                    src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                    alt="Green double couch with wooden legs"
-                    borderRadius="lg"
-                  /> */}
+                    
                     <iframe
                       title="PDF Viewer"
                       src={video.video_link}
@@ -226,25 +235,10 @@ const handleSelectedSubject = (data) => {
                   <Divider />
                   <CardFooter>
                     <ButtonGroup spacing="2" className="mx-auto">
-                      {/* <Button variant="solid" colorScheme="blue">
-                      Buy now
-                    </Button> */}
-                      {/* <Button className="bg-red-100 p-3 rounded-lg">
-                      <a
-                        href={`${import.meta.env.VITE_BASE_PATH}${
-                          note.file_path
-                        }`}
-                        target="_blank"
-                      >
-                        VIEW
-                      </a>
-                    </Button> */}
-                      {/* <Button variant="ghost" colorScheme="blue">
-                      Add to cart
-                    </Button> */}
+                      
                       {video.private ? (
                         <Button
-                          // size="medium"
+                          
                           className="bg-red-100 p-3 rounded-lg"
                           onClick={() => handlePrivate(video._id)}
                         >
@@ -252,7 +246,7 @@ const handleSelectedSubject = (data) => {
                         </Button>
                       ) : (
                         <Button
-                          // size="medium"
+                        
                           className="bg-red-100 p-3 rounded-lg"
                           onClick={() => handlePrivate(video._id)}
                         >
@@ -260,7 +254,7 @@ const handleSelectedSubject = (data) => {
                         </Button>
                       )}
                       <Button
-                        // size="medium"
+                         
                         className="bg-red-500 text-white p-3 rounded-lg"
                         onClick={onOpen}
                       >

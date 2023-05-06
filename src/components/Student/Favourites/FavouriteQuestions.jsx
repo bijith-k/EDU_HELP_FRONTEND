@@ -20,35 +20,34 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axiosInstance from "../../../axios";
-import { useSelector } from "react-redux";
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const FavouriteQuestions = () => {
-  const { student } = useSelector((state) => state.student);
-
   const toast = useToast();
+  const navigate = useNavigate();
 
   const [favouriteQuestions, setFavouriteQuestions] = useState([]);
-  const [subjects, setSubjects] = useState([]);
+
   const [change, setChange] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
-const [currentPage, setCurrentPage] = useState(1);
-const [questionsPerPage, setQuestionsPerPage] = useState(4);
-const lastQuestionIndex = currentPage * questionsPerPage;
-const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [questionsPerPage, setQuestionsPerPage] = useState(4);
+  const lastQuestionIndex = currentPage * questionsPerPage;
+  const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
 
- const handleSearchQuery = (data) => {
-   setSearchQuery(data);
- };
+  const handleSearchQuery = (data) => {
+    setSearchQuery(data);
+  };
 
- const handleSelectedSubject = (data) => {
-   setSelectedSubject(data);
- };
+  const handleSelectedSubject = (data) => {
+    setSelectedSubject(data);
+  };
 
   const questions = favouriteQuestions.filter(
     (questions) => questions.question.listed == true
@@ -70,48 +69,61 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
         })
       : questions;
 
-      let currentQuestions;
-      if (searchQuery != "" || selectedSubject != "") {
-        currentQuestions = filteredData;
-      } else {
-        currentQuestions = filteredData.slice(
-          firstQuestionIndex,
-          lastQuestionIndex
-        );
-      }
+  let currentQuestions;
+  if (searchQuery != "" || selectedSubject != "") {
+    currentQuestions = filteredData;
+  } else {
+    currentQuestions = filteredData.slice(
+      firstQuestionIndex,
+      lastQuestionIndex
+    );
+  }
 
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`favourite-questions?id=${student._id}`)
+      .get(`favourite-questions`)
       .then((response) => {
-        setFavouriteQuestions(response.data);
+        if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setFavouriteQuestions(response.data);
+        }
       });
   }, [change]);
-
-  useEffect(() => {
-    axiosInstance("Stoken")
-      .get(`subjects?branch=${student.branch._id}`)
-      .then((res) => {
-        setSubjects(res.data.subjects);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   const handleRemove = (id) => {
     onClose();
     axiosInstance("Stoken")
       .put(`remove-favourite-questions/${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          setChange(res.data.message);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -136,8 +148,8 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
       <div className="flex justify-center">
         {questions.length > 0 ? (
           <div className="grid md:grid-cols-4 gap-1">
-            {filteredData.length > 0 ? (
-              filteredData.map((questions, index) => (
+            {currentQuestions.length > 0 ? (
+              currentQuestions.map((questions, index) => (
                 <Card maxW="sm" key={index}>
                   <CardBody>
                     <iframe
@@ -175,7 +187,6 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
                       </Button>
 
                       <Button
-                        // size="medium"
                         className="bg-red-500 text-white p-3 rounded-lg"
                         onClick={onOpen}
                       >

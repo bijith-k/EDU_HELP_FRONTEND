@@ -16,7 +16,7 @@ import Footer from "../Footer/Footer";
 
 const Settings = () => {
   const { tutor } = useSelector((state) => state.tutor);
-  const token = localStorage.getItem("Ttoken");
+  
   const navigate = useNavigate();
 
   const [showp, setShowp] = useState(false);
@@ -26,24 +26,24 @@ const Settings = () => {
   const handleClickCP = () => setShowcp(!showcp);
   const toast = useToast();
 
-  useEffect(() => {
-    if (tutor.accepted == false && tutor.rejected == false) {
-      navigate("/tutor/approval-pending");
-    } else if (tutor.rejected) {
-      navigate("/tutor/approval-rejected");
-    } else if (tutor.blocked) {
-      localStorage.removeItem("Ttoken");
-      navigate("/tutor");
-      toast({
-        title: "Blocked",
-        description: "Your account is blocked by the admin",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
-    }
-  }, []);
+ useEffect(() => {
+   if (tutor.approved == false && tutor.rejected == false) {
+     navigate("/tutor/approval-pending");
+   } else if (tutor.rejected) {
+     navigate("/tutor/approval-rejected");
+   } else if (tutor.blocked) {
+     localStorage.removeItem("Ttoken");
+     navigate("/tutor");
+     toast({
+       title: "Blocked",
+       description: "Your account is blocked by the admin",
+       status: "error",
+       duration: 5000,
+       isClosable: true,
+       position: "top",
+     });
+   }
+ }, []);
 
   const [loading, setLoading] = useState(false);
   const [otpButtonLoading, setOtpButtonLoading] = useState(false);
@@ -120,6 +120,16 @@ const Settings = () => {
 
           localStorage.removeItem("Ttoken");
           navigate("/tutor/signin");
+        }else if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+         localStorage.removeItem("Ttoken");
+          navigate("/tutor");
         } else {
           toast({
             title: res.data.message,
@@ -129,10 +139,7 @@ const Settings = () => {
             position: "bottom-right",
           });
           setLoading(false);
-          // setPasswords({
-          //   currentPassword: "",
-          //   newPassword: "",
-          // });
+           
         }
       })
       .catch((error) => {

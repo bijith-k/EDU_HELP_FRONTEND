@@ -17,7 +17,7 @@ const UploadNotes = () => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [isLoading, setIsLoading] = useState(null);
-  const [errors, setErrors] = useState(null);
+   
   const toast = useToast();
   const [notesData, setNotesData] = useState({
     note: null,
@@ -28,8 +28,32 @@ const UploadNotes = () => {
     // Fetch boards from server on component mount
     axiosInstance("Stoken")
       .get(`boards`)
-      .then((res) => setBoards(res.data.boards))
-      .catch((err) => console.error(err));
+      .then((res) =>{
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setBoards(res.data.boards);
+        }
+       
+      })
+      .catch((err) => {
+        console.error(err)
+      toast({
+        title: err.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      })
+    });
   }, []);
 
   useEffect(() => {
@@ -41,6 +65,13 @@ const UploadNotes = () => {
         })
         .catch((error) => {
           console.log(error);
+           toast({
+             title: error.message,
+             status: "error",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
         });
     } else {
       setBranches([]);
@@ -56,41 +87,59 @@ const UploadNotes = () => {
         })
         .catch((error) => {
           console.log(error);
+           toast({
+             title: error.message,
+             status: "error",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
         });
     } else {
       setSubjects([]);
     }
   }, [selectedBranch, selectedBoard]);
 
+   const errorToast = (message) => {
+    toast({
+      title: message,
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "top",
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!selectedBoard) {
-      setErrors("Select a board");
+      errorToast("Select a board");
       return;
     }
     if (!selectedBranch) {
-      setErrors("Select a branch");
+      errorToast("Select a branch");
       return;
     }
     if (!selectedSubject) {
-      setErrors("Select a subject");
+      errorToast("Select a subject");
       return;
     }
 
     const noteNameRegex = /^[a-zA-Z0-9_-\s]+$/;
     if (!notesData.noteName || !noteNameRegex.test(notesData.noteName)) {
-      setErrors("Enter the name of the note");
+      errorToast("Enter the name of the note");
       return;
     }
     if (!notesData.note || notesData.note.type !== "application/pdf") {
-      setErrors(
+      errorToast(
         "Select a note to upload or You have selected a file otherthan pdf"
       );
       return;
     }
 
-    const token = localStorage.getItem("Stoken");
+    setIsLoading(true)
+     
 
     await axiosInstance("Stoken")
       .post(
@@ -105,6 +154,7 @@ const UploadNotes = () => {
         { headers: { "Content-Type": "multipart/form-data" } }
       )
       .then((res) => {
+        setIsLoading(false)
         if (res.data.uploaded) {
           toast({
             title: res.data.message,
@@ -125,6 +175,7 @@ const UploadNotes = () => {
         }
       })
       .catch((error) => {
+        setIsLoading(false);
         console.log(error);
         toast({
           title: error.message,
@@ -141,28 +192,15 @@ const UploadNotes = () => {
       <Navbar />
       <Header />
       <HeadTitle title={"upload notes"} />
-      {/* <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
-          "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
-        </h1>
-      </div>
-      <div className="bg-blue-500">
-        <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
-          upload notes
-        </h1>
-      </div> */}
+       
       <form action="" onSubmit={handleSubmit} className="m-3 w-3/4 mx-auto">
-        {errors ? (
-          <p className=" text-red-500 font-normal bg-white border-2 border-red-500  my-2 w-fit rounded-xl p-2 mx-auto">
-            {errors}
-          </p>
-        ) : null}
+         
         <select
           name="board"
           value={selectedBoard}
           onChange={(e) => {
             setSelectedBoard(e.target.value);
-            setErrors(null);
+            
           }}
           className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
         >
@@ -189,7 +227,7 @@ const UploadNotes = () => {
           value={selectedBranch}
           onChange={(e) => {
             setSelectedBranch(e.target.value);
-            setErrors(null);
+            
           }}
         >
           <option
@@ -215,7 +253,7 @@ const UploadNotes = () => {
           value={selectedSubject}
           onChange={(e) => {
             setSelectedSubject(e.target.value);
-            setErrors(null);
+            
           }}
           className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
         >
@@ -248,7 +286,7 @@ const UploadNotes = () => {
           value={notesData.noteName}
           onChange={(e) => {
             setNotesData({ ...notesData, noteName: e.target.value });
-            setErrors(null);
+            
           }}
         />{" "}
         <br />
@@ -261,7 +299,7 @@ const UploadNotes = () => {
           className="w-full bg-white p-2"
           onChange={(e) => {
             setNotesData({ ...notesData, note: e.target.files[0] });
-            setErrors(null);
+             
           }}
         />
         <p>
@@ -269,6 +307,7 @@ const UploadNotes = () => {
           *These notes will be published only <br /> after admin verification
         </p>
         <Button
+          isLoading={isLoading}
           type="submit"
           className="bg-[#232946] p-3 font-semibold text-white rounded-lg mt-2"
         >

@@ -1,9 +1,11 @@
-import { Button, FormControl, FormLabel, Select } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Select, useToast } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../axios";
+import { useNavigate } from "react-router-dom";
 
 const Search = ({ searchQueryData, selectedSubjectData }) => {
-
+const toast = useToast()
+const navigate = useNavigate()
   const [subjects, setSubjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -14,10 +16,24 @@ const Search = ({ searchQueryData, selectedSubjectData }) => {
     axiosInstance("Ttoken")
       .get(`tutor/subjects`)
       .then((res) => {
-        setSubjects(res.data.subjects);
+        if (res.data.status == false) {
+           
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          setSubjects(res.data.subjects);
+        }
+        
       })
       .catch((error) => {
         console.log(error);
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, []);
 

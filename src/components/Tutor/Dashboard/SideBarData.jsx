@@ -1,8 +1,8 @@
 import React from "react";
-import { FaChartLine, FaNewspaper, FaStickyNote, FaUserEdit } from "react-icons/fa";
-import {AiFillHome, AiFillSetting} from "react-icons/ai";
+import {  FaNewspaper, FaStickyNote, FaUserEdit } from "react-icons/fa";
+import { AiFillSetting} from "react-icons/ai";
 import {MdDashboard, MdVideoLibrary} from "react-icons/md";
-import { IoMdCloudUpload, IoMdSettings } from "react-icons/io";
+import { IoMdCloudUpload } from "react-icons/io";
 import { BsCalendar2EventFill, BsChatLeftTextFill } from "react-icons/bs";
 
 export const SideBarData = [
@@ -51,11 +51,7 @@ export const SideBarData = [
     path: "/tutor/settings",
     icon: AiFillSetting,
   },
-  // {
-  //   title: "FEE DETAILS",
-  //   path: "/tutor-edit-profile",
-  //   icon: <AiIcons.AiFillHome />,
-  // },
+  
 ];
 
 export default SideBarData;

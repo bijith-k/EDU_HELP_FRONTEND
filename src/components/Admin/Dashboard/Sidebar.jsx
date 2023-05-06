@@ -1,19 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import ragam from "../../../assets/control.png";
-import student from "../../../assets/student.png";
-import dashboard from "../../../assets/dashboard.png";
-import tutor from "../../../assets/tutors.png";
-import notes from "../../../assets/books.png";
-import videos from "../../../assets/videos.png";
-import question from "../../../assets/questionPaper.png";
-import events from "../../../assets/events.png";
-import board from "../../../assets/board.png";
-import branch from "../../../assets/branch.png";
-import subject from "../../../assets/subject.png";
-import { useDispatch, useSelector } from "react-redux";
-import { selectedIcon } from "../../../features/sidebarSlice";
-import { BiGitBranch, BiLogOut } from "react-icons/bi";
+import { BiGitBranch } from "react-icons/bi";
 import {
   Drawer,
   DrawerBody,
@@ -43,14 +30,8 @@ import { AiFillGold } from "react-icons/ai";
 const Sidebar = () => {
    const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("Dashboard");
-  const dispatch = useDispatch();
-  const selected = useSelector((state) => state.sidebar);
-
-  const handleIconClick = (iconIndex) => {
-    dispatch(selectedIcon(iconIndex));
-  };
+   
+   
 
   const Menus = [
     { title: "Dashboard", icon: MdDashboard, route: "/admin/dashboard" },

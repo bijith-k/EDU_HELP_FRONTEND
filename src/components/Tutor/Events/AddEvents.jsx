@@ -29,7 +29,7 @@ const AddEvents = () => {
   const { tutor } = useSelector((state) => state.tutor);
 
   useEffect(() => {
-    if (tutor.accepted == false && tutor.rejected == false) {
+    if (tutor.approved == false && tutor.rejected == false) {
       navigate("/tutor/approval-pending");
     } else if (tutor.rejected) {
       navigate("/tutor/approval-rejected");
@@ -89,7 +89,7 @@ const AddEvents = () => {
           )
           .then((response) => {
             if (response.data.added) {
-              // toast.success(response.data.message);
+               
               navigate("/tutor-dashboard");
             } else {
               toast({
@@ -105,7 +105,7 @@ const AddEvents = () => {
           .catch((error) => {
             console.log(error);
 
-            // toast.error(error.response.data.messge);
+             
             toast({
               title: error.response.data.messge,
 
@@ -128,7 +128,7 @@ const AddEvents = () => {
           </h1>
         </div>
         <form action="" onSubmit={handleSubmit} className="p-3 w-3/4 mx-auto">
-          {/* {errors ? <p className=" text-red-500 font-normal bg-white border-2 border-red-500  my-2 w-fit rounded-xl p-2 mx-auto">{errors}</p> : null } */}
+         
 
           <label htmlFor="eventName" className=" font-medium">
             Enter the name of event
@@ -186,17 +186,7 @@ const AddEvents = () => {
           <label htmlFor="description" className=" font-medium">
             Write a short description about the event
           </label>
-          {/* <input
-        type="text"
-        name="description"
-        className="w-full p-3 h-40 mb-2"
-        placeholder="Type here..............."
-        // value={notesData.noteName}
-        // onChange={(e) =>
-        //  { setNotesData({ ...notesData, noteName: e.target.value })
-        //  setErrors(null)}
-        // }
-      />   */}
+          
           <textarea
             name="description"
             id=""

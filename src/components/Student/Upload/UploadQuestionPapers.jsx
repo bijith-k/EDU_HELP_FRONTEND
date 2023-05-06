@@ -2,7 +2,7 @@ import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "../Home/Navbar";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
 import Footer from "../Footer/Footer";
@@ -20,14 +20,38 @@ const UploadQuestionPapers = () => {
     questions: null,
   });
   const toast = useToast();
-  const [errors, setErrors] = useState(null);
+  const [isLoading, setIsLoading] = useState(null);
+   
 
   useEffect(() => {
     // Fetch boards from server on component mount
     axiosInstance("Stoken")
       .get(`boards`)
-      .then((res) => setBoards(res.data.boards))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
+        } else {
+          setBoards(res.data.boards);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
   }, []);
 
   useEffect(() => {
@@ -39,6 +63,13 @@ const UploadQuestionPapers = () => {
         })
         .catch((error) => {
           console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setBranches([]);
@@ -54,55 +85,62 @@ const UploadQuestionPapers = () => {
         })
         .catch((error) => {
           console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setSubjects([]);
     }
-    // toast({
-    //   title: err.message,
-    //   status: "error",
-    //   duration: 5000,
-    //   isClosable: true,
-    //   position: "top",
-    // });
-  }, [selectedBranch, selectedBoard, errors]);
+    
+  }, [selectedBranch, selectedBoard]);
 
-  // useEffect(() => {
-
-  // }, [errors])
+  const errorToast = (message) => {
+    toast({
+      title: message,
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "top",
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!selectedBoard) {
-      setErrors("Select a board");
+      errorToast("Select a board");
       return;
     }
     if (!selectedBranch) {
-      setErrors("Select a branch");
+      errorToast("Select a branch");
       return;
     }
     if (!selectedSubject) {
-      setErrors("Select a subject");
+      errorToast("Select a subject");
       return;
     }
 
     const fileNameRegex = /^[a-zA-Z0-9_-\s]+$/;
     if (!questionData.examName || !fileNameRegex.test(questionData.examName)) {
-      setErrors("Enter the name of the exam");
+      errorToast("Enter the name of the exam");
       return;
     }
     if (
       !questionData.questions ||
       questionData.questions.type !== "application/pdf"
     ) {
-      setErrors(
+      errorToast(
         "Select a question paper to upload or You have selected a file otherthan pdf"
       );
       return;
     }
 
-    const token = localStorage.getItem("Stoken");
+   setIsLoading(true);
 
     await axiosInstance("Stoken")
       .post(
@@ -117,6 +155,7 @@ const UploadQuestionPapers = () => {
         { headers: { "Content-Type": "multipart/form-data" } }
       )
       .then((res) => {
+        setIsLoading(false);
         if (res.data.uploaded) {
           toast({
             title: res.data.message,
@@ -137,6 +176,7 @@ const UploadQuestionPapers = () => {
         }
       })
       .catch((error) => {
+        setIsLoading(false);
         console.log(error);
         toast({
           title: error.message,
@@ -152,24 +192,15 @@ const UploadQuestionPapers = () => {
       <Navbar />
       <Header />
       <HeadTitle title={"upload question papers"} />
-      {/* <div className="bg-gray-400 h-72">
-        <h1 className="text-center font-extrabold text-white shadow-inner font-serif text-4xl md:pt-32 pt-20">
-          "SUCCESS DOESN'T COME TO YOU, YOU GO TO IT"
-        </h1>
-      </div>
-      <div className="bg-blue-500">
-        <h1 className="font-bold text-white text-center text-lg uppercase h-12 p-2">
-          upload question papers
-        </h1>
-      </div> */}
+       
       <form action="" onSubmit={handleSubmit} className="m-3 w-3/4 mx-auto">
-        {/* {errors ? <p className=" text-red-500 font-normal bg-white border-2 border-red-500  my-2 w-fit rounded-xl p-2 mx-auto">{errors}</p> : null } */}
+        
         <select
           name="board"
           value={selectedBoard}
           onChange={(e) => {
             setSelectedBoard(e.target.value);
-            setErrors(null);
+            
           }}
           className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
         >
@@ -196,7 +227,7 @@ const UploadQuestionPapers = () => {
           value={selectedBranch}
           onChange={(e) => {
             setSelectedBranch(e.target.value);
-            setErrors(null);
+            
           }}
         >
           <option
@@ -222,7 +253,7 @@ const UploadQuestionPapers = () => {
           value={selectedSubject}
           onChange={(e) => {
             setSelectedSubject(e.target.value);
-            setErrors(null);
+            
           }}
           className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
         >
@@ -255,7 +286,7 @@ const UploadQuestionPapers = () => {
           value={questionData.examName}
           onChange={(e) => {
             setQuestionData({ ...questionData, examName: e.target.value });
-            setErrors(null);
+           
           }}
         />{" "}
         <br />
@@ -268,7 +299,7 @@ const UploadQuestionPapers = () => {
           className="w-full bg-white p-2"
           onChange={(e) => {
             setQuestionData({ ...questionData, questions: e.target.files[0] });
-            setErrors(null);
+            
           }}
         />
         <p>
@@ -276,12 +307,13 @@ const UploadQuestionPapers = () => {
           *These question paper will be published only <br /> after admin
           verification
         </p>
-        <button
+        <Button
+        isLoading={isLoading}
           type="submit"
           className="bg-[#232946] p-3 font-semibold text-white rounded-lg mt-2"
         >
           UPLOAD QUESTION PAPER
-        </button>
+        </Button>
       </form>
       <div className="mt-5">
         <Footer />

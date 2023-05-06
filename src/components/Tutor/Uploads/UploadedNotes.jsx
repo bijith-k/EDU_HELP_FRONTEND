@@ -21,15 +21,16 @@ import {
 } from "@chakra-ui/react";
 import axiosInstance from "../../../axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+
 import Pagination from "../../Pagination/Pagination";
 import Search from "../Search/Search";
+import { useNavigate } from "react-router-dom";
 
 const UploadedNotes = () => {
-  const { tutor } = useSelector((state) => state.tutor);
+  
 
   const toast = useToast();
-  const token = localStorage.getItem("Ttoken");
+ const navigate = useNavigate()
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
 
@@ -54,12 +55,34 @@ const handleSelectedSubject = (data) => {
   
 
   useEffect(() => {
-    const Tid = localStorage.getItem("Tid");
+    
 
     axiosInstance("Ttoken")
-      .get(`tutor/uploaded-notes?id=${Tid}`)
+      .get(`tutor/uploaded-notes?id=${true}`)
       .then((response) => {
-        setNotes(response.data);
+        if (response.data.status == false) {
+          toast({
+            title: response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          setNotes(response.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       });
   }, [change]);
 
@@ -97,18 +120,30 @@ const handleSelectedSubject = (data) => {
     axiosInstance("Ttoken")
       .put(`tutor/notes-private-public?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+        if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Ttoken");
+          navigate("/tutor");
+        } else {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          setChange(res.data.message);
+        }
       })
       .catch((err) => {
         console.log(err);
-        // setToastMessage(res.data.message);
+        
         toast({
           title: err.message,
           status: "error",
@@ -124,18 +159,30 @@ const handleSelectedSubject = (data) => {
     axiosInstance("Ttoken")
       .delete(`tutor/delete-notes?id=${id}`)
       .then((res) => {
-        toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-        });
-        setChange(res.data.message);
+         if (res.data.status == false) {
+           toast({
+             title: res.data.message,
+             status: "error",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
+           localStorage.removeItem("Ttoken");
+           navigate("/tutor");
+         } else {
+           toast({
+             title: res.data.message,
+             status: "success",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
+           setChange(res.data.message);
+         }
       })
       .catch((err) => {
         console.log(err);
-        // setToastMessage(res.data.message);
+         
         toast({
           title: err.message,
           status: "error",
@@ -160,11 +207,7 @@ const handleSelectedSubject = (data) => {
               currentNotes.map((note, index) => (
                 <Card maxW="sm" key={index}>
                   <CardBody>
-                    {/* <Image
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                  alt="Green double couch with wooden legs"
-                  borderRadius="lg"
-                /> */}
+                     
                     <iframe
                       title="PDF Viewer"
                       src={`${import.meta.env.VITE_BASE_PATH}${note.file_path}`}
@@ -194,9 +237,7 @@ const handleSelectedSubject = (data) => {
                   <Divider />
                   <CardFooter>
                     <ButtonGroup spacing="2">
-                      {/* <Button variant="solid" colorScheme="blue">
-                    Buy now
-                  </Button> */}
+                     
                       <Button className="bg-red-100 p-3 rounded-lg">
                         <a
                           href={`${import.meta.env.VITE_BASE_PATH}${
@@ -207,12 +248,10 @@ const handleSelectedSubject = (data) => {
                           VIEW
                         </a>
                       </Button>
-                      {/* <Button variant="ghost" colorScheme="blue">
-                    Add to cart
-                  </Button> */}
+                       
                       {note.private ? (
                         <Button
-                          // size="medium"
+                          
                           className="bg-red-100 p-3 rounded-lg"
                           onClick={() => handlePrivate(note._id)}
                         >
@@ -220,7 +259,7 @@ const handleSelectedSubject = (data) => {
                         </Button>
                       ) : (
                         <Button
-                          // size="medium"
+                          
                           className="bg-red-100 p-3 rounded-lg"
                           onClick={() => handlePrivate(note._id)}
                         >
@@ -229,7 +268,7 @@ const handleSelectedSubject = (data) => {
                       )}
 
                       <Button
-                        // size="medium"
+                         
                         className="bg-red-500 text-white p-3 rounded-lg"
                         onClick={onOpen}
                       >

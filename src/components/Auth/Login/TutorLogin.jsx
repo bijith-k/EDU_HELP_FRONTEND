@@ -47,14 +47,14 @@ const TutorLogin = () => {
               });
               dispatch(setTutor({ tutor: response.data.tutor }));
               localStorage.setItem("Ttoken", response.data.token);
-              localStorage.setItem("Tid", response.data.tutor._id);
+               
               navigate("/tutor/dashboard");
             } else if (response.data.pending) {
-              localStorage.setItem("Tid", response.data.tutor._id);
+            
               localStorage.setItem("Ttoken", response.data.token);
               navigate("/tutor/approval-pending");
             } else if (response.data.rejected) {
-              localStorage.setItem("Tid", response.data.tutor._id);
+               
               localStorage.setItem("Ttoken", response.data.token);
               navigate("/tutor/approval-rejected");
             } else {

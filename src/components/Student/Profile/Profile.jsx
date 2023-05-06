@@ -1,32 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from '../Home/Navbar'
+import React, { useEffect, useState } from "react";
+import Navbar from "../Home/Navbar";
 import user from "../../../assets/user.png";
-import UpdateProfile from './UpdateProfile';
-import { useSelector } from 'react-redux';
+import UpdateProfile from "./UpdateProfile";
+import { useSelector } from "react-redux";
 import { BiRupee } from "react-icons/bi";
 import axiosInstance from "../../../axios";
-import { Button, useToast } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import Footer from '../Footer/Footer';
-
-
+import { Button, useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import Footer from "../Footer/Footer";
 
 const Profile = () => {
-  const toast = useToast()
-  const {student} = useSelector((state) => state.student);
-  const token = localStorage.getItem("Stoken");
-  const [notesCount, setNotesCount] = useState('')
+  const toast = useToast();
+  const { student } = useSelector((state) => state.student);
+
+  const [notesCount, setNotesCount] = useState("");
   const [videosCount, setVideosCount] = useState("");
   const [questionsCount, setQuestionsCount] = useState("");
   const [plan, setPlan] = useState({
-    name:'',
-    startDate:'',
-    endDate:'',
-    price:'',
-    duration:''
-  })
+    name: "",
+    startDate: "",
+    endDate: "",
+    price: "",
+    duration: "",
+  });
 
-   const navigate = useNavigate()
+  const navigate = useNavigate();
 
   function formatDate(dateString) {
     const [date, time] = dateString.split("T");
@@ -35,9 +33,9 @@ const Profile = () => {
     return formattedDate;
   }
 
-  useEffect( () => {
+  useEffect(() => {
     axiosInstance("Stoken")
-      .get(`get-upload-counts?id=${student._id}`)
+      .get(`get-upload-counts`)
       .then((response) => {
         if (response.data.status == false) {
           toast({
@@ -50,11 +48,10 @@ const Profile = () => {
           localStorage.removeItem("Stoken");
           navigate("/signin");
         } else {
-           setNotesCount(response.data.noteCounts);
-           setVideosCount(response.data.videoCounts);
-           setQuestionsCount(response.data.questionCounts);
+          setNotesCount(response.data.noteCounts);
+          setVideosCount(response.data.videoCounts);
+          setQuestionsCount(response.data.questionCounts);
         }
-    
       })
       .catch((error) => {
         console.log(error);
@@ -68,11 +65,9 @@ const Profile = () => {
       });
   }, []);
 
-
-
   useEffect(() => {
     axiosInstance("Stoken")
-      .get(`get-subscribed-plan?id=${student._id}`)
+      .get(`get-subscribed-plan`)
       .then((res) => {
         if (res.data.subscribed) {
           setPlan({
@@ -82,6 +77,16 @@ const Profile = () => {
             price: res.data.plan.price,
             duration: res.data.plan.duration,
           });
+        } else if (res.data.status == false) {
+          toast({
+            title: res.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
+          localStorage.removeItem("Stoken");
+          navigate("/signin");
         }
       })
       .catch((err) => {
@@ -96,11 +101,6 @@ const Profile = () => {
       });
   }, []);
 
-
-
-
-
-   
   return (
     <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
       <Navbar />
@@ -140,19 +140,7 @@ const Profile = () => {
             <div className="relative">
               {" "}
               <div className="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500">
-                {/* <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-24 w-24"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  {" "}
-                  <path
-                    fill-rule="evenodd"
-                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                    clip-rule="evenodd"
-                  />
-                </svg>{" "} */}
+               
                 <img
                   src={
                     student.profilePicture
@@ -203,9 +191,9 @@ const Profile = () => {
             {" "}
             <h1 className="text-4xl font-medium text-gray-700 uppercase">
               {student.name}
-              {/* <span className="font-light text-gray-500">27</span> */}
+              
             </h1>{" "}
-            {/* <p className="font-light text-gray-600 mt-3">Bucharest, Romania</p>{" "} */}
+           
             <p className="mt-4 text-gray-500 uppercase">
               {student.board.name},{student.branch.name}
             </p>{" "}
@@ -225,6 +213,6 @@ const Profile = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Profile
+export default Profile;

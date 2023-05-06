@@ -13,44 +13,39 @@ import { useToast } from "@chakra-ui/react";
 
 const Tutors = () => {
   const { student } = useSelector((state) => state.student);
-  const navigate = useNavigate()
-const toast = useToast()
+  const navigate = useNavigate();
+  const toast = useToast();
   const [tutors, setTutors] = useState([]);
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const { token } = localStorage.getItem("Stoken");
   const [currentPage, setCurrentPage] = useState(1);
   const [tutorsPerPage, settutorsPerPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const lastTutorIndex = currentPage * tutorsPerPage;
   const firstTutorIndex = lastTutorIndex - tutorsPerPage;
- 
+
   const tutor = tutors.filter((tut) => tut.board._id === student.board._id);
 
-   const filteredData =
-     searchQuery.trim() !== "" 
-       ? tutor.filter((item) => {
-           return (
-             (searchQuery.trim() === "" ||
-               item.name
-                 .toLowerCase()
-                 .includes(searchQuery.toLowerCase()) ||
-               item.branch.name
-                 .toLowerCase()
-                 .includes(searchQuery.toLowerCase()) ||
-               item.board.name
-                 .toLowerCase()
-                 .includes(searchQuery.toLowerCase()))
-           );
-         })
-       : tutor;
+  const filteredData =
+    searchQuery.trim() !== ""
+      ? tutor.filter((item) => {
+          return (
+            searchQuery.trim() === "" ||
+            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.branch.name
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            item.board.name.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        })
+      : tutor;
 
-   let currentTutors;
-   if (searchQuery != "") {
-     currentTutors = filteredData;
-   } else {
-     currentTutors = tutor.slice(firstTutorIndex, lastTutorIndex);
-   }
+  let currentTutors;
+  if (searchQuery != "") {
+    currentTutors = filteredData;
+  } else {
+    currentTutors = tutor.slice(firstTutorIndex, lastTutorIndex);
+  }
 
   function formatTime(time) {
     const [hours, minutes] = time.split(":");
@@ -68,20 +63,19 @@ const toast = useToast()
   useEffect(() => {
     const checkSubscription = async () => {
       const { data } = await axiosInstance("Stoken").get(`plan-details`);
-if (data.status == false) {
-  toast({
-    title: data.message,
-    status: "error",
-    duration: 5000,
-    isClosable: true,
-    position: "top",
-  });
-  localStorage.removeItem("Stoken");
-  navigate("/signin");
-} else {
-  setIsSubscribed(data.subscribed);
-}
-      
+      if (data.status == false) {
+        toast({
+          title: data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        localStorage.removeItem("Stoken");
+        navigate("/signin");
+      } else {
+        setIsSubscribed(data.subscribed);
+      }
     };
     checkSubscription();
   }, []);
@@ -96,13 +90,14 @@ if (data.status == false) {
     }
   }, [isSubscribed]);
 
+  const handleConversation = (id) => {
+    const res = axiosInstance("Stoken").post("new-conversation", {
+      senderId: student._id,
+      receiverId: id,
+    });
+    navigate("/chats");
+  };
 
-  const handleConversation = (id) =>{
-const res = axiosInstance("Stoken").post('new-conversation',{senderId:student._id,receiverId:id})
-navigate('/chats')
-  }
-
-   
   return (
     <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
       <Navbar />
