@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
+import user from "../../../assets/user.png";
 
 const Conversation = ({ conversation, currentUser }) => {
   const [student, setStudent] = useState([]);
  const [selected, setSelected] = useState(null)
 const navigate = useNavigate();
 const toast = useToast();
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+  
    
   useEffect(() => {
     const studentId = conversation.members.find((m) => m !== currentUser._id);
@@ -69,7 +70,7 @@ const toast = useToast();
             src={
               student.profilePicture
                 ? `${import.meta.env.VITE_BASE_PATH}${student.profilePicture}`
-                : PF + "user.png"
+                : user
             }
             alt=""
             className="w-10 h-10 rounded-full object-cover mr-5"

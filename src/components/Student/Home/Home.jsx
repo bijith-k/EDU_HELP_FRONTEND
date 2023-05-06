@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import school from "../../../assets/school.png";
-import news from "../../../assets/news.jpg";
+import newsImg from "../../../assets/news.png";
+
 
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios";
@@ -15,7 +16,7 @@ const Home = () => {
   const [event, setEvent] = useState([])
   const navigate = useNavigate();
   function formatDate(dateString) {
-    console.log(dateString)
+    
     const [date, time] = dateString.split("T");
     const [year, month, day] = date.split("-");
     const formattedDate = `${day}-${month}-${year.slice(-2)}`; // extract last two characters of year for yy format
@@ -53,11 +54,12 @@ const Home = () => {
       });
   }, []);
 
-  
+   
+
+
 
   return (
     <div className="h-screen max-w-screen-2xl bg-[#d4d8f0] pt-16 overflow-x-hidden mx-auto">
-      
       <Header />
       {student.branch.name === "1-10" ? (
         <div className=" md:h-64 h-56 flex justify-center items-center my-1">
@@ -159,7 +161,6 @@ const Home = () => {
         </div>
       ) : null}
 
-     
       <div className="md:h-80 h-80 bg-[#fffffe]  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid ">
         <div className=" bg-[#fffffe] md:h-20 h-16 rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
           <h1 className="uppercase text-[#232946] underline font-bold md:text-2xl">
@@ -200,39 +201,25 @@ const Home = () => {
           </h1>
         </div>
       </div>
-      
-      <div className="md:h-64 h-64 bg-[#fffffe]  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid  mt-4 ">
-        <div className=" bg-[#fffffe] rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
-          <h1 className="uppercase text-[#232946] underline font-bold md:text-2xl">
-            educational news
-          </h1>
-        </div>
-        <div className="row-span-3 flex justify-center items-center my-4">
-          <div className="ml-4">
-            <img
-              src={news}
-              alt=""
-              className="object-cover  md:w-48 rounded-xl"
-            />
-          </div>
-          <div className=" font-medium ml-2">
-            <span>
-              How management degrees in the IIT ecosystem differ from other MBA
-              institutes, IIT Delhi professor explains
-            </span>{" "}
-            <br />
-            <span className="text-blue-700">read more</span> <br />
-          </div>
-        </div>
-        <div className=" bg-[#232946] rounded-bl-3xl rounded-br-3xl flex items-center justify-center row-span-1">
-          <h1
-            className="uppercase text-[#fffffe] font-semibold md:text-lg p-2 cursor-pointer"
-            onClick={() => navigate("/news")}
-          >
-            view more news
-          </h1>
-        </div>
+
        
+
+      <div className=" md:h-32 h-32 flex justify-center items-center my-5">
+        <div className="md:h-32 h-32 bg-[#fffffe] w-full md:mx-8 mx-3 rounded-3xl ">
+           
+
+          <p className="text-center text-2xl font-bold mt-10">
+            CHECK SOME TECH NEWS
+          </p>
+          
+            <p
+              className="text-center cursor-pointer font-semibold"
+              onClick={() => navigate("/news")}
+            >
+              CLICK HERE
+            </p>
+           
+        </div>
       </div>
       <div className="mt-5">
         <Footer />
