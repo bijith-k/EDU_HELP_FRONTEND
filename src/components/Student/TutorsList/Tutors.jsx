@@ -9,7 +9,7 @@ import CountDown from "../CountdownNotice/CountDown";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
-import { Skeleton, Spinner, Stack, useToast } from "@chakra-ui/react";
+import { Box, Skeleton, SkeletonText, Spinner, Stack, useToast } from "@chakra-ui/react";
 
 const Tutors = () => {
   const { student } = useSelector((state) => state.student);
@@ -17,7 +17,7 @@ const Tutors = () => {
   const toast = useToast();
   const [tutors, setTutors] = useState([]);
   const [isSubscribed, setIsSubscribed] = useState(null);
-  const [infoLoading, setInfoLoading] = useState(null)
+  const [infoLoading, setInfoLoading] = useState(true)
  
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,7 +64,7 @@ const Tutors = () => {
 
   useEffect(() => {
     const checkSubscription = async () => {
-      setInfoLoading(true)
+      
       const { data } = await axiosInstance("Stoken").get(`plan-details`);
       if (data.status == false) {
         toast({
@@ -79,7 +79,6 @@ const Tutors = () => {
         navigate("/signin");
       } else {
 
-        
         setIsSubscribed(data.subscribed);
       }
     };
@@ -88,7 +87,6 @@ const Tutors = () => {
 
   useEffect(() => {
     if (isSubscribed) {
-      
       axiosInstance("Stoken")
         .get(`get-tutors`)
         .then((res) => {
@@ -99,7 +97,7 @@ const Tutors = () => {
           setInfoLoading(false);
         })
     }else{
-      // setInfoLoading(false);
+      setInfoLoading(false);
     }
   }, [isSubscribed]);
 
@@ -117,25 +115,21 @@ const Tutors = () => {
       <Header />
       <HeadTitle title={"tutors"} />
       {infoLoading ? (
-        <div className="h-40 ">
-          {/* <p className="text-center font-bold text-xl mt-10">
-            Please wait checking your subscription
-          </p>
-          <div className="mx-auto mt-5">
-            <Spinner
-              thickness="4px"
-              speed="0.65s"
-              emptyColor="gray.200"
-              color="blue.500"
-              size="xl"
-            />
-          </div> */}
-           
-            <Skeleton height="160px" fadeDuration={1} />
-            {/* <Skeleton height="20px" />
-            <Skeleton height="20px" /> */}
-          
-        </div>
+        <Box
+          padding="6"
+          boxShadow="lg"
+          bg="white"
+          className="mt-5 mx-auto h-52 w-4/5 rounded-3xl flex items-center justify-center"
+        >
+          <Skeleton height="28" mt="3" width="28" />
+          <div className="ml-5">
+            <Skeleton height="2" width="2xl" mt="3" />
+            <Skeleton height="2" width="2xl" mt="3" />
+            <Skeleton height="2" width="2xl" mt="3" />
+            <Skeleton height="2" width="2xl" mt="3" />
+          </div>
+          <Skeleton height="8" ml="5" width="20" />
+        </Box>
       ) : (
         <div>
           {isSubscribed ? (

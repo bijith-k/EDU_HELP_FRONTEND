@@ -8,13 +8,14 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import { useToast } from "@chakra-ui/react";
+import { Skeleton, useToast } from "@chakra-ui/react";
 
 const Home = () => {
   const toast = useToast()
   const { student } = useSelector((state) => state.student);
   const [event, setEvent] = useState([])
   const navigate = useNavigate();
+  const [isLoaded, setIsLoaded] = useState(false)
   function formatDate(dateString) {
     
     const [date, time] = dateString.split("T");
@@ -39,6 +40,7 @@ const Home = () => {
           navigate('/signin')
         }else{
             setEvent(response.data[1]);
+            setIsLoaded(true)
         }
         
       })
@@ -169,26 +171,32 @@ const Home = () => {
         </div>
         <div className="row-span-3 flex flex-row justify-center md:justify-evenly items-center mb-4">
           <div className="mx-3">
-            <img
-              src={`${import.meta.env.VITE_BASE_PATH}${event.poster}`}
-              alt=""
-              className="object-cover  w-44 h-44 rounded-xl"
-            />
+            <Skeleton isLoaded={isLoaded}>
+              <img
+                src={`${import.meta.env.VITE_BASE_PATH}${event.poster}`}
+                alt=""
+                className="object-cover  w-44 h-44 rounded-xl"
+              />
+            </Skeleton>
           </div>
           <div className="flex flex-col md:flex-row justify-between">
             <div className="md:text-xl text-sm mr-0 md:mr-32">
-              <span className="uppercase font-bold">{event.name}</span> <br />
-              <span>ORGANIZED BY : {event.organizer}</span> <br />
-              <span>LOCATION : {event.location}</span> <br />
+              <Skeleton isLoaded={isLoaded}>
+                <span className="uppercase font-bold">{event.name}</span> <br />
+                <span>ORGANIZED BY : {event.organizer}</span> <br />
+                <span>LOCATION : {event.location}</span> <br />
+              </Skeleton>
             </div>
             <div className="md:text-xl text-sm">
-              {event.startingDate ? (
-                <>
-                  <span>FROM : {formatDate(event.startingDate)}</span> <br />
-                  <span>TO : {formatDate(event.endingDate)}</span> <br />
-                </>
-              ) : null}
-              <span>WEBSITE : {event.link}</span> <br />
+              <Skeleton isLoaded={isLoaded}>
+                {event.startingDate ? (
+                  <>
+                    <span>FROM : {formatDate(event.startingDate)}</span> <br />
+                    <span>TO : {formatDate(event.endingDate)}</span> <br />
+                  </>
+                ) : null}
+                <span>WEBSITE : {event.link}</span> <br />
+              </Skeleton>
             </div>
           </div>
         </div>
@@ -202,23 +210,18 @@ const Home = () => {
         </div>
       </div>
 
-       
-
       <div className=" md:h-32 h-32 flex justify-center items-center my-5">
         <div className="md:h-32 h-32 bg-[#fffffe] w-full md:mx-8 mx-3 rounded-3xl ">
-           
-
           <p className="text-center text-2xl font-bold mt-10">
             CHECK SOME TECH NEWS
           </p>
-          
-            <p
-              className="text-center cursor-pointer font-semibold"
-              onClick={() => navigate("/news")}
-            >
-              CLICK HERE
-            </p>
-           
+
+          <p
+            className="text-center cursor-pointer font-semibold"
+            onClick={() => navigate("/news")}
+          >
+            CLICK HERE
+          </p>
         </div>
       </div>
       <div className="mt-5">
