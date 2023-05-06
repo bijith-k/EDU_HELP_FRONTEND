@@ -9,7 +9,7 @@ import CountDown from "../CountdownNotice/CountDown";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
-import { Spinner, useToast } from "@chakra-ui/react";
+import { Skeleton, Spinner, Stack, useToast } from "@chakra-ui/react";
 
 const Tutors = () => {
   const { student } = useSelector((state) => state.student);
@@ -78,6 +78,7 @@ const Tutors = () => {
         localStorage.removeItem("Stoken");
         navigate("/signin");
       } else {
+
         
         setIsSubscribed(data.subscribed);
       }
@@ -97,6 +98,8 @@ const Tutors = () => {
           console.log(err)
           setInfoLoading(false);
         })
+    }else{
+      // setInfoLoading(false);
     }
   }, [isSubscribed]);
 
@@ -114,8 +117,8 @@ const Tutors = () => {
       <Header />
       <HeadTitle title={"tutors"} />
       {infoLoading ? (
-        <div className="h-40 flex flex-col">
-          <p className="text-center font-bold text-xl mt-10">
+        <div className="h-40 ">
+          {/* <p className="text-center font-bold text-xl mt-10">
             Please wait checking your subscription
           </p>
           <div className="mx-auto mt-5">
@@ -126,7 +129,12 @@ const Tutors = () => {
               color="blue.500"
               size="xl"
             />
-          </div>
+          </div> */}
+           
+            <Skeleton height="160px" fadeDuration={1} />
+            {/* <Skeleton height="20px" />
+            <Skeleton height="20px" /> */}
+          
         </div>
       ) : (
         <div>

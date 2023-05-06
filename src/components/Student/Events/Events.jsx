@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
 import Footer from "../Footer/Footer";
-import { useToast } from "@chakra-ui/react";
+import { Skeleton, useToast } from "@chakra-ui/react";
 
 const Events = () => {
   const toast = useToast();
@@ -15,6 +15,7 @@ const Events = () => {
   const navigate = useNavigate();
 
   const [events, setEvents] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false)
 
   function formatDate(dateString) {
     const [date, time] = dateString.split("T");
@@ -39,9 +40,11 @@ const Events = () => {
           navigate("/signin");
         } else {
           setEvents(response.data);
+          setIsLoaded(true)
         }
       })
       .catch((err) => {
+        setIsLoaded(false)
         console.log(err);
         toast({
           title: err.message,
@@ -58,7 +61,7 @@ const Events = () => {
       <Navbar />
       <Header />
       <HeadTitle title={"events"} />
-      <div>
+      <Skeleton isLoaded={isLoaded}>
         {events.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 justify-items-center mt-5">
             {events.map((event, index) => (
@@ -114,7 +117,7 @@ const Events = () => {
             </p>
           </div>
         )}
-      </div>
+      </Skeleton>
       <div className="mt-5">
         <Footer />
       </div>
