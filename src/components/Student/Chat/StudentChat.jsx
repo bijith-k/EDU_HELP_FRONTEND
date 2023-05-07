@@ -281,12 +281,11 @@ const StudentChat = () => {
                       ) : (
                         <>
                           <div
-                            ref={scrollRef}
                             id="chatbox top"
                             className="p-3 overflow-x-hidden h-96 flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
                           >
                             {messages.map((message, index) => (
-                              <div key={index}>
+                              <div key={index} ref={scrollRef}>
                                 <Message
                                   message={message}
                                   sendBy={

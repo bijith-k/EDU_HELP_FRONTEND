@@ -284,12 +284,11 @@ const TutorChat = () => {
                   ) : (
                     <>
                       <div
-                        ref={scrollRef}
                         id="chatbox top"
                         className="p-3 h-96 flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
                       >
                         {messages.map((message, index) => (
-                          <div key={index}>
+                          <div key={index} ref={scrollRef}>
                             <Message
                               message={message}
                               sendBy={
