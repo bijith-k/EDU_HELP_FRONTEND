@@ -435,6 +435,7 @@ console.log(
           />
           <Input
             type="file"
+            name="profilePic"
             accept="image/*"
             placeholder="Dp"
             onChange={(e) => {

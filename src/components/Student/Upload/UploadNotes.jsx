@@ -166,7 +166,7 @@ const UploadNotes = () => {
             isClosable: true,
             position: "top",
           });
-          navigate("/notes");
+          navigate("/my-uploads");
         } else {
           toast({
             title: res.data.message,

@@ -39,7 +39,7 @@ const Home = () => {
           localStorage.removeItem('Stoken')
           navigate('/signin')
         }else{
-            setEvent(response.data[1]);
+            setEvent(response.data[0]);
             setIsLoaded(true)
         }
         
@@ -162,53 +162,56 @@ const Home = () => {
           </div>
         </div>
       ) : null}
-
-      <div className="md:h-80 h-80 bg-[#fffffe]  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid ">
-        <div className=" bg-[#fffffe] md:h-20 h-16 rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
-          <h1 className="uppercase text-[#232946] underline font-bold md:text-2xl">
-            events happening across kerala
-          </h1>
-        </div>
-        <div className="row-span-3 flex flex-row justify-center md:justify-evenly items-center mb-4">
-          <div className="mx-3">
-            <Skeleton isLoaded={isLoaded}>
-              <img
-                src={`${import.meta.env.VITE_BASE_PATH}${event.poster}`}
-                alt=""
-                className="object-cover  w-44 h-44 rounded-xl"
-              />
-            </Skeleton>
+      {event ? (
+        <div className="md:h-80 h-80 bg-[#fffffe]  md:mx-8 mx-3 rounded-3xl grid-rows-3 grid ">
+          <div className=" bg-[#fffffe] md:h-20 h-16 rounded-tl-3xl rounded-tr-3xl flex items-center justify-center row-span-1">
+            <h1 className="uppercase text-[#232946] underline font-bold md:text-2xl">
+              events happening across kerala
+            </h1>
           </div>
-          <div className="flex flex-col md:flex-row justify-between">
-            <div className="md:text-xl text-sm mr-0 md:mr-32">
+          <div className="row-span-3 flex flex-row justify-center md:justify-evenly items-center mb-4">
+            <div className="mx-3">
               <Skeleton isLoaded={isLoaded}>
-                <span className="uppercase font-bold">{event.name}</span> <br />
-                <span>ORGANIZED BY : {event.organizer}</span> <br />
-                <span>LOCATION : {event.location}</span> <br />
+                <img
+                  src={`${import.meta.env.VITE_BASE_PATH}${event?.poster}`}
+                  alt=""
+                  className="object-cover  w-44 h-44 rounded-xl"
+                />
               </Skeleton>
             </div>
-            <div className="md:text-xl text-sm">
-              <Skeleton isLoaded={isLoaded}>
-                {event.startingDate ? (
-                  <>
-                    <span>FROM : {formatDate(event.startingDate)}</span> <br />
-                    <span>TO : {formatDate(event.endingDate)}</span> <br />
-                  </>
-                ) : null}
-                <span>WEBSITE : {event.link}</span> <br />
-              </Skeleton>
+            <div className="flex flex-col md:flex-row justify-between">
+              <div className="md:text-xl text-sm mr-0 md:mr-32">
+                <Skeleton isLoaded={isLoaded}>
+                  <span className="uppercase font-bold">{event?.name}</span>{" "}
+                  <br />
+                  <span>ORGANIZED BY : {event?.organizer}</span> <br />
+                  <span>LOCATION : {event?.location}</span> <br />
+                </Skeleton>
+              </div>
+              <div className="md:text-xl text-sm">
+                <Skeleton isLoaded={isLoaded}>
+                  {event?.startingDate ? (
+                    <>
+                      <span>FROM : {formatDate(event?.startingDate)}</span>{" "}
+                      <br />
+                      <span>TO : {formatDate(event?.endingDate)}</span> <br />
+                    </>
+                  ) : null}
+                  <span>WEBSITE : {event?.link}</span> <br />
+                </Skeleton>
+              </div>
             </div>
           </div>
+          <div className=" bg-[#232946] rounded-bl-3xl rounded-br-3xl flex items-center justify-center row-span-1">
+            <h1
+              className="uppercase text-[#fffffe] font-semibold md:text-lg p-2 cursor-pointer"
+              onClick={() => navigate("/events")}
+            >
+              view more events
+            </h1>
+          </div>
         </div>
-        <div className=" bg-[#232946] rounded-bl-3xl rounded-br-3xl flex items-center justify-center row-span-1">
-          <h1
-            className="uppercase text-[#fffffe] font-semibold md:text-lg p-2 cursor-pointer"
-            onClick={() => navigate("/events")}
-          >
-            view more events
-          </h1>
-        </div>
-      </div>
+      ) : null}
 
       <div className=" md:h-32 h-32 flex justify-center items-center my-5">
         <div className="md:h-32 h-32 bg-[#fffffe] w-full md:mx-8 mx-3 rounded-3xl ">

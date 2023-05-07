@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../Home/Navbar";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import Header from "../Header/Header";
 import HeadTitle from "../Header/HeadTitle";
 import Footer from "../Footer/Footer";
@@ -24,6 +24,7 @@ const initialValues = {
 const AddEvents = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const [isLoading, setIsLoading] = useState(null);
 
   const eventSchema = Yup.object({
     name: Yup.string().min(2).max(25).required("Please enter the events name"),
@@ -57,6 +58,7 @@ const AddEvents = () => {
       initialValues,
       validationSchema: eventSchema,
       onSubmit: (values, action) => {
+        setIsLoading(true);
         axiosInstance("Stoken")
           .post(
             `add-event`,
@@ -66,6 +68,7 @@ const AddEvents = () => {
             { headers: { "Content-Type": "multipart/form-data" } }
           )
           .then((response) => {
+            setIsLoading(false);
             if (response.data.added) {
               toast({
                 title: response.data.message,
@@ -75,7 +78,7 @@ const AddEvents = () => {
                 position: "top",
               });
 
-              navigate("/");
+              navigate("/events");
             } else if (response.data.status == false) {
               toast({
                 title: response.data.message,
@@ -97,6 +100,7 @@ const AddEvents = () => {
             }
           })
           .catch((error) => {
+            setIsLoading(false);
             console.log(error);
             toast({
               title: error.response.data.errors,
@@ -278,12 +282,13 @@ const AddEvents = () => {
           *These events will be published only <br /> after admin verification
         </p>
 
-        <button
+        <Button
+          isLoading={isLoading}
           type="submit"
           className="bg-[#232946] p-3 font-semibold text-white rounded-lg mt-2"
         >
           ADD EVENT
-        </button>
+        </Button>
       </form>
       <div className="mt-5">
         <Footer />

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Dashboard/Navbar";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -6,7 +6,7 @@ import axiosInstance from "../../../axios";
 import { useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
-import { useToast } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import Footer from "../Footer/Footer";
 
 const initialValues = {
@@ -25,6 +25,8 @@ const AddEvents = () => {
   const navigate = useNavigate();
 
   const toast = useToast();
+  const [isLoading, setIsLoading] = useState(null);
+
 
   const { tutor } = useSelector((state) => state.tutor);
 
@@ -79,6 +81,7 @@ const AddEvents = () => {
       initialValues,
       validationSchema: eventSchema,
       onSubmit: (values, action) => {
+        setIsLoading(true)
         axiosInstance("Ttoken")
           .post(
             `tutor/add-event`,
@@ -88,8 +91,15 @@ const AddEvents = () => {
             { headers: { "Content-Type": "multipart/form-data" } }
           )
           .then((response) => {
+            setIsLoading(false)
             if (response.data.added) {
-               
+              toast({
+                title: response.data.message,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
               navigate("/tutor-dashboard");
             } else {
               toast({
@@ -103,9 +113,8 @@ const AddEvents = () => {
             }
           })
           .catch((error) => {
+            setIsLoading(false)
             console.log(error);
-
-             
             toast({
               title: error.response.data.messge,
 
@@ -128,8 +137,6 @@ const AddEvents = () => {
           </h1>
         </div>
         <form action="" onSubmit={handleSubmit} className="p-3 w-3/4 mx-auto">
-         
-
           <label htmlFor="eventName" className=" font-medium">
             Enter the name of event
           </label>
@@ -186,7 +193,7 @@ const AddEvents = () => {
           <label htmlFor="description" className=" font-medium">
             Write a short description about the event
           </label>
-          
+
           <textarea
             name="description"
             id=""
@@ -293,12 +300,13 @@ const AddEvents = () => {
             *These events will be published only <br /> after admin verification
           </p>
 
-          <button
+          <Button
+            isLoading={isLoading}
             type="submit"
             className="bg-gray-600 p-3 font-semibold text-white rounded-lg mt-2"
           >
             ADD EVENT
-          </button>
+          </Button>
         </form>
       </div>
       <div className="mt-5">
