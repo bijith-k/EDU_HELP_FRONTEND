@@ -9,56 +9,38 @@ import Footer from "../Footer/Footer";
 import { Box, Skeleton } from "@chakra-ui/react";
 
 const News = () => {
-  
   const [currentPage, setCurrentPage] = useState(1);
   const [newsPerPage, setNewsPerPage] = useState(4);
- const [news, setNews] = useState([]);
+  const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
 
   
-  // useEffect(() => {
-  //   const fetchNews = async () => {
-  //     const response = await axios.get(
-  //       `https://newsdata.io/api/1/news?apikey=${
-  //         import.meta.env.VITE_NEWS_API_KEY
-  //       }&q=education&country=in&language=en&category=science,technology`
-  //     );
-  //     setNews(response.data.results);
-// setLoading(false)
-  //   };
-  //   fetchNews();
-  // }, []);
-
-  const lastNewsIndex = currentPage * newsPerPage;
-  const firstNewsIndex = lastNewsIndex - newsPerPage;
- 
-
-  const currentNews = news?.slice(firstNewsIndex, lastNewsIndex);
-
-
-
- 
-
-
-//   useEffect(() => {
-//     console.log("first")
-//     const fetchNews = async () => {
-//       const response = await axios.get(
-//         `http://api.mediastack.com/v1/news
-//     ? access_key = 20f82a6544bb9ce87f9955559193e018
-//     &sources=science,technology 
-//     & countries = in, us
-//     & limit=10
-// `
-//       );
-//       console.log(response);
-//       setNews(response.data.results);
-
-//     };
-//     fetchNews();
-//   }, []);
 
   
+  
+
+    useEffect(() => {
+      console.log("first")
+      const fetchNews = async () => {
+        const response = await axios.get(
+          `https://newsapi.org/v2/top-headlines?category=technology&country=in&apiKey=${
+            import.meta.env.VITE_NEWS_API_KEY
+          }`
+        );
+        console.log(response);
+        setNews(response.data.articles);
+        setLoading(false)
+      };
+      fetchNews();
+    }, []);
+
+    console.log(news)
+const lastNewsIndex = currentPage * newsPerPage;
+const firstNewsIndex = lastNewsIndex - newsPerPage;
+
+const currentNews = news?.slice(firstNewsIndex, lastNewsIndex);
+
+   
   return (
     <div className="min-h-screen max-w-screen-2xl mx-auto w-full pt-16 bg-[#d4d8f0] overflow-x-hidden">
       <Navbar />
@@ -93,10 +75,10 @@ const News = () => {
                 {currentNews.map((news, index) => (
                   <div className="p-2 flex justify-center ">
                     <div className="bg-[#fffffe] hover:shadow-xl flex flex-col justify-evenly md:flex-row hover:opacity-90  text-[#232946]  w-3/4 rounded-xl mt-5 p-5 h-fit text-center">
-                      <div className=" w-40 flex flex-col mx-auto md:mx-0">
-                        {news.image_url ? (
+                      <div className=" w-36 h-36 bg-black flex flex-col mx-auto  md:mx-2">
+                        {news?.urlToImage ? (
                           <img
-                            src={news.image_url}
+                            src={news.urlToImage}
                             className="w-36  h-36 object-cover shadow-sm shadow-black"
                             alt=""
                           />
@@ -110,22 +92,22 @@ const News = () => {
                       </div>
                       <div className="flex flex-col justify-center md:items-start uppercase">
                         <div className="mb-4 font-bold">
-                          <p className="text-center">{news.title}</p>
+                          <p className="text-center">{news?.title}</p>
                         </div>
                         <div>
                           {" "}
-                          <p className="text-start">{news.description}</p>
+                          <p className="text-start">{news?.description}</p>
                         </div>
                         <div>
                           <p className="text-center">
-                            Source: {news.source_id}
+                            Source: {news?.source?.name}
                           </p>
                         </div>
                       </div>
                       <div className="flex flex-col justify-center m-2">
                         <span>
                           <a
-                            href={news.link}
+                            href={news?.url}
                             className="bg-[#232946] p-2 text-[#fffffe] rounded-lg  uppercase font-bold mt-5 w-full hover:bg-slate-500 hover:text-white mx-auto"
                           >
                             View
