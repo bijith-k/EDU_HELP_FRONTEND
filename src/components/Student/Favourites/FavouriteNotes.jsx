@@ -20,10 +20,14 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   useToast,
+  Box,
+  Skeleton,
+  SkeletonText,
 } from "@chakra-ui/react";
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
 import { useNavigate } from "react-router-dom";
+import NotesSkeleton from "../../NotesSkeleton/NotesSkeleton";
 
 const FavouriteNotes = () => {
    
@@ -38,6 +42,8 @@ const FavouriteNotes = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [change, setChange] = useState("");
+  const [loading, setLoading] = useState(true);
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const [notesPerPage, setNotesPerPage] = useState(4);
@@ -93,9 +99,11 @@ const FavouriteNotes = () => {
           navigate("/signin");
         } else {
           setFavouriteNotes(response.data);
+          setLoading(false);
         }
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
         toast({
           title: err.message,
@@ -152,6 +160,9 @@ const FavouriteNotes = () => {
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
+      {loading ? (
+        <NotesSkeleton />
+      ) : (
       <div className="flex justify-center">
         {note.length > 0 ? (
           <div className="grid md:grid-cols-4 gap-1">
@@ -248,6 +259,7 @@ const FavouriteNotes = () => {
           </div>
         )}
       </div>
+      )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination
           totalContents={note.length}

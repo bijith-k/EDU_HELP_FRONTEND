@@ -24,6 +24,7 @@ import {
 import Pagination from "../../Pagination/Pagination";
 import Search from "../Search/Search";
 import { useNavigate } from "react-router-dom";
+import NotesSkeleton from "../../NotesSkeleton/NotesSkeleton";
 
 const MyVideos = () => {
    
@@ -41,6 +42,7 @@ const [currentPage, setCurrentPage] = useState(1);
 const [videosPerPage, setVideosPerPage] = useState(4);
 const lastVideoIndex = currentPage * videosPerPage;
 const firstVideoIndex = lastVideoIndex - videosPerPage;
+  const [loading, setLoading] = useState(true);
 
 const handleSearchQuery = (data) => {
   setSearchQuery(data);
@@ -94,10 +96,12 @@ const handleSelectedSubject = (data) => {
           navigate("/signin");
         } else {
           setVideos(response.data);
+          setLoading(false);
         }
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
         toast({
           title: err.message,
           status: "error",
@@ -194,7 +198,9 @@ const handleSelectedSubject = (data) => {
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
-
+{loading ? (
+        <NotesSkeleton />
+      ) : (
       <div className="flex justify-center">
         {videos.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
@@ -309,6 +315,7 @@ const handleSelectedSubject = (data) => {
           </div>
         )}
       </div>
+      )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination
           totalContents={videos.length}

@@ -97,8 +97,8 @@ const Settings = () => {
     setLoading(true);
 
     await axiosInstance("Ttoken")
-      .post(`tutor/change-password?id=${tutor._id}`, {
-        ...passwords,otp
+      .post(`tutor/change-password`, {
+        ...passwords,email,otp
       })
       .then((res) => {
         if (res.data.updated) {
@@ -119,7 +119,7 @@ const Settings = () => {
            setOtp("");
 
           localStorage.removeItem("Ttoken");
-          navigate("/tutor/signin");
+          navigate("/tutor");
         }else if (res.data.status == false) {
           toast({
             title: res.data.message,

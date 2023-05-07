@@ -68,6 +68,7 @@ const UpdateProfile = () => {
 
   useEffect(() => {
     if (selectedBoard) {
+      setSelectedBranch('')
       axiosInstance("Stoken")
         .get(`${import.meta.env.VITE_BASE_PATH}branches?board=${selectedBoard}`)
         .then((res) => {

@@ -23,6 +23,7 @@ import axiosInstance from "../../../axios";
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
 import { useNavigate } from "react-router-dom";
+import NotesSkeleton from "../../NotesSkeleton/NotesSkeleton";
 
 const MyQuestionPapers = () => {
  
@@ -40,6 +41,7 @@ const [currentPage, setCurrentPage] = useState(1);
 const [questionsPerPage, setQuestionsPerPage] = useState(4);
 const lastQuestionIndex = currentPage * questionsPerPage;
 const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
+  const [loading, setLoading] = useState(true);
 
    
 
@@ -94,9 +96,11 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
           navigate("/signin");
         } else {
           setQuestions(response.data);
+          setLoading(false);
         }
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
         toast({
           title: err.message,
@@ -195,7 +199,9 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
-
+{loading ? (
+        <NotesSkeleton />
+      ) : (
       <div className="flex justify-center">
         {questions.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-1">
@@ -323,6 +329,7 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
           </div>
         )}
       </div>
+      )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination
           totalContents={questions.length}

@@ -58,6 +58,8 @@ const UploadVideos = () => {
 
   useEffect(() => {
     if (selectedBoard) {
+      setSelectedBranch("");
+      setSelectedSubject("");
       axiosInstance("Stoken")
         .get(`branches?board=${selectedBoard}`)
         .then((res) => {
@@ -73,6 +75,7 @@ const UploadVideos = () => {
 
   useEffect(() => {
     if (selectedBranch) {
+      setSelectedSubject("");
       axiosInstance("Stoken")
         .get(`subjects?branch=${selectedBranch}`)
         .then((res) => {

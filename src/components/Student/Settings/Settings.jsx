@@ -80,7 +80,7 @@ const Settings = () => {
     setLoading(true);
 
     await axiosInstance("Stoken")
-      .post(`change-password?id=${student._id}`, {
+      .post(`change-password`, {
         ...passwords,otp
       })
       .then((res) => {

@@ -21,10 +21,14 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   useToast,
+  Box,
+  Skeleton,
+  SkeletonText,
 } from "@chakra-ui/react";
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
 import { useNavigate } from "react-router-dom";
+import NotesSkeleton from "../../NotesSkeleton/NotesSkeleton";
 
 const FavouriteVideos = () => {
   const toast = useToast();
@@ -43,6 +47,7 @@ const FavouriteVideos = () => {
   const [videosPerPage, setVideosPerPage] = useState(4);
   const lastVideoIndex = currentPage * videosPerPage;
   const firstVideoIndex = lastVideoIndex - videosPerPage;
+  const [loading, setLoading] = useState(true);
 
   const handleSearchQuery = (data) => {
     setSearchQuery(data);
@@ -94,9 +99,12 @@ const FavouriteVideos = () => {
           navigate("/signin");
         } else {
           setFavouriteVideos(response.data);
+          setLoading(false);
+
         }
       })
       .catch((err) => {
+          setLoading(false);
         console.log(err);
         toast({
           title: err.message,
@@ -153,89 +161,96 @@ const FavouriteVideos = () => {
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
-      <div className="flex justify-center">
-        {videos.length > 0 ? (
-          <div className="grid md:grid-cols-4 gap-1">
-            {currentVideos.length > 0 ? (
-              currentVideos.map((videos, index) => (
-                <Card maxW="sm" key={index}>
-                  <CardBody>
-                    <iframe
-                      title="PDF Viewer"
-                      src={videos.video.video_link}
-                      height="240"
-                      scrolling="no"
-                      borderRadius="lg"
-                    />
-                    <Stack mt="6" spacing="3">
-                      <Heading size="md" className="uppercase">
-                        {" "}
-                        {videos.video.video_name}
-                      </Heading>
-                      <Text className="uppercase">
-                        Class : {videos.branch} <br />
-                        Subject : {videos.subject}
-                      </Text>
-                    </Stack>
-                  </CardBody>
-                  <Divider />
-                  <CardFooter>
-                    <ButtonGroup spacing="2" className="mx-auto">
-                      <Button
-                        className="bg-red-500 text-white p-3 rounded-lg"
-                        onClick={onOpen}
-                      >
-                        REMOVE
-                      </Button>
-                      <AlertDialog
-                        isOpen={isOpen}
-                        leastDestructiveRef={cancelRef}
-                        onClose={onClose}
-                      >
-                        <AlertDialogOverlay>
-                          <AlertDialogContent>
-                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                              Remove Video from favourites
-                            </AlertDialogHeader>
-
-                            <AlertDialogBody>
-                              Are you sure? You can't undo this action
-                              afterwards.
-                            </AlertDialogBody>
-
-                            <AlertDialogFooter>
-                              <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
-                              </Button>
-                              <Button
-                                colorScheme="red"
-                                onClick={() => handleRemove(videos._id)}
-                                ml={3}
+      {loading ? (
+        <NotesSkeleton />
+      ) : (
+        <div className="flex justify-center">
+          {videos.length > 0 ? (
+            <div className="grid md:grid-cols-4 gap-1">
+              {currentVideos.length > 0 ? (
+                currentVideos.map((videos, index) => (
+                  <Card maxW="sm" key={index}>
+                    <CardBody>
+                      <iframe
+                        title="PDF Viewer"
+                        src={videos.video.video_link}
+                        height="240"
+                        scrolling="no"
+                        borderRadius="lg"
+                      />
+                      <Stack mt="6" spacing="3">
+                        <Heading size="md" className="uppercase">
+                          {" "}
+                          {videos.video.video_name}
+                        </Heading>
+                        <Text className="uppercase">
+                          Class : {videos.branch} <br />
+                          Subject : {videos.subject}
+                        </Text>
+                      </Stack>
+                    </CardBody>
+                    <Divider />
+                    <CardFooter>
+                      <ButtonGroup spacing="2" className="mx-auto">
+                        <Button
+                          className="bg-red-500 text-white p-3 rounded-lg"
+                          onClick={onOpen}
+                        >
+                          REMOVE
+                        </Button>
+                        <AlertDialog
+                          isOpen={isOpen}
+                          leastDestructiveRef={cancelRef}
+                          onClose={onClose}
+                        >
+                          <AlertDialogOverlay>
+                            <AlertDialogContent>
+                              <AlertDialogHeader
+                                fontSize="lg"
+                                fontWeight="bold"
                               >
-                                Remove
-                              </Button>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialogOverlay>
-                      </AlertDialog>
-                    </ButtonGroup>
-                  </CardFooter>
-                </Card>
-              ))
-            ) : (
-              <p>
-                No results found for "{searchQuery}" and "{selectedSubject}"
+                                Remove Video from favourites
+                              </AlertDialogHeader>
+
+                              <AlertDialogBody>
+                                Are you sure? You can't undo this action
+                                afterwards.
+                              </AlertDialogBody>
+
+                              <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                  Cancel
+                                </Button>
+                                <Button
+                                  colorScheme="red"
+                                  onClick={() => handleRemove(videos._id)}
+                                  ml={3}
+                                >
+                                  Remove
+                                </Button>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialogOverlay>
+                        </AlertDialog>
+                      </ButtonGroup>
+                    </CardFooter>
+                  </Card>
+                ))
+              ) : (
+                <p>
+                  No results found for "{searchQuery}" and "{selectedSubject}"
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="h-40">
+              <p className="text-center font-bold text-lg">
+                Nothing in favourite videos
               </p>
-            )}
-          </div>
-        ) : (
-          <div className="h-40">
-            <p className="text-center font-bold text-lg">
-              Nothing in favourite videos
-            </p>
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
+      )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination
           totalContents={videos.length}

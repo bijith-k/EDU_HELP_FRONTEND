@@ -5,13 +5,15 @@ import UpdateProfile from "./UpdateProfile";
 import { useSelector } from "react-redux";
 import { BiRupee } from "react-icons/bi";
 import axiosInstance from "../../../axios";
-import { Button, useToast } from "@chakra-ui/react";
+import { Button, Skeleton, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
 
 const Profile = () => {
   const toast = useToast();
   const { student } = useSelector((state) => state.student);
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [isPlanLoaded, setIsPlanLoaded] = useState(false);
 
   const [notesCount, setNotesCount] = useState("");
   const [videosCount, setVideosCount] = useState("");
@@ -48,12 +50,15 @@ const Profile = () => {
           localStorage.removeItem("Stoken");
           navigate("/signin");
         } else {
+
           setNotesCount(response.data.noteCounts);
           setVideosCount(response.data.videoCounts);
           setQuestionsCount(response.data.questionCounts);
+          setIsLoaded(true)
         }
       })
       .catch((error) => {
+        setIsLoaded(true)
         console.log(error);
         toast({
           title: error.message,
@@ -69,6 +74,7 @@ const Profile = () => {
     axiosInstance("Stoken")
       .get(`get-subscribed-plan`)
       .then((res) => {
+        setIsPlanLoaded(true);
         if (res.data.subscribed) {
           setPlan({
             name: res.data.plan.plan,
@@ -77,6 +83,7 @@ const Profile = () => {
             price: res.data.plan.price,
             duration: res.data.plan.duration,
           });
+          
         } else if (res.data.status == false) {
           toast({
             title: res.data.message,
@@ -90,6 +97,7 @@ const Profile = () => {
         }
       })
       .catch((err) => {
+        setIsPlanLoaded(true)
         console.log(err);
         toast({
           title: err.message,
@@ -116,31 +124,35 @@ const Profile = () => {
             {" "}
             <div className="grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0">
               <div>
-                {" "}
-                <p className="font-bold text-gray-700 text-xl">
-                  {notesCount}
-                </p>{" "}
+                <Skeleton width={"10"} mx={"auto"} isLoaded={isLoaded}>
+                  <p className="font-bold text-gray-700 text-xl">
+                    {notesCount}
+                  </p>
+                </Skeleton>
                 <p className="text-gray-400">NOTES UPLOADS</p>{" "}
               </div>{" "}
               <div>
                 {" "}
-                <p className="font-bold text-gray-700 text-xl">
-                  {videosCount}
-                </p>{" "}
+                <Skeleton width={"10"} mx={"auto"} isLoaded={isLoaded}>
+                  <p className="font-bold text-gray-700 text-xl">
+                    {videosCount}
+                  </p>
+                </Skeleton>{" "}
                 <p className="text-gray-400">VIDEOS UPLOADS</p>{" "}
               </div>{" "}
               <div>
                 {" "}
-                <p className="font-bold text-gray-700 text-xl">
-                  {questionsCount}
-                </p>{" "}
+                <Skeleton width={"10"} mx={"auto"} isLoaded={isLoaded}>
+                  <p className="font-bold text-gray-700 text-xl">
+                    {questionsCount}
+                  </p>
+                </Skeleton>{" "}
                 <p className="text-gray-400">QUESTION PAPER UPLOADS</p>{" "}
               </div>{" "}
             </div>{" "}
             <div className="relative">
               {" "}
               <div className="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500">
-               
                 <img
                   src={
                     student.profilePicture
@@ -155,45 +167,45 @@ const Profile = () => {
               </div>{" "}
             </div>{" "}
             <div className="space-x-8 flex justify-center mt-32 md:mt-0 md:justify-center">
-              {plan.name ? (
-                <div className="text-white p-5 uppercase rounded bg-[#d4939d] shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
-                  <p className="text-center">subscribed to </p>
-                  <p className="text-center">{plan.name} plan</p>
-                  <p className="text-center">
-                    {" "}
-                    Subscribed on {formatDate(plan.startDate)}
-                  </p>
-                  <p className="text-center">
-                    will expire on {formatDate(plan.endDate)}
-                  </p>
-                  <p className="text-center">
-                    Price : <BiRupee className="inline" />
-                    {plan.price}
-                  </p>
-                </div>
-              ) : (
-                <div className="text-white p-5 uppercase rounded bg-red-400 flex flex-col justify-center hover:bg-red-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
-                  <p className="text-center">
-                    you are not subscribed to any plan
-                  </p>
-                  <Button
-                    // colorScheme="linkedin"
-                    className="mx-auto bg-[#eebbc3] text-[#232946] mt-3 uppercase"
-                    onClick={() => navigate("/plans")}
-                  >
-                    Buy One
-                  </Button>
-                </div>
-              )}
+              <Skeleton isLoaded={isPlanLoaded}>
+                {plan?.name ? (
+                  <div className="text-white p-5 uppercase rounded bg-[#d4939d] shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+                    <p className="text-center">subscribed to </p>
+                    <p className="text-center">{plan.name} plan</p>
+                    <p className="text-center">
+                      {" "}
+                      Subscribed on {formatDate(plan.startDate)}
+                    </p>
+                    <p className="text-center">
+                      will expire on {formatDate(plan.endDate)}
+                    </p>
+                    <p className="text-center">
+                      Price : <BiRupee className="inline" />
+                      {plan.price}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-white p-5 uppercase rounded bg-red-400 flex flex-col justify-center hover:bg-red-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+                    <p className="text-center">
+                      you are not subscribed to any plan
+                    </p>
+                    <Button
+                      // colorScheme="linkedin"
+                      className="mx-auto bg-[#eebbc3] text-[#232946] mt-3 uppercase"
+                      onClick={() => navigate("/plans")}
+                    >
+                      Buy One
+                    </Button>
+                  </div>
+                )}
+              </Skeleton>
             </div>
           </div>{" "}
           <div className="mt-10 text-center border-b pb-12">
             {" "}
             <h1 className="text-4xl font-medium text-gray-700 uppercase">
               {student.name}
-              
             </h1>{" "}
-           
             <p className="mt-4 text-gray-500 uppercase">
               {student.board.name},{student.branch.name}
             </p>{" "}

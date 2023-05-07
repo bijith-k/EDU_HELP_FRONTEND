@@ -6,7 +6,7 @@ import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
-import { useToast } from "@chakra-ui/react";
+import { Skeleton, useToast } from "@chakra-ui/react";
 import Footer from "../Footer/Footer";
 
 const TutorDashboard = () => {
@@ -16,6 +16,7 @@ const TutorDashboard = () => {
   const [notesCount, setNotesCount] = useState(0);
   const [questionsCount, setQuestionsCount] = useState(0);
   const [videosCount, setVideosCount] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false)
   
   const toast = useToast();
 
@@ -56,9 +57,11 @@ const TutorDashboard = () => {
           navigate("/tutor");
         } else {
           setNotesCount(response.data.length);
+          setIsLoaded(true)
         }
       })
       .catch((err) => {
+        setIsLoaded(true)
         console.log(err);
         toast({
           title: err.message,
@@ -137,8 +140,6 @@ const TutorDashboard = () => {
               <div className="relative">
                 {" "}
                 <div className="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500">
-                 
-
                   <img
                     src={
                       tutor.profilePicture
@@ -158,7 +159,6 @@ const TutorDashboard = () => {
               <h1 className="text-4xl font-medium text-gray-700">
                 {tutor.name}
               </h1>{" "}
-              
               <button
                 className="text-indigo-500 py-2 px-4  font-medium mt-4 uppercase"
                 onClick={() => navigate("/tutor/edit-profile")}
@@ -170,20 +170,31 @@ const TutorDashboard = () => {
             <div className=" flex flex-col md:flex-row justify-center md:justify-around items-center pt-5 uppercase">
               <div className="bg-gray-200 w-72 h-28 md:w-72 md:h-32 rounded-xl p-5 my-3 text-center flex flex-col justify-center">
                 <div className="text-xl font-bold">your notes</div>
-                <div className="font-semibold">uploaded : {notesCount}</div>
-                 
+                <div className="font-semibold">
+                  uploaded :{" "}
+                  <Skeleton className="inline" isLoaded={isLoaded}>
+                    {notesCount}
+                  </Skeleton>
+                </div>
               </div>
               <div className="bg-gray-200 w-72 h-28 md:w-72 md:h-32 rounded-xl p-5 my-3 text-center flex flex-col justify-center">
                 <div className="text-xl font-bold">your question papers</div>
-                <div className="font-semibold">uploaded : {questionsCount}</div>
-                 
+                <div className="font-semibold">
+                  uploaded :{" "}
+                  <Skeleton className="inline" isLoaded={isLoaded}>
+                    {questionsCount}
+                  </Skeleton>
+                </div>
               </div>
               <div className="bg-gray-200 w-72 h-28 md:w-72 md:h-32 rounded-xl p-5 my-3 text-center flex flex-col justify-center">
                 <div className="text-xl font-bold">your videos</div>
-                <div className="font-semibold">uploaded : {videosCount}</div>
-                
+                <div className="font-semibold">
+                  uploaded :{" "}
+                  <Skeleton className="inline" isLoaded={isLoaded}>
+                    {videosCount}
+                  </Skeleton>
+                </div>
               </div>
-               
             </div>
             <div className=" flex flex-col justify-center">
               <button

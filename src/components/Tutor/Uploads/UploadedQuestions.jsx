@@ -23,6 +23,7 @@ import React, { useEffect, useState } from "react";
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
 import { useNavigate } from "react-router-dom";
+import NotesSkeleton from "../../NotesSkeleton/NotesSkeleton";
 
 const UploadedQuestions = () => {
    const navigate = useNavigate()
@@ -36,6 +37,7 @@ const UploadedQuestions = () => {
   const token = localStorage.getItem("Ttoken");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
+  const [loading, setLoading] = useState(true);
 
    const [currentPage, setCurrentPage] = useState(1);
    const [questionsPerPage, setQuestionsPerPage] = useState(4);
@@ -70,10 +72,12 @@ const UploadedQuestions = () => {
           navigate("/tutor");
         } else {
           setQuestions(response.data);
+          setLoading(false);
         }
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
         toast({
           title: err.message,
           status: "error",
@@ -195,6 +199,9 @@ const UploadedQuestions = () => {
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
+      {loading ? (
+        <NotesSkeleton />
+      ) : (
       <div className="flex justify-center">
         {questions.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
@@ -322,6 +329,7 @@ const UploadedQuestions = () => {
           </div>
         )}
       </div>
+      )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination
           totalContents={questions.length}

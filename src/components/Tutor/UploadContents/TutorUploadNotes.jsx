@@ -78,6 +78,8 @@ const TutorUploadNotes = () => {
 
   useEffect(() => {
     if (selectedBoard) {
+      setSelectedBranch("");
+      setSelectedSubject("");
       axiosInstance("Ttoken")
         .get(`tutor/branches?board=${selectedBoard}`)
         .then((res) => {
@@ -106,6 +108,7 @@ const TutorUploadNotes = () => {
 
   useEffect(() => {
     if (selectedBranch) {
+      setSelectedSubject("");
       axiosInstance("Ttoken")
         .get(`tutor/subjects?branch=${selectedBranch}`)
         .then((res) => {

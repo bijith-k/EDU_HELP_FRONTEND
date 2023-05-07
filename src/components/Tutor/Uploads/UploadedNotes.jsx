@@ -25,6 +25,7 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../../Pagination/Pagination";
 import Search from "../Search/Search";
 import { useNavigate } from "react-router-dom";
+import NotesSkeleton from "../../NotesSkeleton/NotesSkeleton";
 
 const UploadedNotes = () => {
   
@@ -41,6 +42,7 @@ const [currentPage, setCurrentPage] = useState(1);
 const [notesPerPage, setNotesPerPage] = useState(4);
 const lastNoteIndex = currentPage * notesPerPage;
 const firstNoteIndex = lastNoteIndex - notesPerPage;
+  const [loading, setLoading] = useState(true);
 
 const handleSearchQuery = (data) => {
   setSearchQuery(data);
@@ -72,10 +74,12 @@ const handleSelectedSubject = (data) => {
           navigate("/tutor");
         } else {
           setNotes(response.data);
+          setLoading(false);
         }
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
         toast({
           title: err.message,
           status: "error",
@@ -200,6 +204,9 @@ const handleSelectedSubject = (data) => {
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
+      {loading ? (
+        <NotesSkeleton />
+      ) : (
       <div className="flex justify-center">
         {notes.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
@@ -323,6 +330,7 @@ const handleSelectedSubject = (data) => {
           </div>
         )}
       </div>
+      )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination
           totalContents={notes.length}

@@ -39,6 +39,7 @@ const toast = useToast()
 
   useEffect(() => {
     if (selectedBoard) {
+      setSelectedBranch('')
       axiosInstance()
         .get(
           `auth/branches?board=${selectedBoard}`

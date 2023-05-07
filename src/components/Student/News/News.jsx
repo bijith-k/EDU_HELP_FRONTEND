@@ -69,84 +69,92 @@ const News = () => {
           padding="6"
           boxShadow="lg"
           bg="white"
-          className="mt-5 mx-auto h-52 w-4/5 rounded-3xl flex items-center justify-center"
+          className="mt-5 mx-auto h-52 w-4/5 rounded-3xl flex md:flex-row flex-col  items-center  md:justify-center"
         >
           <Skeleton height="28" mt="3" width="28" />
-          <div className="ml-5">
-            <Skeleton height="2" width="2xl" mt="3" />
-            <Skeleton height="2" width="2xl" mt="3" />
-            <Skeleton height="2" width="2xl" mt="3" />
-            <Skeleton height="2" width="2xl" mt="3" />
+          <div className="ml-5 md:block hidden">
+            <Skeleton height="2" width={"2xl"} mt="3" />
+            <Skeleton height="2" width={"2xl"} mt="3" />
+            <Skeleton height="2" width={"2xl"} mt="3" />
+            <Skeleton height="2" width={"2xl"} mt="3" />
+          </div>
+          <div className="ml-5 md:hidden block">
+            <Skeleton height="2" width={"2xs"} mt="3" />
+            <Skeleton height="2" width={"2xs"} mt="3" />
+            <Skeleton height="2" width={"2xs"} mt="3" />
+            <Skeleton height="2" width={"2xs"} mt="3" />
           </div>
         </Box>
       ) : (
-      <div>
-        {news?.length > 0 ? (
-          <div>
-            <div className="h-4/6">
-              {currentNews.map((news, index) => (
-                <div className="p-2 flex justify-center ">
-                  <div className="bg-[#fffffe] hover:shadow-xl flex flex-col justify-evenly md:flex-row hover:opacity-90  text-[#232946]  w-3/4 rounded-xl mt-5 p-5 h-fit text-center">
-                    <div className=" w-40 flex flex-col mx-auto md:mx-0">
-                      {news.image_url ? (
-                        <img
-                          src={news.image_url}
-                          className="w-36  h-36 object-cover shadow-sm shadow-black"
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          src={newsImg}
-                          className="w-36  h-36 shadow-sm shadow-black"
-                          alt=""
-                        />
-                      )}
-                    </div>
-                    <div className="flex flex-col justify-center md:items-start uppercase">
-                      <div className="mb-4 font-bold">
-                        <p className="text-center">{news.title}</p>
+        <div>
+          {news?.length > 0 ? (
+            <div>
+              <div className="h-4/6">
+                {currentNews.map((news, index) => (
+                  <div className="p-2 flex justify-center ">
+                    <div className="bg-[#fffffe] hover:shadow-xl flex flex-col justify-evenly md:flex-row hover:opacity-90  text-[#232946]  w-3/4 rounded-xl mt-5 p-5 h-fit text-center">
+                      <div className=" w-40 flex flex-col mx-auto md:mx-0">
+                        {news.image_url ? (
+                          <img
+                            src={news.image_url}
+                            className="w-36  h-36 object-cover shadow-sm shadow-black"
+                            alt=""
+                          />
+                        ) : (
+                          <img
+                            src={newsImg}
+                            className="w-36  h-36 shadow-sm shadow-black"
+                            alt=""
+                          />
+                        )}
                       </div>
-                      <div>
-                        {" "}
-                        <p className="text-start">{news.description}</p>
+                      <div className="flex flex-col justify-center md:items-start uppercase">
+                        <div className="mb-4 font-bold">
+                          <p className="text-center">{news.title}</p>
+                        </div>
+                        <div>
+                          {" "}
+                          <p className="text-start">{news.description}</p>
+                        </div>
+                        <div>
+                          <p className="text-center">
+                            Source: {news.source_id}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-center">Source: {news.source_id}</p>
+                      <div className="flex flex-col justify-center m-2">
+                        <span>
+                          <a
+                            href={news.link}
+                            className="bg-[#232946] p-2 text-[#fffffe] rounded-lg  uppercase font-bold mt-5 w-full hover:bg-slate-500 hover:text-white mx-auto"
+                          >
+                            View
+                          </a>{" "}
+                        </span>
                       </div>
-                    </div>
-                    <div className="flex flex-col justify-center m-2">
-                      <span>
-                        <a
-                          href={news.link}
-                          className="bg-[#232946] p-2 text-[#fffffe] rounded-lg  uppercase font-bold mt-5 w-full hover:bg-slate-500 hover:text-white mx-auto"
-                        >
-                          View
-                        </a>{" "}
-                      </span>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <Pagination
-              totalContents={news.length}
-              contentsPerPage={newsPerPage}
-              setCurrentPage={setCurrentPage}
-              currentPage={currentPage}
-            />
-          </div>
-        ) : (
-          <div className="mt-5 h-40  ">
-            <p className="text-center font-bold text-xl mt-10">
-              No news is available at the moment
-            </p>
-            <p className="text-center font-semibold text-xl ">
-              Please check back later
-            </p>
-          </div>
-        )}
-      </div>
+              <Pagination
+                totalContents={news.length}
+                contentsPerPage={newsPerPage}
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+              />
+            </div>
+          ) : (
+            <div className="mt-5 h-40  ">
+              <p className="text-center font-bold text-xl mt-10">
+                No news is available at the moment
+              </p>
+              <p className="text-center font-semibold text-xl ">
+                Please check back later
+              </p>
+            </div>
+          )}
+        </div>
       )}
       <div className="mt-5">
         <Footer />

@@ -25,6 +25,7 @@ import {
 import Pagination from "../../Pagination/Pagination";
 import Search from "../Search/Search";
 import { useNavigate } from "react-router-dom";
+import NotesSkeleton from "../../NotesSkeleton/NotesSkeleton";
 
 const MyNotes = () => {
   const navigate = useNavigate()
@@ -41,6 +42,7 @@ const MyNotes = () => {
    const [notesPerPage, setNotesPerPage] = useState(4);
    const lastNoteIndex = currentPage * notesPerPage;
    const firstNoteIndex = lastNoteIndex - notesPerPage;
+  const [loading, setLoading] = useState(true);
 
 
     
@@ -99,8 +101,10 @@ const MyNotes = () => {
           navigate("/signin");
         } else {
           setNotes(response.data);
+          setLoading(false);
         }
       }).catch((err) => {
+        setLoading(false);
         console.log(err);
         toast({
           title: err.message,
@@ -196,7 +200,9 @@ const MyNotes = () => {
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
-
+{loading ? (
+        <NotesSkeleton />
+      ) : (
       <div className="flex justify-center">
         {notes.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
@@ -321,6 +327,7 @@ const MyNotes = () => {
           </div>
         )}
       </div>
+      )}
 
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination

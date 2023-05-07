@@ -23,6 +23,7 @@ import React, { useEffect, useState } from "react";
 import Search from "../Search/Search";
 import Pagination from "../../Pagination/Pagination";
 import { useNavigate } from "react-router-dom";
+import NotesSkeleton from "../../NotesSkeleton/NotesSkeleton";
 
 export const UploadedVideos = () => {
   
@@ -40,6 +41,7 @@ export const UploadedVideos = () => {
  const [videosPerPage, setVideosPerPage] = useState(4);
  const lastVideoIndex = currentPage * videosPerPage;
  const firstVideoIndex = lastVideoIndex - videosPerPage;
+  const [loading, setLoading] = useState(true);
 
  const handleSearchQuery = (data) => {
    setSearchQuery(data);
@@ -69,10 +71,12 @@ export const UploadedVideos = () => {
           navigate("/tutor");
         } else {
           setVideos(response.data);
+          setLoading(false);
         }
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
         toast({
           title: err.message,
           status: "error",
@@ -191,6 +195,9 @@ export const UploadedVideos = () => {
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
+      {loading ? (
+        <NotesSkeleton />
+      ) : (
       <div className="flex justify-center">
         {videos.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
@@ -298,6 +305,7 @@ export const UploadedVideos = () => {
           </div>
         )}
       </div>
+      )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination
           totalContents={videos.length}

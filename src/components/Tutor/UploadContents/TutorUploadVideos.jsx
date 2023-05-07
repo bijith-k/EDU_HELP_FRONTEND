@@ -77,6 +77,8 @@ const TutorUploadVideos = () => {
 
   useEffect(() => {
     if (selectedBoard) {
+      setSelectedBranch("");
+      setSelectedSubject("");
       axiosInstance("Ttoken")
         .get(`tutor/branches?board=${selectedBoard}`)
         .then((res) => {
@@ -104,6 +106,7 @@ const TutorUploadVideos = () => {
 
   useEffect(() => {
     if (selectedBranch) {
+      setSelectedSubject("");
       axiosInstance("Ttoken")
         .get(`tutor/subjects?branch=${selectedBranch}`)
         .then((res) => {

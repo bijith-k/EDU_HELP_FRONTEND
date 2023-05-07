@@ -16,8 +16,12 @@ const Tutors = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const [tutors, setTutors] = useState([]);
-  const [isSubscribed, setIsSubscribed] = useState(null);
-  const [infoLoading, setInfoLoading] = useState(true)
+   const [infoLoading, setInfoLoading] = useState(true);
+
+   const [tutorLoading, setTutorLoading] = useState(true);
+
+  const [isSubscribed, setIsSubscribed] = useState(false);
+ 
  
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,7 +68,7 @@ const Tutors = () => {
 
   useEffect(() => {
     const checkSubscription = async () => {
-      
+     
       const { data } = await axiosInstance("Stoken").get(`plan-details`);
       if (data.status == false) {
         toast({
@@ -79,7 +83,9 @@ const Tutors = () => {
         navigate("/signin");
       } else {
 
-        setIsSubscribed(data.subscribed);
+        setIsSubscribed(data.subscribed)
+        setInfoLoading(false);
+        setTutorLoading(true);
       }
     };
     checkSubscription();
@@ -91,13 +97,15 @@ const Tutors = () => {
         .get(`get-tutors`)
         .then((res) => {
           setTutors(res.data);
-         setInfoLoading(false);
+          
+        setTutorLoading(false)
         }).catch((err)=>{
           console.log(err)
-          setInfoLoading(false);
+          setTutorLoading(false)
         })
     }else{
       setInfoLoading(false);
+      setTutorLoading(false);
     }
   }, [isSubscribed]);
 
@@ -151,65 +159,84 @@ const Tutors = () => {
           <div>
             {isSubscribed ? (
               <div>
-                {tutor.length > 0 ? (
-                  <div className="h-4/6">
-                    {currentTutors.length > 0 ? (
-                      currentTutors.map((tutor, index) => (
-                        <div className="p-2 flex justify-center ">
-                          <div className="bg-[#fffffe] hover:shadow-xl flex flex-col justify-evenly md:flex-row hover:opacity-90  text-[#232946]  w-3/4 rounded-xl mt-5 p-5 h-fit text-center">
-                            <div className=" w-fit flex flex-col mx-auto md:mx-0">
-                              <img
-                                src={
-                                  tutor.profilePicture
-                                    ? `${import.meta.env.VITE_BASE_PATH}${
-                                        tutor.profilePicture
-                                      }`
-                                    : user
-                                }
-                                className="w-40 h-40 object-cover rounded-bl-3xl rounded-tr-3xl shadow-sm shadow-white"
-                                alt=""
-                              />
-                            </div>
-                            <div className="flex flex-col justify-center md:items-start uppercase">
-                              <div className="mb-4 font-bold">{tutor.name}</div>
-                              <div>Board: {tutor.board.name}</div>
-                              <div>Branch: {tutor.branch.name}</div>
-                              <div>
-                                Subject:{" "}
-                                {tutor.subjects.map((sub, index) => (
-                                  <span key={index}>{sub},</span>
-                                ))}
-                              </div>
-                              <div>
-                                time available : {formatTime(tutor.timeFrom)} to{" "}
-                                {formatTime(tutor.timeTo)}
-                              </div>
-                            </div>
-                            <div
-                              className="flex flex-col justify-center"
-                              onClick={() => handleConversation(tutor._id)}
-                            >
-                              <span>
-                                {" "}
-                                <p className="bg-[#d4939d] p-2 text-black rounded-3xl uppercase font-bold mt-5 w-full hover:bg-[#232946] hover:text-white cursor-pointer mx-auto">
-                                  message
-                                </p>{" "}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-center font-semibold my-8">
-                        No results found for "{searchQuery}"
-                      </p>
-                    )}
+                {tutorLoading ? (
+                  <div className="flex">
+                    <Spinner
+                      thickness="4px"
+                      speed="0.65s"
+                      emptyColor="gray.200"
+                      color="blue.500"
+                      size="xl"
+                      mx={"auto"}
+                      my={"6"}
+                    />
                   </div>
                 ) : (
-                  <div className="h-52">
-                    <p className="text-center font-bold text-2xl">
-                      No tutors are there available
-                    </p>{" "}
+                  <div>
+                    {tutor.length > 0 ? (
+                      <div className="h-4/6">
+                        {currentTutors.length > 0 ? (
+                          currentTutors.map((tutor, index) => (
+                            <div className="p-2 flex justify-center " key={index}>
+                              <div className="bg-[#fffffe] hover:shadow-xl flex flex-col justify-evenly md:flex-row hover:opacity-90  text-[#232946]  w-3/4 rounded-xl mt-5 p-5 h-fit text-center">
+                                <div className=" w-fit flex flex-col mx-auto md:mx-0">
+                                  <img
+                                    src={
+                                      tutor.profilePicture
+                                        ? `${import.meta.env.VITE_BASE_PATH}${
+                                            tutor.profilePicture
+                                          }`
+                                        : user
+                                    }
+                                    className="w-40 h-40 object-cover rounded-bl-3xl rounded-tr-3xl shadow-sm shadow-white"
+                                    alt=""
+                                  />
+                                </div>
+                                <div className="flex flex-col justify-center md:items-start uppercase">
+                                  <div className="mb-4 font-bold">
+                                    {tutor.name}
+                                  </div>
+                                  <div>Board: {tutor.board.name}</div>
+                                  <div>Branch: {tutor.branch.name}</div>
+                                  <div>
+                                    Subject:{" "}
+                                    {tutor.subjects.map((sub, index) => (
+                                      <span key={index}>{sub},</span>
+                                    ))}
+                                  </div>
+                                  <div>
+                                    time available :{" "}
+                                    {formatTime(tutor.timeFrom)} to{" "}
+                                    {formatTime(tutor.timeTo)}
+                                  </div>
+                                </div>
+                                <div
+                                  className="flex flex-col justify-center"
+                                  onClick={() => handleConversation(tutor._id)}
+                                >
+                                  <span>
+                                    {" "}
+                                    <p className="bg-[#d4939d] p-2 text-black rounded-3xl uppercase font-bold mt-5 w-full hover:bg-[#232946] hover:text-white cursor-pointer mx-auto">
+                                      message
+                                    </p>{" "}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-center font-semibold my-8">
+                            No results found for "{searchQuery}"
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="h-52">
+                        <p className="text-center font-bold text-2xl">
+                          No tutors are there available
+                        </p>{" "}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

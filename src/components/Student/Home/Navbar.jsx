@@ -24,6 +24,7 @@ import {
 } from "@chakra-ui/react";
 import { FiMenu, FiChevronDown } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const menuItems = [
   {
@@ -103,6 +104,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const bg = useColorModeValue("white", "gray.800");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedItem, setSelectedItem] = useState(null);
 
   return (
     <Box
@@ -157,21 +159,20 @@ const Navbar = () => {
                   <MenuList className="bg-white text-dark-purple">
                     <MenuGroup title={item.label}>
                       {item.subMenu.map((subItem, index) => (
-                        <MenuItem key={index}>
-                          <span onClick={() => navigate(subItem.href)}>
-                            {subItem.label}
-                          </span>
+                        <MenuItem
+                          key={index}
+                          onClick={() => navigate(subItem.href)}
+                        >
+                          <span>{subItem.label}</span>
                         </MenuItem>
                       ))}
                     </MenuGroup>
                   </MenuList>
                 </Menu>
               ) : (
-                 
                 <span className="font-bold" onClick={() => navigate(item.href)}>
                   {item.label}
                 </span>
-                
               )
             )}
           </Stack>
