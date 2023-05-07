@@ -48,6 +48,8 @@ const FavouriteVideos = () => {
   const lastVideoIndex = currentPage * videosPerPage;
   const firstVideoIndex = lastVideoIndex - videosPerPage;
   const [loading, setLoading] = useState(true);
+  const [removeVideoId, setRemoveVideoId] = useState(null);
+
 
   const handleSearchQuery = (data) => {
     setSearchQuery(data);
@@ -139,7 +141,7 @@ const FavouriteVideos = () => {
             isClosable: true,
             position: "top",
           });
-          setChange(res.data.message);
+          setChange(new Date().toISOString());
         }
       })
       .catch((err) => {
@@ -194,7 +196,10 @@ const FavouriteVideos = () => {
                       <ButtonGroup spacing="2" className="mx-auto">
                         <Button
                           className="bg-red-500 text-white p-3 rounded-lg"
-                          onClick={onOpen}
+                          onClick={() => {
+                            setRemoveVideoId(videos._id);
+                            onOpen();
+                          }}
                         >
                           REMOVE
                         </Button>
@@ -223,7 +228,7 @@ const FavouriteVideos = () => {
                                 </Button>
                                 <Button
                                   colorScheme="red"
-                                  onClick={() => handleRemove(videos._id)}
+                                  onClick={() => handleRemove(removeVideoId)}
                                   ml={3}
                                 >
                                   Remove

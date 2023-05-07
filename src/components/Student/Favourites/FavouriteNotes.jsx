@@ -43,6 +43,9 @@ const FavouriteNotes = () => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [change, setChange] = useState("");
   const [loading, setLoading] = useState(true);
+  const [removeNoteId, setRemoveNoteId] = useState(null);
+ 
+
 
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -138,7 +141,7 @@ const FavouriteNotes = () => {
             isClosable: true,
             position: "top",
           });
-          setChange(res.data.message);
+          setChange(new Date().toISOString());
         }
       })
       .catch((err) => {
@@ -163,102 +166,108 @@ const FavouriteNotes = () => {
       {loading ? (
         <NotesSkeleton />
       ) : (
-      <div className="flex justify-center">
-        {note.length > 0 ? (
-          <div className="grid md:grid-cols-4 gap-1">
-            {currentNotes.length > 0 ? (
-              currentNotes.map((notes, index) => (
-                <Card maxW="sm" key={index}>
-                  <CardBody>
-                    <iframe
-                      title="PDF Viewer"
-                      src={`${import.meta.env.VITE_BASE_PATH}${
-                        notes.note.file_path
-                      }`}
-                      height="240"
-                      scrolling="no"
-                      borderRadius="lg"
-                    />
-                    <Stack mt="6" spacing="3">
-                      <Heading size="md" className="uppercase">
-                        {" "}
-                        {notes.note.note_name}
-                      </Heading>
-                      <Text className="uppercase">
-                        Class : {notes.branch} <br />
-                        Subject : {notes.subject}
-                      </Text>
-                    </Stack>
-                  </CardBody>
-                  <Divider />
-                  <CardFooter>
-                    <ButtonGroup spacing="2">
-                      <Button className="bg-red-100 p-3 rounded-lg">
-                        <a
-                          href={`${import.meta.env.VITE_BASE_PATH}${
-                            notes.note.file_path
-                          }`}
-                          target="_blank"
+        <div className="flex justify-center">
+          {note.length > 0 ? (
+            <div className="grid md:grid-cols-4 gap-1">
+              {currentNotes.length > 0 ? (
+                currentNotes.map((notes, index) => (
+                  <Card maxW="sm" key={index}>
+                    <CardBody>
+                      <iframe
+                        title="PDF Viewer"
+                        src={`${import.meta.env.VITE_BASE_PATH}${
+                          notes.note.file_path
+                        }`}
+                        height="240"
+                        scrolling="no"
+                        borderRadius="lg"
+                      />
+                      <Stack mt="6" spacing="3">
+                        <Heading size="md" className="uppercase">
+                          {" "}
+                          {notes.note.note_name}
+                        </Heading>
+                        <Text className="uppercase">
+                          Class : {notes.branch} <br />
+                          Subject : {notes.subject}
+                        </Text>
+                      </Stack>
+                    </CardBody>
+                    <Divider />
+                    <CardFooter>
+                      <ButtonGroup spacing="2">
+                        <Button className="bg-red-100 p-3 rounded-lg">
+                          <a
+                            href={`${import.meta.env.VITE_BASE_PATH}${
+                              notes.note.file_path
+                            }`}
+                            target="_blank"
+                          >
+                            VIEW
+                          </a>
+                        </Button>
+
+                        <Button
+                          className="bg-red-500 text-white p-3 rounded-lg"
+                          onClick={() => {
+                            setRemoveNoteId(notes._id);
+                            onOpen();
+                          }}
                         >
-                          VIEW
-                        </a>
-                      </Button>
-
-                      <Button
-                        className="bg-red-500 text-white p-3 rounded-lg"
-                        onClick={onOpen}
-                      >
-                        REMOVE
-                      </Button>
-                      <AlertDialog
-                        isOpen={isOpen}
-                        leastDestructiveRef={cancelRef}
-                        onClose={onClose}
-                      >
-                        <AlertDialogOverlay>
-                          <AlertDialogContent>
-                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                              Remove from favourite
-                            </AlertDialogHeader>
-
-                            <AlertDialogBody>
-                              Are you sure? You can't undo this action
-                              afterwards.
-                            </AlertDialogBody>
-
-                            <AlertDialogFooter>
-                              <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
-                              </Button>
-                              <Button
-                                colorScheme="red"
-                                onClick={() => handleRemove(notes._id)}
-                                ml={3}
+                          REMOVE
+                        </Button>
+                        <AlertDialog
+                          isOpen={isOpen}
+                          leastDestructiveRef={cancelRef}
+                          onClose={onClose}
+                        >
+                          <AlertDialogOverlay>
+                            <AlertDialogContent>
+                              <AlertDialogHeader
+                                fontSize="lg"
+                                fontWeight="bold"
                               >
-                                Remove
-                              </Button>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialogOverlay>
-                      </AlertDialog>
-                    </ButtonGroup>
-                  </CardFooter>
-                </Card>
-              ))
-            ) : (
-              <p>
-                No results found for "{searchQuery}" and "{selectedSubject}"
+                                Remove from favourite
+                              </AlertDialogHeader>
+
+                              <AlertDialogBody>
+                                Are you sure? You can't undo this action
+                                afterwards.
+                              </AlertDialogBody>
+
+                              <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                  Cancel
+                                </Button>
+                                <Button
+                                  colorScheme="red"
+                                  onClick={() => handleRemove(removeNoteId)}
+                                  ml={3}
+                                >
+                                  Remove
+                                </Button>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialogOverlay>
+                        </AlertDialog>
+                      </ButtonGroup>
+                    </CardFooter>
+                  </Card>
+                ))
+              ) : (
+                <p>
+                  No results found for "{searchQuery}" and "{selectedSubject}"
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="h-40">
+              <p className="text-center font-bold text-lg">
+                Nothing in favourite notes
               </p>
-            )}
-          </div>
-        ) : (
-          <div className="h-40">
-            <p className="text-center font-bold text-lg">
-              Nothing in favourite notes
-            </p>
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
       )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination

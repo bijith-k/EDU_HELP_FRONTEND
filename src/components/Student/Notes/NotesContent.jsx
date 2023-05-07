@@ -36,6 +36,7 @@ const NotesContent = () => {
   const lastNoteIndex = currentPage * notesPerPage;
   const firstNoteIndex = lastNoteIndex - notesPerPage;
   const [loading, setLoading] = useState(true);
+  
 
   const handleSearchQuery = (data) => {
     setSearchQuery(data);

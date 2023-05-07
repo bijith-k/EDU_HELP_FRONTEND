@@ -42,6 +42,8 @@ export const UploadedVideos = () => {
  const lastVideoIndex = currentPage * videosPerPage;
  const firstVideoIndex = lastVideoIndex - videosPerPage;
   const [loading, setLoading] = useState(true);
+const [deleteVideoId, setDeleteVideoId] = useState(null);
+
 
  const handleSearchQuery = (data) => {
    setSearchQuery(data);
@@ -132,7 +134,7 @@ export const UploadedVideos = () => {
             isClosable: true,
             position: "top",
           });
-          setChange(res.data.message);
+          setChange(new Date().toISOString());
         }
       })
       .catch((err) => {
@@ -171,7 +173,7 @@ export const UploadedVideos = () => {
              isClosable: true,
              position: "top",
            });
-           setChange(res.data.message);
+           setChange(new Date().toISOString());
          }
       })
       .catch((err) => {
@@ -198,113 +200,117 @@ export const UploadedVideos = () => {
       {loading ? (
         <NotesSkeleton />
       ) : (
-      <div className="flex justify-center">
-        {videos.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
-            {filteredData.length > 0 ? (
-              filteredData.map((video, index) => (
-                <Card maxW="sm" key={index}>
-                  <CardBody>
-                    
-                    <iframe
-                      title="PDF Viewer"
-                      src={video.video_link}
-                      height="240"
-                      scrolling="no"
-                      borderRadius="lg"
-                    />
-                    <Stack mt="6" spacing="3">
-                      <Heading size="md"> {video.video_name}</Heading>
-                      <Text>
-                        Class : {video.branch.name} <br />
-                        Subject : {video.subject.name}
-                      </Text>
+        <div className="flex justify-center">
+          {videos.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
+              {filteredData.length > 0 ? (
+                filteredData.map((video, index) => (
+                  <Card maxW="sm" key={index}>
+                    <CardBody>
+                      <iframe
+                        title="PDF Viewer"
+                        src={video.video_link}
+                        height="240"
+                        scrolling="no"
+                        borderRadius="lg"
+                      />
+                      <Stack mt="6" spacing="3">
+                        <Heading size="md"> {video.video_name}</Heading>
+                        <Text>
+                          Class : {video.branch.name} <br />
+                          Subject : {video.subject.name}
+                        </Text>
 
-                      {video.approved ? (
-                        <Text>Status : Approved</Text>
-                      ) : (
-                        <Text>Status : Pending Admin approval</Text>
-                      )}
-                      {video.rejected ? <Text>Status : Rejected</Text> : null}
-                    </Stack>
-                  </CardBody>
-                  <Divider />
-                  <CardFooter>
-                    <ButtonGroup spacing="2" className="mx-auto">
-                      
-                      {video.private ? (
+                        {video.approved ? (
+                          <Text>Status : Approved</Text>
+                        ) : (
+                          <Text>Status : Pending Admin approval</Text>
+                        )}
+                        {video.rejected ? <Text>Status : Rejected</Text> : null}
+                      </Stack>
+                    </CardBody>
+                    <Divider />
+                    <CardFooter>
+                      <ButtonGroup spacing="2" className="mx-auto">
+                        {video.private ? (
+                          <Button
+                            // size="medium"
+                            className="bg-red-100 p-3 rounded-lg"
+                            onClick={() => handlePrivate(video._id)}
+                          >
+                            MAKE PUBLIC
+                          </Button>
+                        ) : (
+                          <Button
+                            // size="medium"
+                            className="bg-red-100 p-3 rounded-lg"
+                            onClick={() => handlePrivate(video._id)}
+                          >
+                            MAKE PRIVATE
+                          </Button>
+                        )}
                         <Button
                           // size="medium"
-                          className="bg-red-100 p-3 rounded-lg"
-                          onClick={() => handlePrivate(video._id)}
+                          className="bg-red-500 text-white p-3 rounded-lg"
+                          onClick={() => {
+                            setDeleteVideoId(video._id);
+                            onOpen();
+                          }}
                         >
-                          MAKE PUBLIC
+                          DELETE
                         </Button>
-                      ) : (
-                        <Button
-                          // size="medium"
-                          className="bg-red-100 p-3 rounded-lg"
-                          onClick={() => handlePrivate(video._id)}
+                        <AlertDialog
+                          isOpen={isOpen}
+                          leastDestructiveRef={cancelRef}
+                          onClose={onClose}
                         >
-                          MAKE PRIVATE
-                        </Button>
-                      )}
-                      <Button
-                        // size="medium"
-                        className="bg-red-500 text-white p-3 rounded-lg"
-                        onClick={onOpen}
-                      >
-                        DELETE
-                      </Button>
-                      <AlertDialog
-                        isOpen={isOpen}
-                        leastDestructiveRef={cancelRef}
-                        onClose={onClose}
-                      >
-                        <AlertDialogOverlay>
-                          <AlertDialogContent>
-                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                              Delete Video
-                            </AlertDialogHeader>
-
-                            <AlertDialogBody>
-                              Are you sure? You can't undo this action
-                              afterwards.
-                            </AlertDialogBody>
-
-                            <AlertDialogFooter>
-                              <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
-                              </Button>
-                              <Button
-                                colorScheme="red"
-                                onClick={() => handleDelete(video._id)}
-                                ml={3}
+                          <AlertDialogOverlay>
+                            <AlertDialogContent>
+                              <AlertDialogHeader
+                                fontSize="lg"
+                                fontWeight="bold"
                               >
-                                Delete
-                              </Button>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialogOverlay>
-                      </AlertDialog>
-                    </ButtonGroup>
-                  </CardFooter>
-                </Card>
-              ))
-            ) : (
-              <p>
-                No results found for "{searchQuery}" and "{selectedSubject}"
+                                Delete Video
+                              </AlertDialogHeader>
+
+                              <AlertDialogBody>
+                                Are you sure? You can't undo this action
+                                afterwards.
+                              </AlertDialogBody>
+
+                              <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                  Cancel
+                                </Button>
+                                <Button
+                                  colorScheme="red"
+                                  onClick={() => handleDelete(deleteVideoId)}
+                                  ml={3}
+                                >
+                                  Delete
+                                </Button>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialogOverlay>
+                        </AlertDialog>
+                      </ButtonGroup>
+                    </CardFooter>
+                  </Card>
+                ))
+              ) : (
+                <p>
+                  No results found for "{searchQuery}" and "{selectedSubject}"
+                </p>
+              )}
+            </div>
+          ) : (
+            <div>
+              <p className="text-xl text-white font-bold text-center">
+                You have not yet uploaded any videos
               </p>
-            )}
-          </div>
-        ) : (
-          <div>
-            <p className="text-xl text-white font-bold text-center">
-              You have not yet uploaded any videos
-            </p>
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
       )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination

@@ -42,6 +42,7 @@ const [questionsPerPage, setQuestionsPerPage] = useState(4);
 const lastQuestionIndex = currentPage * questionsPerPage;
 const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
   const [loading, setLoading] = useState(true);
+const [deleteQuestionId, setDeleteQuestionId] = useState(null);
 
    
 
@@ -136,7 +137,7 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
             isClosable: true,
             position: "top",
           });
-          setChange(res.data.message);
+          setChange(new Date().toISOString());
         }
         
       })
@@ -175,7 +176,7 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
              isClosable: true,
              position: "top",
            });
-           setChange(res.data.message);
+           setChange(new Date().toISOString());
          }
        
       })
@@ -199,136 +200,139 @@ const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
-{loading ? (
+      {loading ? (
         <NotesSkeleton />
       ) : (
-      <div className="flex justify-center">
-        {questions.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-1">
-            {currentQuestions.length > 0 ? (
-              currentQuestions.map((question, index) => (
-                <Card maxW="sm" key={index}>
-                  <CardBody className="flex flex-col">
-                    <iframe
-                      title="PDF Viewer"
-                      src={`${import.meta.env.VITE_BASE_PATH}${
-                        question.file_path
-                      }`}
-                      height="240"
-                      scrolling="no"
-                      borderRadius="lg"
-                    />
-                    <Stack mt="6" spacing="3">
-                      <Heading size="md" className="uppercase">
-                        {" "}
-                        {question.exam_name}
-                      </Heading>
-                      <Text className="uppercase">
-                        Class : {question.branch.name} <br />
-                        Subject : {question.subject.name}
-                      </Text>
+        <div className="flex justify-center">
+          {questions.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-1">
+              {currentQuestions.length > 0 ? (
+                currentQuestions.map((question, index) => (
+                  <Card maxW="sm" key={index}>
+                    <CardBody className="flex flex-col">
+                      <iframe
+                        title="PDF Viewer"
+                        src={`${import.meta.env.VITE_BASE_PATH}${
+                          question.file_path
+                        }`}
+                        height="240"
+                        scrolling="no"
+                        borderRadius="lg"
+                      />
+                      <Stack mt="6" spacing="3">
+                        <Heading size="md" className="uppercase">
+                          {" "}
+                          {question.exam_name}
+                        </Heading>
+                        <Text className="uppercase">
+                          Class : {question.branch.name} <br />
+                          Subject : {question.subject.name}
+                        </Text>
 
-                      {question.approved ? (
-                        <Text>Status : Approved</Text>
-                      ) : question.rejected ? (
-                        <>
-                          <Text>Status : Rejected</Text>
-                          <Text>Reason : {question.rejection_reason}</Text>
-                        </>
-                      ) : (
-                        <Text>Status : Pending Admin approval</Text>
-                      )}
-                    </Stack>
-                  </CardBody>
-                  <Divider />
-                  <CardFooter>
-                    <ButtonGroup spacing="2">
-                      
-                      <Button className="bg-red-100 p-3 rounded-lg">
-                        <a
-                          href={`${import.meta.env.VITE_BASE_PATH}${
-                            question.file_path
-                          }`}
-                          target="_blank"
-                        >
-                          VIEW
-                        </a>
-                      </Button>
-                     
-                      {question.private ? (
-                        <Button
-                           
-                          className="bg-red-100 p-3 rounded-lg"
-                          onClick={() => handlePrivate(question._id)}
-                        >
-                          MAKE PUBLIC
+                        {question.approved ? (
+                          <Text>Status : Approved</Text>
+                        ) : question.rejected ? (
+                          <>
+                            <Text>Status : Rejected</Text>
+                            <Text>Reason : {question.rejection_reason}</Text>
+                          </>
+                        ) : (
+                          <Text>Status : Pending Admin approval</Text>
+                        )}
+                      </Stack>
+                    </CardBody>
+                    <Divider />
+                    <CardFooter>
+                      <ButtonGroup spacing="2">
+                        <Button className="bg-red-100 p-3 rounded-lg">
+                          <a
+                            href={`${import.meta.env.VITE_BASE_PATH}${
+                              question.file_path
+                            }`}
+                            target="_blank"
+                          >
+                            VIEW
+                          </a>
                         </Button>
-                      ) : (
+
+                        {question.private ? (
+                          <Button
+                            className="bg-red-100 p-3 rounded-lg"
+                            onClick={() => handlePrivate(question._id)}
+                          >
+                            MAKE PUBLIC
+                          </Button>
+                        ) : (
+                          <Button
+                            className="bg-red-100 p-3 rounded-lg"
+                            onClick={() => handlePrivate(question._id)}
+                          >
+                            MAKE PRIVATE
+                          </Button>
+                        )}
+
                         <Button
-                           
-                          className="bg-red-100 p-3 rounded-lg"
-                          onClick={() => handlePrivate(question._id)}
+                          // size="medium"
+                          className="bg-red-500 text-white p-3 rounded-lg"
+                          onClick={() => {
+                            setDeleteQuestionId(question._id);
+                            onOpen();
+                          }}
                         >
-                          MAKE PRIVATE
+                          DELETE
                         </Button>
-                      )}
-
-                      <Button
-                        // size="medium"
-                        className="bg-red-500 text-white p-3 rounded-lg"
-                        onClick={onOpen}
-                      >
-                        DELETE
-                      </Button>
-                      <AlertDialog
-                        isOpen={isOpen}
-                        leastDestructiveRef={cancelRef}
-                        onClose={onClose}
-                      >
-                        <AlertDialogOverlay>
-                          <AlertDialogContent>
-                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                              Delete Question Paper
-                            </AlertDialogHeader>
-
-                            <AlertDialogBody>
-                              Are you sure? You can't undo this action
-                              afterwards.
-                            </AlertDialogBody>
-
-                            <AlertDialogFooter>
-                              <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
-                              </Button>
-                              <Button
-                                colorScheme="red"
-                                onClick={() => handleDelete(question._id)}
-                                ml={3}
+                        <AlertDialog
+                          isOpen={isOpen}
+                          leastDestructiveRef={cancelRef}
+                          onClose={onClose}
+                        >
+                          <AlertDialogOverlay>
+                            <AlertDialogContent>
+                              <AlertDialogHeader
+                                fontSize="lg"
+                                fontWeight="bold"
                               >
-                                Delete
-                              </Button>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialogOverlay>
-                      </AlertDialog>
-                    </ButtonGroup>
-                  </CardFooter>
-                </Card>
-              ))
-            ) : (
-              <p>
-                No results found for "{searchQuery}" and "{selectedSubject}"
+                                Delete Question Paper
+                              </AlertDialogHeader>
+
+                              <AlertDialogBody>
+                                Are you sure? You can't undo this action
+                                afterwards.
+                              </AlertDialogBody>
+
+                              <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                  Cancel
+                                </Button>
+                                <Button
+                                  colorScheme="red"
+                                  onClick={() => handleDelete(deleteQuestionId)}
+                                  ml={3}
+                                >
+                                  Delete
+                                </Button>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialogOverlay>
+                        </AlertDialog>
+                      </ButtonGroup>
+                    </CardFooter>
+                  </Card>
+                ))
+              ) : (
+                <p>
+                  No results found for "{searchQuery}" and "{selectedSubject}"
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="h-40">
+              <p className="text-center font-bold text-lg">
+                You haven't uploaded any question papers
               </p>
-            )}
-          </div>
-        ) : (
-          <div className="h-40">
-            <p className="text-center font-bold text-lg">
-              You haven't uploaded any question papers
-            </p>
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
       )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination

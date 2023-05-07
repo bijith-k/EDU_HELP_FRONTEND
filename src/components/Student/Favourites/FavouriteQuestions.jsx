@@ -45,6 +45,8 @@ const FavouriteQuestions = () => {
   const lastQuestionIndex = currentPage * questionsPerPage;
   const firstQuestionIndex = lastQuestionIndex - questionsPerPage;
   const [loading, setLoading] = useState(true);
+  const [removeQuestionId, setRemoveQuestionId] = useState(null);
+
 
   const handleSearchQuery = (data) => {
     setSearchQuery(data);
@@ -139,7 +141,7 @@ const FavouriteQuestions = () => {
             isClosable: true,
             position: "top",
           });
-          setChange(res.data.message);
+          setChange(new Date().toISOString());
         }
       })
       .catch((err) => {
@@ -208,7 +210,10 @@ const FavouriteQuestions = () => {
 
                         <Button
                           className="bg-red-500 text-white p-3 rounded-lg"
-                          onClick={onOpen}
+                          onClick={() => {
+                            setRemoveQuestionId(questions._id);
+                            onOpen();
+                          }}
                         >
                           REMOVE
                         </Button>
@@ -237,7 +242,7 @@ const FavouriteQuestions = () => {
                                 </Button>
                                 <Button
                                   colorScheme="red"
-                                  onClick={() => handleRemove(questions._id)}
+                                  onClick={() => handleRemove(removeQuestionId)}
                                   ml={3}
                                 >
                                   Delete

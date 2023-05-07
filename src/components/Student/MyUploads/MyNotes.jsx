@@ -43,7 +43,7 @@ const MyNotes = () => {
    const lastNoteIndex = currentPage * notesPerPage;
    const firstNoteIndex = lastNoteIndex - notesPerPage;
   const [loading, setLoading] = useState(true);
-
+const [deleteNoteId, setDeleteNoteId] = useState(null);
 
     
 
@@ -140,7 +140,7 @@ const MyNotes = () => {
             isClosable: true,
             position: "top",
           });
-          setChange(res.data.message);
+          setChange(new Date().toISOString());
         }
       })
       .catch((err) => {
@@ -178,7 +178,7 @@ const MyNotes = () => {
             isClosable: true,
             position: "top",
           });
-          setChange(res.data.message);
+          setChange(new Date().toISOString());
         }
       })
       .catch((err) => {
@@ -274,7 +274,9 @@ const MyNotes = () => {
                       <Button
                         // size="medium"
                         className="bg-red-500 text-white p-3 rounded-lg"
-                        onClick={onOpen}
+                        onClick={()=>{
+                          setDeleteNoteId(note._id);
+                          onOpen()}}
                       >
                         DELETE
                       </Button>
@@ -300,7 +302,7 @@ const MyNotes = () => {
                               </Button>
                               <Button
                                 colorScheme="red"
-                                onClick={() => handleDelete(note._id)}
+                                onClick={() =>{handleDelete(deleteNoteId)}}
                                 ml={3}
                               >
                                 Delete

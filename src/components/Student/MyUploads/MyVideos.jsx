@@ -43,6 +43,8 @@ const [videosPerPage, setVideosPerPage] = useState(4);
 const lastVideoIndex = currentPage * videosPerPage;
 const firstVideoIndex = lastVideoIndex - videosPerPage;
   const [loading, setLoading] = useState(true);
+const [deleteVideoId, setDeleteVideoId] = useState(null);
+
 
 const handleSearchQuery = (data) => {
   setSearchQuery(data);
@@ -136,7 +138,7 @@ const handleSelectedSubject = (data) => {
              isClosable: true,
              position: "top",
            });
-           setChange(res.data.message);
+           setChange(new Date().toISOString());
         }
        
       })
@@ -175,7 +177,7 @@ const handleSelectedSubject = (data) => {
              isClosable: true,
              position: "top",
            });
-           setChange(res.data.message);
+           setChange(new Date().toISOString());
          }
         
       })
@@ -198,123 +200,125 @@ const handleSelectedSubject = (data) => {
           selectedSubjectData={handleSelectedSubject}
         />
       ) : null}
-{loading ? (
+      {loading ? (
         <NotesSkeleton />
       ) : (
-      <div className="flex justify-center">
-        {videos.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
-            {currentVideos.length > 0 ? (
-              currentVideos.map((video, index) => (
-                <Card maxW="sm" key={index}>
-                  <CardBody className="flex flex-col">
-                    
-                    <iframe
-                      title="PDF Viewer"
-                      src={video.video_link}
-                      height="240"
-                      scrolling="no"
-                      borderRadius="lg"
-                    />
-                    <Stack mt="6" spacing="3">
-                      <Heading size="md" className="uppercase">
-                        {" "}
-                        {video.video_name}
-                      </Heading>
-                      <Text className="uppercase">
-                        Class : {video.branch.name} <br />
-                        Subject : {video.subject.name}
-                      </Text>
+        <div className="flex justify-center">
+          {videos.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
+              {currentVideos.length > 0 ? (
+                currentVideos.map((video, index) => (
+                  <Card maxW="sm" key={index}>
+                    <CardBody className="flex flex-col">
+                      <iframe
+                        title="PDF Viewer"
+                        src={video.video_link}
+                        height="240"
+                        scrolling="no"
+                        borderRadius="lg"
+                      />
+                      <Stack mt="6" spacing="3">
+                        <Heading size="md" className="uppercase">
+                          {" "}
+                          {video.video_name}
+                        </Heading>
+                        <Text className="uppercase">
+                          Class : {video.branch.name} <br />
+                          Subject : {video.subject.name}
+                        </Text>
 
-                      {video.approved ? (
-                        <Text>Status : Approved</Text>
-                      ) : video.rejected ? (
-                        <>
-                          <Text>Status : Rejected</Text>
-                          <Text>Reason : {video.rejection_reason}</Text>
-                        </>
-                      ) : (
-                        <Text>Status : Pending Admin approval</Text>
-                      )}
-                    </Stack>
-                  </CardBody>
-                  <Divider />
-                  <CardFooter>
-                    <ButtonGroup spacing="2" className="mx-auto">
-                      
-                      {video.private ? (
+                        {video.approved ? (
+                          <Text>Status : Approved</Text>
+                        ) : video.rejected ? (
+                          <>
+                            <Text>Status : Rejected</Text>
+                            <Text>Reason : {video.rejection_reason}</Text>
+                          </>
+                        ) : (
+                          <Text>Status : Pending Admin approval</Text>
+                        )}
+                      </Stack>
+                    </CardBody>
+                    <Divider />
+                    <CardFooter>
+                      <ButtonGroup spacing="2" className="mx-auto">
+                        {video.private ? (
+                          <Button
+                            className="bg-red-100 p-3 rounded-lg"
+                            onClick={() => handlePrivate(video._id)}
+                          >
+                            MAKE PUBLIC
+                          </Button>
+                        ) : (
+                          <Button
+                            className="bg-red-100 p-3 rounded-lg"
+                            onClick={() => handlePrivate(video._id)}
+                          >
+                            MAKE PRIVATE
+                          </Button>
+                        )}
                         <Button
-                          
-                          className="bg-red-100 p-3 rounded-lg"
-                          onClick={() => handlePrivate(video._id)}
-                        >
-                          MAKE PUBLIC
-                        </Button>
-                      ) : (
-                        <Button
-                        
-                          className="bg-red-100 p-3 rounded-lg"
-                          onClick={() => handlePrivate(video._id)}
-                        >
-                          MAKE PRIVATE
-                        </Button>
-                      )}
-                      <Button
+                          className="bg-red-500 text-white p-3 rounded-lg"
                          
-                        className="bg-red-500 text-white p-3 rounded-lg"
-                        onClick={onOpen}
-                      >
-                        DELETE
-                      </Button>
-                      <AlertDialog
-                        isOpen={isOpen}
-                        leastDestructiveRef={cancelRef}
-                        onClose={onClose}
-                      >
-                        <AlertDialogOverlay>
-                          <AlertDialogContent>
-                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                              Delete Video
-                            </AlertDialogHeader>
-
-                            <AlertDialogBody>
-                              Are you sure? You can't undo this action
-                              afterwards.
-                            </AlertDialogBody>
-
-                            <AlertDialogFooter>
-                              <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
-                              </Button>
-                              <Button
-                                colorScheme="red"
-                                onClick={() => handleDelete(video._id)}
-                                ml={3}
+                          onClick={() => {
+                            setDeleteVideoId(video._id);
+                            onOpen();
+                          }}
+                        >
+                          DELETE
+                        </Button>
+                        <AlertDialog
+                          isOpen={isOpen}
+                          leastDestructiveRef={cancelRef}
+                          onClose={onClose}
+                        >
+                          <AlertDialogOverlay>
+                            <AlertDialogContent>
+                              <AlertDialogHeader
+                                fontSize="lg"
+                                fontWeight="bold"
                               >
-                                Delete
-                              </Button>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialogOverlay>
-                      </AlertDialog>
-                    </ButtonGroup>
-                  </CardFooter>
-                </Card>
-              ))
-            ) : (
-              <p>
-                No results found for "{searchQuery}" and "{selectedSubject}"
+                                Delete Video
+                              </AlertDialogHeader>
+
+                              <AlertDialogBody>
+                                Are you sure? You can't undo this action
+                                afterwards.
+                              </AlertDialogBody>
+
+                              <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                  Cancel
+                                </Button>
+                                <Button
+                                  colorScheme="red"
+                                  onClick={() => handleDelete(deleteVideoId)}
+                                  ml={3}
+                                >
+                                  Delete
+                                </Button>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialogOverlay>
+                        </AlertDialog>
+                      </ButtonGroup>
+                    </CardFooter>
+                  </Card>
+                ))
+              ) : (
+                <p>
+                  No results found for "{searchQuery}" and "{selectedSubject}"
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="h-40">
+              <p className="text-center font-bold text-lg">
+                You haven't uploaded any videos
               </p>
-            )}
-          </div>
-        ) : (
-          <div className="h-40">
-            <p className="text-center font-bold text-lg">
-              You haven't uploaded any videos
-            </p>
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
       )}
       {searchQuery != "" || selectedSubject != "" ? null : (
         <Pagination
