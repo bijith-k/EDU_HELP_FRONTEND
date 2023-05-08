@@ -20,7 +20,7 @@ const Tutors = () => {
 
    const [tutorLoading, setTutorLoading] = useState(true);
 
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(null);
  
  
 
