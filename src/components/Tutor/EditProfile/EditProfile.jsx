@@ -112,7 +112,6 @@ const EditProfile = () => {
 
   useEffect(() => {
     if (selectedBoard) {
-      setSelectedBranch('')
       axiosInstance("Ttoken")
         .get(`tutor/branches?board=${selectedBoard}`)
         .then((res) => {
