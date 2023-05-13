@@ -41,7 +41,7 @@ const SubjectList = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -77,7 +77,7 @@ const SubjectList = () => {
           localStorage.removeItem("Adtoken");
           navigate("/admin");
         } else {
-          console.log("first")
+          
           setToastMessage(`Clicked at ${new Date().toISOString()}`);
           toast({
             title: res.data.message,
@@ -89,7 +89,7 @@ const SubjectList = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+         
        setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,

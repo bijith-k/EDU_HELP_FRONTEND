@@ -96,7 +96,7 @@ const NotesContent = () => {
       })
       .catch((err) => {
         setLoading(false)
-        console.log(err);
+         
         toast({
           title: err.message,
           status: "error",
@@ -140,7 +140,7 @@ const NotesContent = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
         toast({
           title: error.message,
           status: "error",

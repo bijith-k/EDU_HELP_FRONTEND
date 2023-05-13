@@ -63,7 +63,7 @@ const OtpTutor = () => {
           })
           .catch((error) => {
             setIsLoading(false);
-            console.log(error, "catchhh");
+           
             toast({
               title: error.response.data.errors,
               status: "error",

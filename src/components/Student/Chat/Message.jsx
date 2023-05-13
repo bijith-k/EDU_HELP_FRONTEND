@@ -23,7 +23,7 @@ const Message = ({ message, own, sendBy }) => {
             setTutor(res.data);
           }
         } catch (error) {
-          console.log(error);
+          
           toast({
             title: error.message,
             status: "error",

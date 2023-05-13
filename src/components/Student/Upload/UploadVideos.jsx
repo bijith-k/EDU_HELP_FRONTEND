@@ -45,7 +45,7 @@ const UploadVideos = () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -66,7 +66,13 @@ const UploadVideos = () => {
           setBranches(res.data.branches);
         })
         .catch((error) => {
-          console.log(error);
+           toast({
+             title: error.message,
+             status: "error",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
         });
     } else {
       setBranches([]);
@@ -82,7 +88,13 @@ const UploadVideos = () => {
           setSubjects(res.data.subjects);
         })
         .catch((error) => {
-          console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setSubjects([]);
@@ -167,7 +179,7 @@ const UploadVideos = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        console.log(error);
+       
         toast({
           title: error.message,
           status: "error",

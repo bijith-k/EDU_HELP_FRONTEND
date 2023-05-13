@@ -45,7 +45,7 @@ const Events = () => {
       })
       .catch((err) => {
         setLoading(false)
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",

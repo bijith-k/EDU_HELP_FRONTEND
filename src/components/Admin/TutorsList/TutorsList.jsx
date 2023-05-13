@@ -58,7 +58,7 @@ const TutorsList = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -96,7 +96,7 @@ const TutorsList = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
         setToastMessage(id);
         toast({
           title: err.message,
@@ -135,7 +135,7 @@ const TutorsList = () => {
        
       })
       .catch((err) => {
-        console.log(err);
+       
         setToastMessage(id);
         toast({
           title: err.message,
@@ -177,7 +177,7 @@ const TutorsList = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
         setToastMessage(tutorId);
         toast({
           title: err.message,

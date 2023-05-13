@@ -87,7 +87,7 @@ const Dashboard = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -109,7 +109,7 @@ const Dashboard = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+       
         toast({
           title: err.message,
           status: "error",
@@ -131,7 +131,7 @@ const Dashboard = () => {
        
       })
       .catch((err) => {
-        console.log(err);
+         
         toast({
           title: err.message,
           status: "error",
@@ -153,7 +153,7 @@ const Dashboard = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -175,7 +175,7 @@ const Dashboard = () => {
        
       })
       .catch((err) => {
-        console.log(err);
+         
         toast({
           title: err.message,
           status: "error",
@@ -197,7 +197,7 @@ const Dashboard = () => {
          
         })
         .catch((err) => {
-          console.log(err);
+          
           toast({
             title: err.message,
             status: "error",

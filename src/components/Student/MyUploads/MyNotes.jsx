@@ -105,7 +105,7 @@ const [deleteNoteId, setDeleteNoteId] = useState(null);
         }
       }).catch((err) => {
         setLoading(false);
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -144,7 +144,7 @@ const [deleteNoteId, setDeleteNoteId] = useState(null);
         }
       })
       .catch((err) => {
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -182,7 +182,7 @@ const [deleteNoteId, setDeleteNoteId] = useState(null);
         }
       })
       .catch((err) => {
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",

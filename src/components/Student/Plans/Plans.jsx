@@ -43,7 +43,7 @@ const Plans = () => {
       })
       .catch((err) => {
         setContentLoading(false)
-        console.log(err);
+         
         toast({
           title: err.message,
           status: "error",
@@ -67,7 +67,7 @@ const Plans = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+      
         toast({
           title: err.message,
           status: "error",
@@ -124,7 +124,7 @@ const Plans = () => {
             });
           }
         } catch (error) {
-          console.log(error);
+           
           setLoading(false);
           setSelectedPlan(null);
           toast({

@@ -22,7 +22,7 @@ const StudentSignUp = () => {
   const [selectedBoard, setSelectedBoard] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
   const navigate = useNavigate();
-  const toast = useToast()
+  const toast = useToast();
 
   const [boardError, setBoardError] = useState(null);
   const [branchError, setBranchError] = useState(null);
@@ -32,21 +32,33 @@ const StudentSignUp = () => {
     axiosInstance()
       .get(`auth/boards`)
       .then((res) => setBoards(res.data.board))
-      .catch((err) => console.error(err));
+      .catch((err) =>
+        toast({
+          title: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        })
+      );
   }, []);
 
   useEffect(() => {
     if (selectedBoard) {
-      setSelectedBranch('')
+      setSelectedBranch("");
       axiosInstance()
-        .get(
-          `auth/branches?board=${selectedBoard}`
-        )
+        .get(`auth/branches?board=${selectedBoard}`)
         .then((res) => {
           setBranches(res.data.branches);
         })
         .catch((error) => {
-          console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          });
         });
     } else {
       setBranches([]);
@@ -87,13 +99,13 @@ const StudentSignUp = () => {
           .then((response) => {
             setIsLoading(false);
             if (response.data.otpSend) {
-             toast({
-               title: response.data.message,
-               status: "success",
-               duration: 5000,
-               isClosable: true,
-               position: "top",
-             });
+              toast({
+                title: response.data.message,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              });
               navigate("/otp");
             } else {
               setIsLoading(false);
@@ -108,7 +120,7 @@ const StudentSignUp = () => {
           })
           .catch((error) => {
             setIsLoading(false);
-            console.log(error);
+
             toast({
               title: error.response.data.errors,
               status: "error",
@@ -130,7 +142,6 @@ const StudentSignUp = () => {
 
   return (
     <div className="bg-[#232946] max-w-screen-2xl mx-auto min-h-screen flex flex-col">
-       
       <div className="text-white mt-5 max-w-sm mx-auto p-3 rounded-2xl">
         <img src={logo} className="w-20 h-20 mx-auto mb-4" alt="logo" />
         <p className="font-bold text-3xl">WELCOME TO EDU-HELP</p>
@@ -303,7 +314,6 @@ const StudentSignUp = () => {
                 ) : null}
               </div>
             </div>
-            
 
             <Button
               isLoading={isLoading}

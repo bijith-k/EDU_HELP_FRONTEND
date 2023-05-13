@@ -105,7 +105,7 @@ const QuestionContent = () => {
       })
       .catch((err) => {
          setLoading(false);
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -151,7 +151,7 @@ const QuestionContent = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
         toast({
           title: error.message,
           status: "error",

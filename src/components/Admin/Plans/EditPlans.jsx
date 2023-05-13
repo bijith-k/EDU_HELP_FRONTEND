@@ -43,7 +43,7 @@ const EditPlans = () => {
        
       })
       .catch((error) => {
-        console.log(error);
+         
         toast({
           title: error.message,
           status: "error",
@@ -110,7 +110,7 @@ const EditPlans = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
         toast({
           title: error.message,
           status: "error",

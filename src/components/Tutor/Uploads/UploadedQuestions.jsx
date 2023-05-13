@@ -74,7 +74,7 @@ const UploadedQuestions = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        
         setLoading(false);
         toast({
           title: err.message,
@@ -142,7 +142,7 @@ const UploadedQuestions = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        
 
         toast({
           title: err.message,
@@ -181,7 +181,7 @@ const UploadedQuestions = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        
 
         toast({
           title: err.message,

@@ -64,7 +64,7 @@ const TutorUploadVideos = () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -90,7 +90,7 @@ const TutorUploadVideos = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          
           toast({
             title: error.message,
             status: "error",
@@ -118,7 +118,7 @@ const TutorUploadVideos = () => {
          }
         })
         .catch((error) => {
-          console.log(error);
+          
           toast({
             title: error.message,
             status: "error",
@@ -201,7 +201,7 @@ if (!videoData.videoLink || !videoLinkRegex.test(videoData.videoLink)) {
       })
       .catch((error) => {
          setIsLoading(false);
-        console.log(error);
+        
         toast({
           title: err.message,
           status: "error",

@@ -143,7 +143,7 @@ const Settings = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
 
         toast({
           title: error.message,
@@ -195,8 +195,6 @@ const Settings = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
-
         toast({
           title: error.message,
           status: "error",

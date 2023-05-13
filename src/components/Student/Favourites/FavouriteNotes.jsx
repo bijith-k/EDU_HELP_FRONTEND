@@ -107,7 +107,7 @@ const FavouriteNotes = () => {
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -145,7 +145,7 @@ const FavouriteNotes = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "success",

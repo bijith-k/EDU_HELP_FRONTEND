@@ -28,7 +28,7 @@ const toast = useToast();
         }
         
       } catch (error) {
-        console.log(error);
+        
         toast({
           title: error.message,
           status: "error",
@@ -41,30 +41,15 @@ const toast = useToast();
     getStudents();
   }, [currentUser, conversation]);
 
- const handleOptionClick = (id) => {
-  
-   setSelected((prevState) => {
-    console.log(prevState,"pp")
-     if (prevState === id) {
-      console.log(prevState,id,"pre")
-       // If the clicked option is already selected, unselect it
-       return null;
-     } else {
-       // Otherwise, select the clicked option
-       return id;
-     }
-   });
- };
+ n
   return (
     <>
       {student.map((student, index) => (
         <div
           key={index}
-          onClick={() => handleOptionClick(student._id)}
+          
           className={`flex items-center p-3 cursor-pointer hover:bg-gray-200  mt-5`}
-          // ${
-          //   selected === student._id ? "bg-slate-200" : "bg-transparent"
-          // }
+          
         >
           <img
             src={

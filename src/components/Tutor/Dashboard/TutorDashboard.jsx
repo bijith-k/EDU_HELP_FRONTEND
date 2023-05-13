@@ -62,7 +62,7 @@ const TutorDashboard = () => {
       })
       .catch((err) => {
         setIsLoaded(true)
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -85,7 +85,7 @@ const TutorDashboard = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+       
         toast({
           title: err.message,
           status: "error",
@@ -107,7 +107,7 @@ const TutorDashboard = () => {
        
       })
       .catch((err) => {
-        console.log(err);
+       
         toast({
           title: err.message,
           status: "error",

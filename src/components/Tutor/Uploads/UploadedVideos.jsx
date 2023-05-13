@@ -77,7 +77,7 @@ const [deleteVideoId, setDeleteVideoId] = useState(null);
         }
       })
       .catch((err) => {
-        console.log(err);
+         
         setLoading(false);
         toast({
           title: err.message,
@@ -138,8 +138,8 @@ const [deleteVideoId, setDeleteVideoId] = useState(null);
         }
       })
       .catch((err) => {
-        console.log(err);
-        // setToastMessage(res.data.message);
+         
+        
         toast({
           title: err.message,
           status: "error",
@@ -177,7 +177,7 @@ const [deleteVideoId, setDeleteVideoId] = useState(null);
          }
       })
       .catch((err) => {
-        console.log(err);
+         
         
         toast({
           title: err.message,

@@ -45,7 +45,7 @@ const Home = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+         
         toast({
           title: err.message,
           status: "error",

@@ -70,7 +70,7 @@ const StudentsList = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
         setToastMessage(id);
         toast({
           title: err.message,

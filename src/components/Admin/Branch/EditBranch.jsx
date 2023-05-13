@@ -36,7 +36,7 @@ const EditBranch = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+         
         toast({
           title: err.message,
           status: "error",

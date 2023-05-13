@@ -46,7 +46,7 @@ const ManageEvents = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+       
         toast({
           title: err.message,
           status: "error",
@@ -95,7 +95,7 @@ const ManageEvents = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
@@ -134,7 +134,7 @@ const ManageEvents = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+         
         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
@@ -173,7 +173,7 @@ const ManageEvents = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+         
         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,

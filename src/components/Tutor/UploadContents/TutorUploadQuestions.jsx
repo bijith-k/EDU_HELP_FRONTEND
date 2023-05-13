@@ -64,7 +64,7 @@ const TutorUploadQuestions = () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -90,7 +90,7 @@ const TutorUploadQuestions = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+           
           toast({
             title: error.message,
             status: "error",
@@ -118,7 +118,7 @@ const TutorUploadQuestions = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          
           toast({
             title: error.message,
             status: "error",
@@ -207,7 +207,7 @@ const TutorUploadQuestions = () => {
       })
       .catch((error) => {
          setIsLoading(false);
-        console.log(error);
+        
         toast({
           title: error.message,
           status: "error",

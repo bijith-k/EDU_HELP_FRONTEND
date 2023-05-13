@@ -45,7 +45,7 @@ const UploadNotes = () => {
        
       })
       .catch((err) => {
-        console.error(err)
+      
       toast({
         title: err.message,
         status: "error",
@@ -66,7 +66,7 @@ const UploadNotes = () => {
           setBranches(res.data.branches);
         })
         .catch((error) => {
-          console.log(error);
+          
            toast({
              title: error.message,
              status: "error",
@@ -89,7 +89,7 @@ const UploadNotes = () => {
           setSubjects(res.data.subjects);
         })
         .catch((error) => {
-          console.log(error);
+          
            toast({
              title: error.message,
              status: "error",
@@ -179,7 +179,7 @@ const UploadNotes = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        console.log(error);
+         
         toast({
           title: error.message,
           status: "error",

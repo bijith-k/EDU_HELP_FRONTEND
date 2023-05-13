@@ -33,7 +33,7 @@ const EditSubject = () => {
           setBoards(res.data.boards);
         }
         })
-      .catch((err) => {console.error(err)
+      .catch((err) => { 
       toast({
         title: error.message,
         status: "error",
@@ -60,7 +60,7 @@ const EditSubject = () => {
           setBranches(res.data.branches);
         })
         .catch((error) => {
-          console.log(error);
+          
           toast({
             title: error.message,
             status: "error",
@@ -97,7 +97,7 @@ const EditSubject = () => {
        
       })
       .catch((error) => {
-        console.log(error);
+        
         toast({
           title: error.message,
           status: "error",
@@ -127,7 +127,7 @@ const EditSubject = () => {
        
       })
       .catch((error) => {
-        console.log(error);
+       
         toast({
           title: error.message,
           status: "error",
@@ -217,7 +217,7 @@ const EditSubject = () => {
           position: "top",
         });
 
-        console.error(err, "err");
+        
       });
   };
   return (

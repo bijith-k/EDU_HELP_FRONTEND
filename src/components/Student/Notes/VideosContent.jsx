@@ -102,7 +102,7 @@ const navigate = useNavigate()
         }
       })
       .catch((err) => {
-        console.log(err);
+        
         setLoading(false);
         toast({
           title: err.message,
@@ -149,7 +149,7 @@ const navigate = useNavigate()
         }
       })
       .catch((error) => {
-        console.log(error);
+       
         toast({
           title: error.message,
           status: "error",

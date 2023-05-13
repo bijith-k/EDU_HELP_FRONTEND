@@ -62,7 +62,7 @@ const OtpStudent = () => {
           })
           .catch((error) => {
             setIsLoading(false);
-            console.log(error, "catchhh");
+            
 
             toast({
               title: error.response.data.errors,

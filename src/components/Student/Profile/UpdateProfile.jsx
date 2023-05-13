@@ -55,7 +55,7 @@ const UpdateProfile = () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+         
         toast({
           title: err.message,
           status: "error",
@@ -79,7 +79,7 @@ const UpdateProfile = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+           
           toast({
             title: error.message,
             status: "error",
@@ -170,7 +170,7 @@ const UpdateProfile = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+       
 
         toast({
           title: error.message,

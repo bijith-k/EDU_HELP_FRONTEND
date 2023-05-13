@@ -100,7 +100,7 @@ const EditProfile = () => {
         }
        
       })
-      .catch((err) => {console.error(err)
+      .catch((err) => {
       toast({
         title: err.message,
         status: "error",
@@ -125,7 +125,7 @@ const EditProfile = () => {
           
         })
         .catch((error) => {
-          console.log(error);
+          
           toast({
             title: error.message,
             status: "error",
@@ -143,18 +143,7 @@ const EditProfile = () => {
     let nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ-']+(\s+[a-zA-ZÀ-ÖØ-öø-ÿ-']+)*$/;
     let emailRegex = /^\S+@\S+\.\S+$/;
     let phoneRegex = /^[789]\d{9}$/;
-console.log(
-  userData.name,
-  userData.email,
-  userData.phone,
-  userData.subjects,
-  userData.timeFrom,
-  userData.timeTo,
-  userData.place,
-  userData.profession,
-  selectedBoard,
-  selectedBranch
-);
+ 
     if (
       !userData.name ||
       !userData.email ||
@@ -233,7 +222,7 @@ console.log(
         }
       })
       .catch((error) => {
-        console.log(error);
+        
 
         toast({
           title: error.message,

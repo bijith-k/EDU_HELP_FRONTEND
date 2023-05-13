@@ -34,7 +34,15 @@ const toast = useToast()
     axiosInstance()
       .get(`auth/boards`)
       .then((res) => setBoards(res.data.board))
-      .catch((err) => console.error(err));
+      .catch((err) =>
+       toast({
+                title: err.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+              })
+              );
   }, []);
 
   useEffect(() => {
@@ -48,7 +56,13 @@ const toast = useToast()
           setBranches(res.data.branches);
         })
         .catch((error) => {
-          console.log(error);
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+          })
         });
     } else {
       setBranches([]);

@@ -27,7 +27,7 @@ const Conversation = ({ conversation, currentUser }) => {
           setTutor(res.data);
         }
       } catch (error) {
-        console.log(error);
+         
         toast({
           title: error.message,
           status: "error",

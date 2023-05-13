@@ -101,7 +101,7 @@ const AddEvents = () => {
           })
           .catch((error) => {
             setIsLoading(false);
-            console.log(error);
+           
             toast({
               title: error.response.data.errors,
               status: "error",

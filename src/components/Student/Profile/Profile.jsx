@@ -98,7 +98,7 @@ const Profile = () => {
       })
       .catch((err) => {
         setIsPlanLoaded(true)
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",

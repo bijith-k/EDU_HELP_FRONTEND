@@ -84,7 +84,7 @@ const StudentChat = () => {
       } catch (error) {
         setLoading(false);
         SetConvoLoading(false)
-        console.log(error);
+         
         toast({
           title: error.message,
           status: "error",
@@ -111,7 +111,7 @@ const StudentChat = () => {
            setMessageLoading(false);
         }
       } catch (error) {
-        console.log(error);
+         
          setMessageLoading(false);
         toast({
           title: error.message,
@@ -149,7 +149,13 @@ const StudentChat = () => {
       setMessages([...messages, res.data]);
       setNewMessage("");
     } catch (error) {
-      console.log(error);
+      toast({
+        title: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
   };
 

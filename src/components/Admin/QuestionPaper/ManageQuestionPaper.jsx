@@ -97,7 +97,7 @@ const ManageQuestionPaper = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
@@ -142,7 +142,7 @@ const ManageQuestionPaper = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+       
         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
@@ -184,7 +184,7 @@ const ManageQuestionPaper = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
       setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,

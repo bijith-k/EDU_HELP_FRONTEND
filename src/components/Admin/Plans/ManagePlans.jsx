@@ -40,7 +40,7 @@ const ManagePlans = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+         
         toast({
           title: err.message,
           status: "error",
@@ -79,7 +79,7 @@ const ManagePlans = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,

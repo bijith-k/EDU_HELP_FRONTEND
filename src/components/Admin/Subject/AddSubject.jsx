@@ -33,7 +33,7 @@ const AddSubject = () => {
            setBoards(res.data.boards);
         }
        })
-      .catch((err) => {console.error(err)
+      .catch((err) => {
         toast({
           title: err.message,
           status: "error",
@@ -53,7 +53,13 @@ const AddSubject = () => {
           setBranches(res.data.branches);
         })
         .catch((error) => {
-          console.log(error);
+           toast({
+             title: error.message,
+             status: "error",
+             duration: 5000,
+             isClosable: true,
+             position: "top",
+           });
         });
     } else {
       setBranches([]);
@@ -137,7 +143,7 @@ const AddSubject = () => {
           position: "top",
         });
 
-        console.error(err, "err");
+         
       });
   };
   return (

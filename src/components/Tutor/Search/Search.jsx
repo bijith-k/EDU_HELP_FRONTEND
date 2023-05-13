@@ -26,7 +26,7 @@ const navigate = useNavigate()
         
       })
       .catch((error) => {
-        console.log(error);
+         
         toast({
           title: error.message,
           status: "error",

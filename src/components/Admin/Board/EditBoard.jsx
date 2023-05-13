@@ -32,7 +32,7 @@ const EditBoard = () => {
        
       })
       .catch((error) => {
-        console.log(error);
+         
         toast({
           title: error.message,
           status: "error",
@@ -72,7 +72,7 @@ const EditBoard = () => {
         navigate("/admin/board");
       })
       .catch((error) => {
-        console.log(error);
+        
         toast({
           title: error.message,
           status: "error",

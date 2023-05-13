@@ -64,7 +64,7 @@ const MangageVideos = () => {
        
       })
       .catch((err) => {
-        console.log(err);
+        
         toast({
           title: err.message,
           status: "error",
@@ -104,7 +104,7 @@ const MangageVideos = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
@@ -146,7 +146,7 @@ const MangageVideos = () => {
         
       })
       .catch((err) => {
-        console.log(err);
+        
         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,
@@ -188,7 +188,7 @@ const MangageVideos = () => {
        
       })
       .catch((err) => {
-        console.log(err);
+         
         setToastMessage(`Clicked at ${new Date().toISOString()}`);
         toast({
           title: err.message,

@@ -100,7 +100,7 @@ const Tutors = () => {
           
         setTutorLoading(false)
         }).catch((err)=>{
-          console.log(err)
+          
           setTutorLoading(false)
         })
     }else{

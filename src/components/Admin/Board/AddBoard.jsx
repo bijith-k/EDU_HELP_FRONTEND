@@ -62,7 +62,7 @@ const AddBoard = () => {
           isClosable: true,
           position: "top",
         });
-        console.log(err, "err");
+        
       });
   };
 

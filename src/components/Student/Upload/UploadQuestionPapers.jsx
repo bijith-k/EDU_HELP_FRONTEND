@@ -43,7 +43,7 @@ const UploadQuestionPapers = () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+       
         toast({
           title: err.message,
           status: "error",
@@ -64,7 +64,7 @@ const UploadQuestionPapers = () => {
           setBranches(res.data.branches);
         })
         .catch((error) => {
-          console.log(error);
+          
           toast({
             title: error.message,
             status: "error",
@@ -87,7 +87,7 @@ const UploadQuestionPapers = () => {
           setSubjects(res.data.subjects);
         })
         .catch((error) => {
-          console.log(error);
+           
           toast({
             title: error.message,
             status: "error",
@@ -180,7 +180,7 @@ const UploadQuestionPapers = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        console.log(error);
+         
         toast({
           title: error.message,
           status: "error",

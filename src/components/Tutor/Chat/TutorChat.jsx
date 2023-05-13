@@ -163,7 +163,13 @@ const TutorChat = () => {
       setMessages([...messages, res.data]);
       setNewMessage("");
     } catch (error) {
-      console.log(error);
+      toast({
+        title: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
   };
 
@@ -202,9 +208,9 @@ const TutorChat = () => {
 
   useEffect(() => {
     if (socket.current) {
-       console.log("first")
+        
       socket.current.on("msg-receive", (data) => {
-       console.log(data,"dataa")
+        
         setArrivalMessage({
           sender: data.senderId,
           text: data.text,
