@@ -41,7 +41,7 @@ const toast = useToast();
     getStudents();
   }, [currentUser, conversation]);
 
- n
+ 
   return (
     <>
       {student.map((student, index) => (
@@ -49,7 +49,7 @@ const toast = useToast();
           key={index}
           
           className={`flex items-center p-3 cursor-pointer hover:bg-gray-200  mt-5`}
-          
+           
         >
           <img
             src={

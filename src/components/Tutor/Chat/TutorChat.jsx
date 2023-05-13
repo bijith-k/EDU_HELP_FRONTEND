@@ -210,7 +210,7 @@ const TutorChat = () => {
     if (socket.current) {
         
       socket.current.on("msg-receive", (data) => {
-        
+       
         setArrivalMessage({
           sender: data.senderId,
           text: data.text,
@@ -246,8 +246,8 @@ const TutorChat = () => {
             </p>
             {conversations?.length > 0 ? (
               <div>
-                {conversations.map((c) => (
-                  <div className="" onClick={() => setCurrentChat(c)}>
+                {conversations.map((c,index) => (
+                  <div key={index} className="" onClick={() => setCurrentChat(c)}>
                     <Conversation conversation={c} currentUser={tutor} />
                   </div>
                 ))}
