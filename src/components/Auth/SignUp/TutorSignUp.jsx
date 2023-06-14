@@ -25,7 +25,7 @@ const TutorSignUp = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
-const toast = useToast()
+  const toast = useToast()
   const [boardError, setBoardError] = useState(null);
   const [branchError, setBranchError] = useState(null);
 
