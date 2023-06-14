@@ -20,7 +20,6 @@ if (role === "student") {
         localStorage.removeItem("Stoken");
         dispatch(setStudent({ student: null }));
         setAuth(res.data.status);
-        
       } else {
         dispatch(setStudent({ student: res.data.student }));
         setAuth(res.data.status);

@@ -4,8 +4,6 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  InputRightElement,
-  Select,
   Stack,
 } from "@chakra-ui/react";
 import { FiPhoneIncoming, FiMail } from "react-icons/fi";
@@ -15,7 +13,6 @@ import { BsSignIntersectionSide, BsImage } from "react-icons/bs";
 import {
   MdAccessTime,
   MdLocationOn,
-  MdOutlineSchool,
   MdSubject,
   MdWork,
 } from "react-icons/md";
@@ -31,12 +28,10 @@ import Footer from "../Footer/Footer";
 const EditProfile = () => {
   const { tutor } = useSelector((state) => state.tutor);
 
-  const token = localStorage.getItem("Ttoken");
-  const [boards, setBoards] = useState([]);
-  const [branches, setBranches] = useState([]);
+  
 
-  const [selectedBoard, setSelectedBoard] = useState(tutor.board._id);
-  const [selectedBranch, setSelectedBranch] = useState(tutor.branch._id);
+  const [selectedBoard, setSelectedBoard] = useState(tutor.board.name);
+  const [selectedBranch, setSelectedBranch] = useState(tutor.branch.name);
   const toast = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -76,68 +71,6 @@ const EditProfile = () => {
 
    
 
-  useEffect(() => {
-    // Fetch boards from server on component mount
-    axiosInstance("Ttoken")
-      .get(`tutor/boards`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        if (res.data.status == false) {
-          toast({
-            title: res.data.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-            position: "top",
-          });
-          localStorage.removeItem("Ttoken");
-          navigate("/tutor");
-        } else {
-           setBoards(res.data.boards);
-        }
-       
-      })
-      .catch((err) => {
-      toast({
-        title: err.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });});
-  }, []);
-
-  useEffect(() => {
-    if (selectedBoard) {
-      axiosInstance("Ttoken")
-        .get(`tutor/branches?board=${selectedBoard}`)
-        .then((res) => {
-          if (res.data.status == false) {
-             
-            localStorage.removeItem("Ttoken");
-            navigate("/tutor");
-          } else {
-            setBranches(res.data.branches);
-          }
-          
-        })
-        .catch((error) => {
-          
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-            position: "top",
-          });
-        });
-    } else {
-      setBranches([]);
-    }
-  }, [selectedBoard]);
 
   const handleSubmit = async (e) => {
     let nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ-']+(\s+[a-zA-ZÀ-ÖØ-öø-ÿ-']+)*$/;
@@ -152,12 +85,8 @@ const EditProfile = () => {
       !userData.timeFrom ||
       !userData.timeTo ||
       !userData.place ||
-      !userData.profession ||
-      !selectedBoard ||
-      !selectedBranch ||
       !nameRegex.test(userData.name) ||
       !nameRegex.test(userData.place) ||
-      !nameRegex.test(userData.profession) ||
       !emailRegex.test(userData.email) ||
       !phoneRegex.test(userData.phone)
     ) {
@@ -191,9 +120,7 @@ const EditProfile = () => {
       .post(
         `tutor/edit-profile-details?id=${tutor._id}`,
         {
-          ...userData,
-          board: selectedBoard,
-          branch: selectedBranch,
+          ...userData
         },
         { headers: { "Content-Type": "multipart/form-data" } }
       )
@@ -290,25 +217,14 @@ const EditProfile = () => {
             pointerEvents="none"
             children={<HiOutlineBuildingLibrary color="gray.300" />}
           />
-          <Select
-            placeholder="Select Board"
+          <Input
+            type="text"
             value={selectedBoard}
-            onChange={(e) => {
-              setSelectedBoard(e.target.value);
-               
-            }}
-            className="pl-10 uppercase"
-          >
-            {boards.map((board) => (
-              <option
-                value={board._id}
-                key={board._id}
-                className="block border border-grey-light w-full p-3 rounded mb-4 uppercase"
-              >
-                {board.name}
-              </option>
-            ))}
-          </Select>
+            placeholder="Board"
+            readOnly
+            className="uppercase"
+          />
+           
         </InputGroup>
 
         <InputGroup>
@@ -316,25 +232,14 @@ const EditProfile = () => {
             pointerEvents="none"
             children={<BsSignIntersectionSide color="gray.300" />}
           />
-          <Select
-            placeholder="Select Branch"
+          <Input
+            type="text"
             value={selectedBranch}
-            onChange={(e) => {
-              setSelectedBranch(e.target.value);
- 
-            }}
-            className="pl-10 uppercase"
-          >
-            {branches.map((branch) => (
-              <option
-                value={branch._id}
-                key={branch._id}
-                className="block border border-grey-light w-full p-3 rounded mb-4"
-              >
-                {branch.name}
-              </option>
-            ))}
-          </Select>
+            placeholder="Branch"
+            readOnly
+            className="uppercase"
+          />
+           
         </InputGroup>
         <InputGroup>
           <InputLeftElement
@@ -395,10 +300,9 @@ const EditProfile = () => {
           <Input
             type="text"
             value={userData.profession}
-            onChange={(event) =>
-              setUserData({ ...userData, profession: event.target.value })
-            }
-            placeholder="Enter your profession"
+            
+            placeholder="your profession"
+            readOnly
           />
         </InputGroup>
         <InputGroup>

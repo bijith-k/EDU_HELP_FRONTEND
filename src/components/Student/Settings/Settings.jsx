@@ -4,7 +4,6 @@ import {
   Button,
   Input,
   InputGroup,
-  InputLeftElement,
   InputRightElement,
   useToast,
 } from "@chakra-ui/react";
@@ -36,7 +35,7 @@ const Settings = () => {
     newPassword: "",
   });
 
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(student?.email);
   const [otp, setOtp] = useState('')
 
   const handlePassword = async () => {
@@ -58,15 +57,7 @@ const Settings = () => {
         position: "bottom-right",
       });
     }
-    if (!email) {
-      return toast({
-        title: "Enter email to get otp for verification",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom-right",
-      });
-    }
+    
     if (!otp) {
       return toast({
         title: "Enter otp got in email to continue",
@@ -81,7 +72,7 @@ const Settings = () => {
 
     await axiosInstance("Stoken")
       .post(`change-password`, {
-        ...passwords,otp
+        ...passwords,otp,email
       })
       .then((res) => {
         if (res.data.updated) {
@@ -129,17 +120,6 @@ const Settings = () => {
 
   const getOtp = async() =>{
 
-    let emailRegex = /^\S+@\S+\.\S+$/;
-    if(!email || !emailRegex.test(email)){
-      return toast({
-        title: "Enter email",
-        description: "Enter valid email only.Otp will be sent to that email",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom-right",
-      });
-    }
     setOtpButtonLoading(true);
     await axiosInstance("Stoken")
       .post(`get-password-change-otp`,{email})
@@ -222,15 +202,16 @@ const Settings = () => {
         </InputGroup>
 
         <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<FiMail color="gray.300" />}
-          />
+           
+          
           <Input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="Enter email to get otp"
+            pr="4.5rem"
+            type="text"
+            placeholder="Enter the otp"
+            value={otp}
+            onChange={(e) => {
+              setOtp(e.target.value);
+            }}
           />
           <InputRightElement width="7.5rem">
             <Button
@@ -246,18 +227,11 @@ const Settings = () => {
             </Button>
           </InputRightElement>
         </InputGroup>
+        <label htmlFor="" className="float-right text-sm">
+          After clicking the button, otp will be sent to {student.email}{" "}
+        </label>
 
-        <InputGroup size="md" className="mt-5">
-          <Input
-            pr="4.5rem"
-            type="text"
-            placeholder="Enter the otp"
-            value={otp}
-            onChange={(e) => {
-              setOtp(e.target.value);
-            }}
-          />
-        </InputGroup>
+         
 
         <Button
           isLoading={loading}
@@ -270,7 +244,7 @@ const Settings = () => {
           UPDATE PASSWORD
         </Button>
       </div>
- 
+
       <div className="mt-5">
         <Footer />
       </div>
