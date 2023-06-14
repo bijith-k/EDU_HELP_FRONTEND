@@ -141,7 +141,7 @@ const Tutors = () => {
       ) : (
         <div>
           {isSubscribed ? (
-            <CountDown expiredAt={student.subscription.expiredAt} />
+            <CountDown expiredAt={student?.subscription?.expiredAt} />
           ) : null}
           {isSubscribed && tutor.length > 0 ? (
             <div className="bg-gray-400 w-max p-3 rounded-full md:mb-0 mb-4 mx-auto">

@@ -133,10 +133,11 @@ const TutorChat = () => {
  
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if(!newMessage){
-      return
+    
+    if (!newMessage || /^\s*$/.test(newMessage)) {
+      return;
     }
+    e.preventDefault();
     const message = {
       sender: tutor._id,
       text: newMessage,

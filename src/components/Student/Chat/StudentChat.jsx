@@ -126,6 +126,10 @@ const StudentChat = () => {
   }, [currentChat]);
 
   const handleSubmit = async (e) => {
+ 
+    if (!newMessage || /^\s*$/.test(newMessage)) {
+      return;
+    }
     e.preventDefault();
     const message = {
       sender: student._id,

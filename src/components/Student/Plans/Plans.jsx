@@ -58,6 +58,7 @@ const Plans = () => {
     axiosInstance("Stoken")
       .get(`get-subscribed-plan?id=${student._id}`)
       .then((res) => {
+        
         if (res.data.subscribed) {
           setIsSubscribed(true);
         }else if (res.data.status == false) {
